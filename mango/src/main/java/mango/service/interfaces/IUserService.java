@@ -1,8 +1,8 @@
-package service.interfaces;
+package mango.service.interfaces;
 
 import java.util.Collection;
 
-import model.User;
+import mango.model.User;
 
 public interface IUserService {
 

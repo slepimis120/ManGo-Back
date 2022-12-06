@@ -1,4 +1,4 @@
-package controller;
+package mango.controller;
 
 import java.util.Collection;
 
@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import model.User;
-import service.interfaces.IUserService;
+import mango.model.User;
+import mango.service.interfaces.IUserService;
 
 @RestController
 @RequestMapping("/api/v1/user")
