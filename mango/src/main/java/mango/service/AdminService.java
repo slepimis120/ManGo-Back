@@ -1,13 +1,15 @@
-package service;
+package mango.service;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import model.User;
-import service.interfaces.IUserService;
+import mango.model.User;
+import mango.service.interfaces.IUserService;
+import org.springframework.stereotype.Service;
 
-public class AdminService implements IUserService{
+@Service
+public class AdminService implements IUserService {
 
 	private Map<String, User> allAdmins = new HashMap<String, User>();
 

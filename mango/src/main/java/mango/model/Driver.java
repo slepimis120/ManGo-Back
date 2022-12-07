@@ -1,4 +1,4 @@
-package model;
+package mango.model;
 
 public class Driver extends User{
 	private String driversLicence;
@@ -10,11 +10,14 @@ public class Driver extends User{
 	public Driver(String firstName, String lastName, String profilePictureURL, String phoneNumber, String email,
 			String address, String password, boolean blocked, String driversLicence, boolean isActive) {
 		super(firstName, lastName, profilePictureURL, phoneNumber, email, address, password, blocked);
+
 		this.driversLicence = driversLicence;
 		this.isActive = isActive;
 	}
 
-
+	public Driver(){
+		super();
+	}
 	public String getDriversLicence() {
 		return driversLicence;
 	}

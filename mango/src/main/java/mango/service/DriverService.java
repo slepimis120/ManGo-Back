@@ -1,39 +1,39 @@
-package service;
+package mango.service;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import model.User;
-import service.interfaces.IUserService;
+import mango.model.User;
+import mango.service.interfaces.IUserService;
+import org.springframework.stereotype.Service;
 
-public class PassengerService implements IUserService{
-	
-	//TODO: create repository classes after connecting to the database
-	private Map<String, User> allPassengers = new HashMap<String, User>();
+@Service
+public class DriverService implements IUserService {
 
+	private Map<String, User> allDrivers = new HashMap<String, User>();
 	@Override
 	public Collection<User> getAll() {
-		return this.allPassengers.values();
+		return this.allDrivers.values();
 	}
 
 	@Override
 	public User find(String email) {
-		User found = allPassengers.get(email);
+		User found = allDrivers.get(email);
 		if (found != null)
-			return allPassengers.get(email);
+			return allDrivers.get(email);
 		throw new RuntimeException();
 	}
 
 	@Override
 	public User insert(User user) {		
-		allPassengers.put(user.getEmail(), user);
+		allDrivers.put(user.getEmail(), user);
 		return user;
 	}
 
 	@Override
 	public User update(User user) {
-		User found = allPassengers.get(user.getEmail());
+		User found = allDrivers.get(user.getEmail());
 		if (found != null) {
 			found.setFirstName(user.getFirstName());
 			found.setLastName(user.getLastName());
@@ -44,9 +44,9 @@ public class PassengerService implements IUserService{
 
 	@Override
 	public User delete(String email) {
-		User found = allPassengers.get(email);
+		User found = allDrivers.get(email);
 		if (found != null) {
-			allPassengers.remove(email);
+			allDrivers.remove(email);
 			return found;
 		}
 		throw new RuntimeException();
@@ -54,7 +54,7 @@ public class PassengerService implements IUserService{
 
 	@Override
 	public void deleteAll() {
-		allPassengers.clear();
+		allDrivers.clear();
 	}
 
 }

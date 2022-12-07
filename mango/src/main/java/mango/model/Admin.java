@@ -1,4 +1,4 @@
-package model;
+package mango.model;
 
 public class Admin extends User{
 	private String username;
@@ -8,6 +8,10 @@ public class Admin extends User{
 			String address, String password, boolean blocked, String username) {
 		super(firstName, lastName, profilePictureURL, phoneNumber, email, address, password, blocked);
 		this.username = username;
+	}
+
+	public Admin(){
+		super();
 	}
 
 	public String getUsername() {
