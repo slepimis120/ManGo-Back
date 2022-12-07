@@ -1,17 +1,25 @@
 package mango.service;
 
-import mango.model.Ride;
-import mango.model.Status;
+import mango.model.*;
 import mango.service.interfaces.IRideService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class RideService implements IRideService {
     private Map<Integer, Ride> allRides = new HashMap<Integer, Ride>();
+    PanicService panicService;
+
+    @Autowired
+    public RideService(PanicService panicService){
+        this.panicService = panicService;
+    }
 
     @Override
     public Collection<Ride> getAll() {
@@ -26,11 +34,12 @@ public class RideService implements IRideService {
         throw new RuntimeException();
     }
 
+
     @Override
     public Ride findByDriver(Integer driverId) {
-        for(int i = 0; i < allRides.size(); i++){
-            if(allRides.get(i).getDriver().getId().equals(driverId) && allRides.get(i).getEndTime().equals(null)){
-                return allRides.get(i);
+        for (Map.Entry<Integer, Ride> entry : allRides.entrySet()) {
+            if (entry.getValue().getDriver().getId().equals(driverId) && entry.getValue().getEndTime() == null) {
+                return entry.getValue();
             }
         }
         return null;
@@ -38,10 +47,10 @@ public class RideService implements IRideService {
 
     @Override
     public Ride findByPassenger(Integer passengerId) {
-        for(int i = 0; i < allRides.size(); i++){
-            for(int j = 0; j < allRides.get(i).getPassengers().size(); j++){
-                if(allRides.get(i).getPassengers().get(j).getId().equals(passengerId)  && allRides.get(i).getEndTime().equals(null)) {
-                    return allRides.get(i);
+        for (Map.Entry<Integer, Ride> entry : allRides.entrySet()) {
+            for(int j = 0; j < entry.getValue().getPassengers().size(); j++){
+                if(entry.getValue().getPassengers().get(j).getId().equals(passengerId)  && entry.getValue().getEndTime() == null) {
+                    return entry.getValue();
                 }
             }
         }
@@ -58,33 +67,74 @@ public class RideService implements IRideService {
     }
 
     @Override
-    public void cancelByPassenger(Integer rideId) {
-
+    public Ride cancelByPassenger(Integer rideId) {
+        for (Map.Entry<Integer, Ride> entry : allRides.entrySet()) {
+            if(entry.getValue().getRideId().equals(rideId)){
+                entry.getValue().setStatus(Status.cancelled);
+                return entry.getValue();
+            }
+        }
+        return null;
     }
 
     @Override
     public Ride accept(Integer rideId) {
+        for (Map.Entry<Integer, Ride> entry : allRides.entrySet()) {
+            if(entry.getValue().getRideId().equals(rideId)){
+                entry.getValue().setStatus(Status.accepted);
+                Date date = new Date();
+                entry.getValue().setStartTime(date);
+                return entry.getValue();
+            }
+        }
         return null;
     }
 
     @Override
     public Ride end(Integer rideId) {
+        for (Map.Entry<Integer, Ride> entry : allRides.entrySet()) {
+            if(entry.getValue().getRideId().equals(rideId)){
+                Date date = new Date();
+                entry.getValue().setEndTime(date);
+                entry.getValue().setStatus(Status.finished);
+                if(entry.getValue().getStartTime() != null) {
+                    long diffInMillies = Math.abs(date.getTime() - entry.getValue().getStartTime().getTime());
+                    Integer diff = (int) TimeUnit.MINUTES.convert(diffInMillies, TimeUnit.MILLISECONDS);
+                    entry.getValue().setEstimatedTimeInMinutes(diff);
+                }
+                return entry.getValue();
+            }
+        }
         return null;
     }
 
     @Override
-    public Ride cancelByDriver(Integer rideId, String reason) {
+    public Ride cancelByDriver(Integer rideId, Rejection rejection) {
+        Date date = new Date();
+        rejection.setTimeOfRejection(date);
+        for (Map.Entry<Integer, Ride> entry : allRides.entrySet()) {
+            if (entry.getValue().getRideId().equals(rideId)) {
+                entry.getValue().setStatus(Status.cancelled);
+                entry.getValue().setRejection(rejection);
+                return entry.getValue();
+            }
+        }
         return null;
     }
 
     @Override
-    public Ride delete(Integer rideId) {
+    public Panic panic(Integer rideId, Panic panic) {
+        for (Map.Entry<Integer, Ride> entry : allRides.entrySet()) {
+            if (entry.getValue().getRideId().equals(rideId)) {
+                panic.setRide(entry.getValue());
+                //panic.setUser(entry.getValue().getPassengers().get(0));
+                Date date = new Date();
+                panic.setTime(date);
+                panic.setId(panicService.getAllPanic().size() + 1);
+                panicService.getAllPanic().put(panic.getId(), panic);
+                return panic;
+            }
+        }
         return null;
     }
-
-    @Override
-    public void deleteAll() {
-
-    }
-
 }

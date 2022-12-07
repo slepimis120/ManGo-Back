@@ -16,6 +16,8 @@ public class Rejection {
 
     }
 
+    public Rejection(){}
+
     public String getReason() {
         return reason;
     }

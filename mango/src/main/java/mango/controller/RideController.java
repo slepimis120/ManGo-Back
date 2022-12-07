@@ -1,6 +1,8 @@
 package mango.controller;
 
 
+import mango.model.Panic;
+import mango.model.Rejection;
 import mango.model.Ride;
 import mango.service.interfaces.IRideService;
 
@@ -21,27 +23,28 @@ public class RideController {
     public Ride findRide(@PathVariable Integer id) {
         return service.find(id);
     }
-
-    @GetMapping("/active/{driverId}")
-    public Ride findByDriver(@PathVariable Integer driverId) {
+    @GetMapping("/driver/{driverId}/active")
+    public Ride findByDriver(@PathVariable Integer driverId) throws Exception {
         return service.findByDriver(driverId);
     }
 
-    @GetMapping("/active/{passengerId}")
+    @GetMapping("/passenger/{passengerId}/active")
     public Ride findByPassenger(@PathVariable Integer passengerId) {
         return service.findByPassenger(passengerId);
     }
 
-    @PutMapping("/{id}")
-    public void cancelByPassenger(@RequestBody Integer id){service.cancelByPassenger(id);}
+    @PutMapping("/{id}/withdraw")
+    public Ride cancelByPassenger(@PathVariable Integer id){return service.cancelByPassenger(id);}
 
     @PutMapping("/{id}/accept")
-    public Ride accept(@RequestBody Integer id){return service.accept(id);}
+    public Ride accept(@PathVariable Integer id){return service.accept(id);}
 
     @PutMapping("/{id}/end")
-    public Ride end(@RequestBody Integer id){return service.end(id);}
+    public Ride end(@PathVariable Integer id){return service.end(id);}
 
     @PutMapping("/{id}/cancel")
-    public Ride cancelByDriver(@RequestBody Integer id, String reason){return service.cancelByDriver(id, reason);}
+    public Ride cancelByDriver(@PathVariable Integer id, @RequestBody Rejection rejection){return service.cancelByDriver(id, rejection);}
 
-}
+    @PutMapping("/{id}/panic")
+    public Panic panic(@PathVariable Integer id, @RequestBody Panic panic){return service.panic(id,panic);}
+    }

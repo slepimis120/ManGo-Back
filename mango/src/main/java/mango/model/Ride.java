@@ -10,20 +10,22 @@ public class Ride {
     private Date endTime;
     private Integer totalCost;
     private Driver driver;
-    private ArrayList<User> passengers;
+    private ArrayList<Passenger> passengers;
     private Integer estimatedTimeInMinutes;
     private String vehicleType;
     private boolean babyTransport;
     private boolean petTransport;
-    private ArrayList<Location> locations;
+    private ArrayList<RideLocation> locations;
     private Status status;
 
+    private Rejection rejection;
 
 
 
-    public Ride(Driver driver, ArrayList<Location> locations, ArrayList<User> passengers, String vehicleType, boolean babyTransport, boolean petTransport){
 
+    public Ride(Driver driver, ArrayList<RideLocation> locations, ArrayList<Passenger> passengers, String vehicleType, boolean babyTransport, boolean petTransport){
         this.rideId = 0;
+        this.driver = driver;
         this.locations = locations;
         this.passengers = passengers;
         this.vehicleType = vehicleType;
@@ -32,24 +34,23 @@ public class Ride {
         this.startTime = null;
         this.endTime = null;
         this.totalCost = null;
-        this.driver = null;
         this.estimatedTimeInMinutes = null;
         this.status = Status.pending;
     }
 
-    public ArrayList<Location> getLocations() {
+    public ArrayList<RideLocation> getLocations() {
         return locations;
     }
 
-    public void setLocations(ArrayList<Location> locations) {
+    public void setLocations(ArrayList<RideLocation> locations) {
         this.locations = locations;
     }
 
-    public ArrayList<User> getPassengers() {
+    public ArrayList<Passenger> getPassengers() {
         return passengers;
     }
 
-    public void setPassengers(ArrayList<User> passengers) {
+    public void setPassengers(ArrayList<Passenger> passengers) {
         this.passengers = passengers;
     }
 
@@ -131,5 +132,13 @@ public class Ride {
 
     public void setDriver(Driver driver) {
         this.driver = driver;
+    }
+
+    public Rejection getRejection() {
+        return rejection;
+    }
+
+    public void setRejection(Rejection rejection) {
+        this.rejection = rejection;
     }
 }

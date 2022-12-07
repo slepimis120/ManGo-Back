@@ -6,8 +6,12 @@ public class Admin extends User{
 	
 	public Admin(String firstName, String lastName, String profilePictureURL, String phoneNumber, String email,
 			String address, String password, boolean blocked, String username) {
-		super();
+		super(firstName, lastName, profilePictureURL, phoneNumber, email, address, password, blocked);
 		this.username = username;
+	}
+
+	public Admin(){
+		super();
 	}
 
 	public String getUsername() {

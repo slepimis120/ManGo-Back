@@ -30,7 +30,9 @@ public class PassengerService implements IUserService{
 	}
 
 	@Override
-	public User insert(User user) {		
+	public User insert(User user) {
+		int size = allPassengers.size();
+		user.setId(size + 1);
 		allPassengers.put(user.getEmail(), user);
 		return user;
 	}

@@ -7,20 +7,19 @@ public abstract class User {
 	private String profilePictureURL;
 	private String phoneNumber;
 	private String email;
-	private String Address;
+	private String address;
 	private String password;
 	private boolean blocked;
 	
 	public User(String firstName, String lastName, String profilePictureURL, String phoneNumber, String email,
 				String address, String password, boolean blocked) {
-		super();
 		this.id = null;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.profilePictureURL = profilePictureURL;
 		this.phoneNumber = phoneNumber;
 		this.email = email;
-		Address = address;
+		this.address = address;
 		this.password = password;
 		this.blocked = blocked;
 	}
@@ -70,11 +69,11 @@ public abstract class User {
 	}
 
 	public String getAddress() {
-		return Address;
+		return address;
 	}
 
 	public void setAddress(String address) {
-		Address = address;
+		this.address = address;
 	}
 
 	public String getPassword() {
