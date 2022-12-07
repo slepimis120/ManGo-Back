@@ -1,3 +1,3 @@
 package mango.model;
 
-public enum VehicleType {standard, luxury, van}
+public enum VehicleType {STANDARD, LUXURY, VAN}
