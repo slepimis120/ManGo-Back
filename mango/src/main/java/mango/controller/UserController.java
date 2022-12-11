@@ -1,5 +1,6 @@
 package mango.controller;
 
+import mango.service.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,14 +13,14 @@ import mango.service.UserService;
 import mango.dto.UserResponseDTO;
 
 @RestController
-@RequestMapping("/api/v1/user")
+@RequestMapping("/api/user")
 public class UserController {
 	@Autowired
-	UserService service;
+	IUserService service;
 	
 	@GetMapping
 	public ResponseEntity getUsers(@RequestBody Integer page, Integer size) {
-		UserResponseDTO response = service.getArray(page, size, UserService.allUsers);
+		UserResponseDTO response = service.getArray(page, size);
 		return new ResponseEntity(response, HttpStatus.OK);
 	}
 

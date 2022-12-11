@@ -8,7 +8,7 @@ import mango.model.User;
 
 public interface IUserService {
 
-	public UserResponseDTO getArray(Integer page, Integer size, Map<Integer, User> data);
+	public UserResponseDTO getArray(Integer page, Integer size);
 	
 	public User find(String email);
 	

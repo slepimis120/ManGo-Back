@@ -12,9 +12,9 @@ public abstract class User {
 	private String password;
 	private boolean blocked;
 	
-	public User(String firstName, String lastName, String profilePictureURL, String phoneNumber, String email,
+	public User(Integer id, String firstName, String lastName, String profilePictureURL, String phoneNumber, String email,
 				String address, String password, boolean blocked) {
-		this.id = null;
+		this.id = id;
 		this.name = firstName;
 		this.surname = lastName;
 		this.profilePicture = profilePictureURL;

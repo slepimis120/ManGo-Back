@@ -6,11 +6,18 @@ public class Passenger extends User{
 	
 	private ArrayList <Ride> rides;
 
-	public Passenger(String firstName, String lastName, String profilePictureURL, String phoneNumber, String email,
+	public Passenger(Integer id, String firstName, String lastName, String profilePictureURL, String phoneNumber, String email,
 			String address, String password, boolean blocked) {
-		super(firstName, lastName, profilePictureURL, phoneNumber, email, address, password, blocked);
+		super(id, firstName, lastName, profilePictureURL, phoneNumber, email, address, password, blocked);
 		this.rides = new ArrayList<Ride>();
 	}
+
+	public Passenger(User user){
+		super(user.getId(), user.getName(), user.getSurname(), user.getProfilePicture(), user.getTelephoneNumber(), user.getEmail(), user.getAddress(), user.getPassword(), user.isBlocked());
+		this.rides = new ArrayList<Ride>();
+	}
+
+	public Passenger(){}
 
 	
 

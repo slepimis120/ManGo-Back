@@ -56,7 +56,7 @@ public class AdminService implements IUserService {
 	}
 
 	@Override
-	public UserResponseDTO getArray(Integer page, Integer size, Map<Integer, User> data) {
+	public UserResponseDTO getArray(Integer page, Integer size) {
 		// TODO Auto-generated method stub
 		return null;
 	}

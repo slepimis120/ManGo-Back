@@ -10,4 +10,21 @@ public class UserResponseDTO {
 		this.totalCount = totalCount;
 		this.results = results;
 	}
+
+	public UserResponseDTO(){}
+	public Integer getTotalCount() {
+		return totalCount;
+	}
+
+	public void setTotalCount(Integer totalCount) {
+		this.totalCount = totalCount;
+	}
+
+	public ArrayList<UserDTO> getResults() {
+		return results;
+	}
+
+	public void setResults(ArrayList<UserDTO> results) {
+		this.results = results;
+	}
 }

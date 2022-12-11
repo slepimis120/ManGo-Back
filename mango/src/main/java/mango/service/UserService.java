@@ -15,9 +15,9 @@ public class UserService implements IUserService{
 	public static Map<Integer, User> allUsers = new HashMap<Integer, User>();
 	
 	@Override
-	public UserResponseDTO getArray(Integer page, Integer size, Map<Integer, User> data) {
+	public UserResponseDTO getArray(Integer page, Integer size) {
 		int start = page * size;
-		Object[] allUsersArray = data.entrySet().toArray();
+		Object[] allUsersArray = allUsers.entrySet().toArray();
 		ArrayList<UserDTO> returnList = new ArrayList<UserDTO>();
 		for(int i=0; i < size; i++) {
 			User currentUser = (User) allUsersArray[start + i];

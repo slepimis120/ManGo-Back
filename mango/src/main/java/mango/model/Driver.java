@@ -7,9 +7,9 @@ public class Driver extends User{
 	//TODO: add Ride history and Vehicle
 	
 	
-	public Driver(String firstName, String lastName, String profilePictureURL, String phoneNumber, String email,
+	public Driver(Integer id, String firstName, String lastName, String profilePictureURL, String phoneNumber, String email,
 			String address, String password, boolean blocked, String driversLicence, boolean isActive) {
-		super(firstName, lastName, profilePictureURL, phoneNumber, email, address, password, blocked);
+		super(id, firstName, lastName, profilePictureURL, phoneNumber, email, address, password, blocked);
 
 		this.driversLicence = driversLicence;
 		this.isActive = isActive;

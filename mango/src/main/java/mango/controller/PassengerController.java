@@ -2,6 +2,7 @@ package mango.controller;
 
 import java.util.Collection;
 
+import mango.dto.PageDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,7 +28,7 @@ import org.springframework.http.ResponseEntity;
 import mango.dto.UserResponseDTO;
 
 @RestController
-@RequestMapping("/api/v1/passenger")
+@RequestMapping("/api/passenger")
 public class PassengerController {
 	@Autowired
 	PassengerService service;
@@ -37,24 +38,19 @@ public class PassengerController {
         PassengerDTOMapper mapper = new PassengerDTOMapper(new ModelMapper());
         Passenger newPassenger = mapper.fromDTOtoPassenger(passengerDTO);
         Passenger response = (Passenger) service.insert(newPassenger);
-        return new ResponseEntity(response, HttpStatus.NO_CONTENT);
+        return new ResponseEntity(response, HttpStatus.OK);
 		
 	}
 	
 	@GetMapping
-	public ResponseEntity getUsers(@RequestBody Integer page, Integer size) {
-		UserResponseDTO response = service.getArray(page, size, PassengerService.allPassengers);
+	public ResponseEntity getUsers(@RequestBody PageDTO page) {
+		UserResponseDTO response = service.getArray(page.getPage(), page.getSize());
 		return new ResponseEntity(response, HttpStatus.OK);
 	}
 
 	@GetMapping("/{email}")
 	public User findUser(@PathVariable String email) {
 		return service.find(email);
-	}
-
-	@PostMapping
-	public User insert(@RequestBody User user) {
-		return service.insert(user);
 	}
 	
 	@PutMapping

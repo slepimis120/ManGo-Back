@@ -4,9 +4,9 @@ public class Admin extends User{
 	private String username;
 
 	
-	public Admin(String firstName, String lastName, String profilePictureURL, String phoneNumber, String email,
+	public Admin(Integer id, String firstName, String lastName, String profilePictureURL, String phoneNumber, String email,
 			String address, String password, boolean blocked, String username) {
-		super(firstName, lastName, profilePictureURL, phoneNumber, email, address, password, blocked);
+		super(id, firstName, lastName, profilePictureURL, phoneNumber, email, address, password, blocked);
 		this.username = username;
 	}
 
