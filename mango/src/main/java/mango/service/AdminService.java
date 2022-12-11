@@ -36,8 +36,8 @@ public class AdminService implements IUserService {
 	public User update(User user) {
 		User found = allAdmins.get(user.getEmail());
 		if (found != null) {
-			found.setFirstName(user.getFirstName());
-			found.setLastName(user.getLastName());
+			found.setName(user.getName());
+			found.setSurname(user.getSurname());
 			return found;
 		}
 		throw new RuntimeException();
