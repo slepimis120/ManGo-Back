@@ -1,22 +1,32 @@
 package mango.service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
 import mango.dto.ExpandedUserDTO;
 import mango.dto.UserDTO;
 import mango.dto.UserResponseDTO;
 import mango.model.Passenger;
+import mango.model.Ride;
+import mango.model.RideCount;
 import mango.service.interfaces.IUserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @Primary
 public class PassengerService implements IUserService{
 	
 	public static Map<Integer, Passenger> allPassengers = new HashMap<Integer, Passenger>();
+
+	RideService rideService;
+
+	@Autowired
+	public PassengerService(RideService rideService){
+		this.rideService = rideService;
+	}
 
 	@Override
 	public UserDTO insert(ExpandedUserDTO data) {
@@ -45,8 +55,6 @@ public class PassengerService implements IUserService{
 		}
 		return new UserResponseDTO(allPassengers.size(), returnList);
 	}
-	
-	
 
 	@Override
 	public UserDTO find(Integer id) {
@@ -57,8 +65,6 @@ public class PassengerService implements IUserService{
 		}
 		return null;
 	}
-
-
 
 	@Override
 	public UserDTO update(Integer id, ExpandedUserDTO update) {
@@ -74,9 +80,24 @@ public class PassengerService implements IUserService{
 			if(update.getTelephoneNumber() != null)
 				passenger.setTelephoneNumber(update.getTelephoneNumber());
 			return new UserDTO(passenger);
-			
 		}
 		throw new RuntimeException();
 	}
 
+	public RideCount passengerRides(Integer id, Integer page, Integer size, String sort, String from, String to){
+		RideCount count = new RideCount();
+		ArrayList<Ride> rideList = new ArrayList<Ride>();
+		Integer rideCount = 0;
+		for (Map.Entry<Integer, Ride> entry : rideService.getAllRides().entrySet()) {
+			for (Passenger passenger: entry.getValue().getPassengers()){
+				if(passenger.getId().equals(id)){
+					rideList.add(entry.getValue());
+					rideCount = rideCount + 1;
+				}
+			}
+		}
+		count.setResults(rideList);
+		count.setTotalCount(rideCount);
+		return count;
+	}
 }
