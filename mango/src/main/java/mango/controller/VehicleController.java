@@ -20,10 +20,10 @@ public class VehicleController {
     VehicleService service;
 
     @PutMapping("/{id}/location")
-    public ResponseEntity<Boolean> updateLocation(@RequestBody LocationDTO location, @PathVariable Integer id) {
+    public ResponseEntity updateLocation(@RequestBody LocationDTO location, @PathVariable Integer id) {
         LocationDTOMapper mapper = new LocationDTOMapper(new ModelMapper());
         Location newLocation = mapper.fromDTOtoLocation(location);
         boolean response = service.updateLocation(newLocation, id);
-        return new ResponseEntity<Boolean>(response, HttpStatus.NO_CONTENT);
+        return new ResponseEntity(response, HttpStatus.NO_CONTENT);
     }
 }
