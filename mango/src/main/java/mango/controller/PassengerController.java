@@ -1,30 +1,20 @@
 package mango.controller;
 
-import java.util.Collection;
-
 import mango.dto.ExpandedUserDTO;
 import mango.dto.PageDTO;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import mango.dto.PassengerDTO;
 import mango.dto.UserDTO;
-import mango.mapper.LocationDTOMapper;
-import mango.mapper.PassengerDTOMapper;
-import mango.model.Location;
-import mango.model.Passenger;
-import mango.model.User;
 import mango.service.PassengerService;
-import mango.service.interfaces.IUserService;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,8 +33,9 @@ public class PassengerController {
 	}
 	
 	@GetMapping
-	public ResponseEntity getUsers(@RequestParam  PageDTO page) {
-		UserResponseDTO response = service.getArray(page.getPage(), page.getSize());
+	public ResponseEntity getUsers(@RequestParam Integer page, Integer size) {
+		System.out.println("TEST?");
+		UserResponseDTO response = service.getArray(page, size);
 		return new ResponseEntity(response, HttpStatus.OK);
 	}
 
@@ -54,8 +45,10 @@ public class PassengerController {
 		return new ResponseEntity(response, HttpStatus.OK);
 	}
 	
-	@PutMapping
+	@RequestMapping(value="/{id}",method = RequestMethod.PUT)
 	public ResponseEntity update(@PathVariable Integer id, @RequestBody ExpandedUserDTO update) {
+		System.out.println(id);
+		System.out.println( update.getName());
 		UserDTO response = service.update(id, update);
 		return new ResponseEntity(response, HttpStatus.OK);
 	}

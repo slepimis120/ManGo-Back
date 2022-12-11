@@ -1,17 +1,13 @@
 package mango.service;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 import mango.dto.ExpandedUserDTO;
-import mango.dto.PassengerDTO;
 import mango.dto.UserDTO;
 import mango.dto.UserResponseDTO;
 import mango.model.Passenger;
-import mango.model.User;
-import mango.dto.UserDTO;
 import mango.service.interfaces.IUserService;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
@@ -20,7 +16,6 @@ import org.springframework.stereotype.Service;
 @Primary
 public class PassengerService implements IUserService{
 	
-	//TODO: create repository classes after connecting to the database
 	public static Map<Integer, Passenger> allPassengers = new HashMap<Integer, Passenger>();
 
 	@Override
