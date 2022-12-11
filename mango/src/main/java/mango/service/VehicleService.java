@@ -1,7 +1,9 @@
 package mango.service;
 
+import mango.dto.LocationDTO;
 import mango.model.Location;
 import mango.model.Ride;
+import mango.model.Status;
 import mango.model.Vehicle;
 import mango.service.interfaces.IRideService;
 import mango.service.interfaces.IVehicleService;
@@ -16,44 +18,19 @@ public class VehicleService implements IVehicleService {
     private Map<Integer, Vehicle> allVehicles = new HashMap<Integer, Vehicle>();
 
     @Override
-    public Vehicle find(Integer vehicleId) {
-        for (Map.Entry<Integer,Vehicle> entry : allVehicles.entrySet()) {
-            if (entry.getValue().getId().equals(vehicleId)) {
-                return entry.getValue();
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public Vehicle insert(Vehicle vehicle) {
+    public boolean updateLocation(Location location, Integer id) {
+        Vehicle vehicle = new Vehicle();
         int size = allVehicles.size();
         vehicle.setId(size + 1);
+        vehicle.setVehicleType(Vehicle.Type.VAN);
         allVehicles.put(vehicle.getId(), vehicle);
-        return vehicle;
-    }
-
-    @Override
-    public Vehicle update(Vehicle vehicle) {
-        return null;
-    }
-
-    @Override
-    public void updateLocation(Location location, Integer id) {
         for (Map.Entry<Integer,Vehicle> entry : allVehicles.entrySet()) {
             if (entry.getValue().getId().equals(id)) {
                 entry.getValue().setCurrentLocation(location);
+                return true;
             }
         }
+        return false;
     }
 
-    @Override
-    public void delete(Integer id) {
-
-    }
-
-    @Override
-    public void deleteAll() {
-
-    }
 }

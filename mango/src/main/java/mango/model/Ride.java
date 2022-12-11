@@ -5,14 +5,14 @@ import java.util.Date;
 
 public class Ride {
 
-    private int id;
+    private int rideId;
     private Date startTime;
     private Date endTime;
     private Integer totalCost;
     private Driver driver;
     private ArrayList<Passenger> passengers;
     private Integer estimatedTimeInMinutes;
-    private String vehicleType;
+    private Vehicle.Type vehicleType;
     private boolean babyTransport;
     private boolean petTransport;
     private ArrayList<RideLocation> locations;
@@ -20,11 +20,11 @@ public class Ride {
 
     private Rejection rejection;
 
-    public enum Status{pending, accepted, rejected, active, finished, cancelled}
 
 
-    public Ride(Driver driver, ArrayList<RideLocation> locations, ArrayList<Passenger> passengers, String vehicleType, boolean babyTransport, boolean petTransport){
-        this.id = 0;
+
+    public Ride(Driver driver, ArrayList<RideLocation> locations, ArrayList<Passenger> passengers, Vehicle.Type vehicleType, boolean babyTransport, boolean petTransport){
+        this.rideId = 0;
         this.driver = driver;
         this.locations = locations;
         this.passengers = passengers;
@@ -37,8 +37,6 @@ public class Ride {
         this.estimatedTimeInMinutes = null;
         this.status = Status.pending;
     }
-
-    public Ride(){}
 
     public ArrayList<RideLocation> getLocations() {
         return locations;
@@ -56,11 +54,11 @@ public class Ride {
         this.passengers = passengers;
     }
 
-    public String getVehicleType() {
+    public Vehicle.Type getVehicleType() {
         return vehicleType;
     }
 
-    public void setVehicleType(String vehicleType) {
+    public void setVehicleType(Vehicle.Type vehicleType) {
         this.vehicleType = vehicleType;
     }
 
@@ -112,12 +110,12 @@ public class Ride {
         this.estimatedTimeInMinutes = estimatedTimeInMinutes;
     }
 
-    public Integer getId() {
-        return id;
+    public Integer getRideId() {
+        return rideId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setRideId(int rideId) {
+        this.rideId = rideId;
     }
 
     public Status getStatus() {
