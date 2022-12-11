@@ -23,15 +23,16 @@ public class UserDTO {
     	this.email = email;
     	this.address = address;
     }
+
     
-    public UserDTO(Passenger passenger) {
-    	this.id = passenger.getId();
-    	this.name = passenger.getName();
-    	this.surname = passenger.getSurname();
-    	this.profilePicture = passenger.getProfilePicture();
-    	this.telephoneNumber = passenger.getTelephoneNumber();
-    	this.email = passenger.getEmail();
-    	this.address = passenger.getAddress();
+    public UserDTO(User user) {
+    	this.id = user.getId();
+    	this.name = user.getName();
+    	this.surname = user.getSurname();
+    	this.profilePicture = user.getProfilePicture();
+    	this.telephoneNumber = user.getTelephoneNumber();
+    	this.email = user.getEmail();
+    	this.address = user.getAddress();
     }
     
     public UserDTO() {}
