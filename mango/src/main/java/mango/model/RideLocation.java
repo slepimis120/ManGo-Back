@@ -11,6 +11,8 @@ public class RideLocation {
         this.destination = destination;
     }
 
+    public RideLocation(){}
+
     public Location getDeparture() {
         return departure;
     }
