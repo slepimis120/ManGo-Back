@@ -6,7 +6,7 @@ public class Vehicle {
 
     private Integer driverId;
 
-    private VehicleType vehicleType;
+    private Type vehicleType;
 
     private String model;
 
@@ -20,8 +20,11 @@ public class Vehicle {
 
     private boolean petTransport;
 
+    public enum Type{
+        STANDARD, LUXURY, VAN
+    }
 
-    public Vehicle (Integer driverId, VehicleType vehicleType, String model, String licenseNumber, Location currentLocation, Integer passengerSeats, boolean babyTransport, boolean petTransport){
+    public Vehicle (Integer driverId, Type vehicleType, String model, String licenseNumber, Location currentLocation, Integer passengerSeats, boolean babyTransport, boolean petTransport){
         this.driverId = driverId;
         this.vehicleType = vehicleType;
         this.model = model;
@@ -32,11 +35,13 @@ public class Vehicle {
         this.petTransport = petTransport;
     }
 
-    public VehicleType getVehicleType() {
+    public Vehicle (){}
+
+    public Type getVehicleType() {
         return vehicleType;
     }
 
-    public void setVehicleType(VehicleType vehicleType) {
+    public void setVehicleType(Type vehicleType) {
         this.vehicleType = vehicleType;
     }
 
