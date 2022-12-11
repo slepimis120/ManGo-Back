@@ -3,7 +3,7 @@ package mango.service;
 import mango.dto.LocationDTO;
 import mango.model.Location;
 import mango.model.Ride;
-import mango.model.Status;
+import mango.model.Ride.Status;
 import mango.model.Vehicle;
 import mango.service.interfaces.IRideService;
 import mango.service.interfaces.IVehicleService;

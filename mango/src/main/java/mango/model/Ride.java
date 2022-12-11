@@ -5,7 +5,7 @@ import java.util.Date;
 
 public class Ride {
 
-    private int rideId;
+    private int id;
     private Date startTime;
     private Date endTime;
     private Integer totalCost;
@@ -20,11 +20,11 @@ public class Ride {
 
     private Rejection rejection;
 
-
+    public enum Status{pending, accepted, rejected, active, finished, cancelled}
 
 
     public Ride(Driver driver, ArrayList<RideLocation> locations, ArrayList<Passenger> passengers, Vehicle.Type vehicleType, boolean babyTransport, boolean petTransport){
-        this.rideId = 0;
+        this.id = 0;
         this.driver = driver;
         this.locations = locations;
         this.passengers = passengers;
@@ -37,6 +37,8 @@ public class Ride {
         this.estimatedTimeInMinutes = null;
         this.status = Status.pending;
     }
+
+    public Ride(){}
 
     public ArrayList<RideLocation> getLocations() {
         return locations;
@@ -110,12 +112,12 @@ public class Ride {
         this.estimatedTimeInMinutes = estimatedTimeInMinutes;
     }
 
-    public Integer getRideId() {
-        return rideId;
+    public Integer getId() {
+        return id;
     }
 
-    public void setRideId(int rideId) {
-        this.rideId = rideId;
+    public void setId(int rideId) {
+        this.id = rideId;
     }
 
     public Status getStatus() {
