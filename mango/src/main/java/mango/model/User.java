@@ -2,62 +2,71 @@ package mango.model;
 
 public abstract class User {
 	private Integer id;
-	private String firstName;
-	private String lastName;
-	private String profilePictureURL;
-	private String phoneNumber;
+	private String name;
+	private String surname;
+	private String profilePicture;
+	private String telephoneNumber;
 	private String email;
 	private String address;
+
 	private String password;
 	private boolean blocked;
-	
+
 	public User(String firstName, String lastName, String profilePictureURL, String phoneNumber, String email,
 				String address, String password, boolean blocked) {
 		this.id = null;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.profilePictureURL = profilePictureURL;
-		this.phoneNumber = phoneNumber;
+		this.name = firstName;
+		this.surname = lastName;
+		this.profilePicture = profilePictureURL;
+		this.telephoneNumber = phoneNumber;
 		this.email = email;
 		this.address = address;
 		this.password = password;
 		this.blocked = blocked;
 	}
 
-    public User() {
+	public User() {
 
-    }
-
-	public String getFirstName() {
-		return firstName;
 	}
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
+	public Integer getId() {
+		return id;
 	}
 
-	public String getLastName() {
-		return lastName;
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
+	public String getName() {
+		return name;
 	}
 
-	public String getProfilePictureURL() {
-		return profilePictureURL;
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	public void setProfilePictureURL(String profilePictureURL) {
-		this.profilePictureURL = profilePictureURL;
+	public String getSurname() {
+		return surname;
 	}
 
-	public String getPhoneNumber() {
-		return phoneNumber;
+	public void setSurname(String surname) {
+		this.surname = surname;
 	}
 
-	public void setPhoneNumber(String phoneNumber) {
-		this.phoneNumber = phoneNumber;
+	public String getProfilePicture() {
+		return profilePicture;
+	}
+
+	public void setProfilePicture(String profilePicture) {
+		this.profilePicture = profilePicture;
+	}
+
+	public String getTelephoneNumber() {
+		return telephoneNumber;
+	}
+
+	public void setTelephoneNumber(String telephoneNumber) {
+		this.telephoneNumber = telephoneNumber;
 	}
 
 	public String getEmail() {
@@ -92,12 +101,4 @@ public abstract class User {
 		this.blocked = blocked;
 	}
 
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
 }

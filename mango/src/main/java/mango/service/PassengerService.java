@@ -41,8 +41,8 @@ public class PassengerService implements IUserService{
 	public User update(User user) {
 		User found = allPassengers.get(user.getEmail());
 		if (found != null) {
-			found.setFirstName(user.getFirstName());
-			found.setLastName(user.getLastName());
+			found.setName(user.getName());
+			found.setSurname(user.getSurname());
 			return found;
 		}
 		throw new RuntimeException();

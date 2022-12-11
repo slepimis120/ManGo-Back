@@ -35,8 +35,8 @@ public class DriverService implements IUserService {
 	public User update(User user) {
 		User found = allDrivers.get(user.getEmail());
 		if (found != null) {
-			found.setFirstName(user.getFirstName());
-			found.setLastName(user.getLastName());
+			found.setName(user.getName());
+			found.setSurname(user.getSurname());
 			return found;
 		}
 		throw new RuntimeException();

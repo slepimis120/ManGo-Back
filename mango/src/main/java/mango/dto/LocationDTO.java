@@ -1,6 +1,6 @@
-package mango.model;
+package mango.dto;
 
-public class Location {
+public class LocationDTO {
 
     private String address;
 
@@ -8,13 +8,13 @@ public class Location {
 
     private Float longitude;
 
-    public Location(String address, Float latitude, Float longitude){
+    public LocationDTO(String address, Float latitude, Float longitude){
         this.address = address;
         this.latitude = latitude;
         this.longitude = longitude;
     }
 
-    public Location(){}
+    public LocationDTO(){}
 
     public String getAddress() {
         return address;

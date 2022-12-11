@@ -31,14 +31,14 @@ public class RideService implements IRideService {
         Ride found = allRides.get(rideId);
         if (found != null)
             return allRides.get(rideId);
-        throw new RuntimeException();
+        return null;
     }
 
 
     @Override
     public Ride findByDriver(Integer driverId) {
         for (Map.Entry<Integer, Ride> entry : allRides.entrySet()) {
-            if (entry.getValue().getDriver().getId().equals(driverId) && entry.getValue().getEndTime() == null) {
+            if (entry.getValue().getDriver() != null && entry.getValue().getDriver().getId().equals(driverId) && entry.getValue().getEndTime() == null) {
                 return entry.getValue();
             }
         }
@@ -49,7 +49,7 @@ public class RideService implements IRideService {
     public Ride findByPassenger(Integer passengerId) {
         for (Map.Entry<Integer, Ride> entry : allRides.entrySet()) {
             for(int j = 0; j < entry.getValue().getPassengers().size(); j++){
-                if(entry.getValue().getPassengers().get(j).getId().equals(passengerId)  && entry.getValue().getEndTime() == null) {
+                if(entry.getValue().getPassengers() != null && entry.getValue().getPassengers().get(j).getId().equals(passengerId)  && entry.getValue().getEndTime() == null) {
                     return entry.getValue();
                 }
             }
@@ -60,17 +60,28 @@ public class RideService implements IRideService {
     @Override
     public Ride insert(Ride ride) {
         int size = allRides.size();
-        ride.setRideId(size + 1);
-        ride.setStatus(Status.pending);
-        allRides.put(ride.getRideId(), ride);
+        ride.setId(size + 1);
+        ride.setStatus(Ride.Status.pending);
+        allRides.put(ride.getId(), ride);
+
+        Driver driver = new Driver();
+        driver.setId(1);
+        driver.setEmail("user@example.com");
+        ride.setDriver(driver);
+
+        Rejection rejection = new Rejection();
+        rejection.setReason("Ride is canceled due to previous problems with the passenger");
+        Date date = new Date();
+        rejection.setTimeOfRejection(date);
+        ride.setRejection(rejection);
         return ride;
     }
 
     @Override
     public Ride cancelByPassenger(Integer rideId) {
         for (Map.Entry<Integer, Ride> entry : allRides.entrySet()) {
-            if(entry.getValue().getRideId().equals(rideId)){
-                entry.getValue().setStatus(Status.cancelled);
+            if(entry.getValue().getId().equals(rideId)){
+                entry.getValue().setStatus(Ride.Status.cancelled);
                 return entry.getValue();
             }
         }
@@ -80,8 +91,8 @@ public class RideService implements IRideService {
     @Override
     public Ride accept(Integer rideId) {
         for (Map.Entry<Integer, Ride> entry : allRides.entrySet()) {
-            if(entry.getValue().getRideId().equals(rideId)){
-                entry.getValue().setStatus(Status.accepted);
+            if(entry.getValue().getId().equals(rideId)){
+                entry.getValue().setStatus(Ride.Status.accepted);
                 Date date = new Date();
                 entry.getValue().setStartTime(date);
                 return entry.getValue();
@@ -93,10 +104,10 @@ public class RideService implements IRideService {
     @Override
     public Ride end(Integer rideId) {
         for (Map.Entry<Integer, Ride> entry : allRides.entrySet()) {
-            if(entry.getValue().getRideId().equals(rideId)){
+            if(entry.getValue().getId().equals(rideId)){
                 Date date = new Date();
                 entry.getValue().setEndTime(date);
-                entry.getValue().setStatus(Status.finished);
+                entry.getValue().setStatus(Ride.Status.finished);
                 if(entry.getValue().getStartTime() != null) {
                     long diffInMillies = Math.abs(date.getTime() - entry.getValue().getStartTime().getTime());
                     Integer diff = (int) TimeUnit.MINUTES.convert(diffInMillies, TimeUnit.MILLISECONDS);
@@ -113,8 +124,8 @@ public class RideService implements IRideService {
         Date date = new Date();
         rejection.setTimeOfRejection(date);
         for (Map.Entry<Integer, Ride> entry : allRides.entrySet()) {
-            if (entry.getValue().getRideId().equals(rideId)) {
-                entry.getValue().setStatus(Status.cancelled);
+            if (entry.getValue().getId().equals(rideId)) {
+                entry.getValue().setStatus(Ride.Status.cancelled);
                 entry.getValue().setRejection(rejection);
                 return entry.getValue();
             }
@@ -125,9 +136,9 @@ public class RideService implements IRideService {
     @Override
     public Panic panic(Integer rideId, Panic panic) {
         for (Map.Entry<Integer, Ride> entry : allRides.entrySet()) {
-            if (entry.getValue().getRideId().equals(rideId)) {
+            if (entry.getValue().getId().equals(rideId)) {
                 panic.setRide(entry.getValue());
-                //panic.setUser(entry.getValue().getPassengers().get(0));
+                panic.setUser(entry.getValue().getPassengers().get(0));
                 Date date = new Date();
                 panic.setTime(date);
                 panic.setId(panicService.getAllPanic().size() + 1);
