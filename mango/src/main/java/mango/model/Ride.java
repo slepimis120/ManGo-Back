@@ -12,7 +12,7 @@ public class Ride {
     private Driver driver;
     private ArrayList<Passenger> passengers;
     private Integer estimatedTimeInMinutes;
-    private String vehicleType;
+    private Vehicle.Type vehicleType;
     private boolean babyTransport;
     private boolean petTransport;
     private ArrayList<RideLocation> locations;
@@ -23,7 +23,7 @@ public class Ride {
 
 
 
-    public Ride(Driver driver, ArrayList<RideLocation> locations, ArrayList<Passenger> passengers, String vehicleType, boolean babyTransport, boolean petTransport){
+    public Ride(Driver driver, ArrayList<RideLocation> locations, ArrayList<Passenger> passengers, Vehicle.Type vehicleType, boolean babyTransport, boolean petTransport){
         this.rideId = 0;
         this.driver = driver;
         this.locations = locations;
@@ -54,11 +54,11 @@ public class Ride {
         this.passengers = passengers;
     }
 
-    public String getVehicleType() {
+    public Vehicle.Type getVehicleType() {
         return vehicleType;
     }
 
-    public void setVehicleType(String vehicleType) {
+    public void setVehicleType(Vehicle.Type vehicleType) {
         this.vehicleType = vehicleType;
     }
 

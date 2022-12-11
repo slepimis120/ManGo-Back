@@ -1,8 +1,14 @@
 package mango.controller;
 
+import mango.dto.LocationDTO;
+import mango.mapper.LocationDTOMapper;
 import mango.model.Location;
 import mango.model.Vehicle;
+import mango.service.VehicleService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import mango.service.interfaces.IVehicleService;
 
@@ -11,34 +17,13 @@ import mango.service.interfaces.IVehicleService;
 public class VehicleController {
 
     @Autowired
-    IVehicleService service;
-
-    @GetMapping("/{id}")
-    public Vehicle findVehicle(@PathVariable Integer id) {
-        return service.find(id);
-    }
-
-    @PostMapping
-    public Vehicle insertVehicle(@RequestBody Vehicle vehicle){return service.insert(vehicle);}
-
-    @PutMapping
-    public Vehicle update(@RequestBody Vehicle vehicle) {
-        return service.update(vehicle);
-    }
+    VehicleService service;
 
     @PutMapping("/{id}/location")
-    public void updateLocation(@RequestBody Location location, @PathVariable Integer id) {
-        service.updateLocation(location, id);
+    public ResponseEntity<Boolean> updateLocation(@RequestBody LocationDTO location, @PathVariable Integer id) {
+        LocationDTOMapper mapper = new LocationDTOMapper(new ModelMapper());
+        Location newLocation = mapper.fromDTOtoLocation(location);
+        boolean response = service.updateLocation(newLocation, id);
+        return new ResponseEntity<Boolean>(response, HttpStatus.NO_CONTENT);
     }
-
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable Integer id) {
-        service.delete(id);
-    }
-
-    @DeleteMapping
-    public void deleteAll() {
-        service.deleteAll();
-    }
-
 }
