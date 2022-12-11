@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import mango.dto.UserResponseDTO;
 import mango.model.User;
 import mango.service.interfaces.IUserService;
 import org.springframework.stereotype.Service;
@@ -12,10 +13,7 @@ import org.springframework.stereotype.Service;
 public class DriverService implements IUserService {
 
 	private Map<String, User> allDrivers = new HashMap<String, User>();
-	@Override
-	public Collection<User> getAll() {
-		return this.allDrivers.values();
-	}
+
 
 	@Override
 	public User find(String email) {
@@ -55,6 +53,12 @@ public class DriverService implements IUserService {
 	@Override
 	public void deleteAll() {
 		allDrivers.clear();
+	}
+
+	@Override
+	public UserResponseDTO getArray(Integer page, Integer size, Map<Integer, User> data) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

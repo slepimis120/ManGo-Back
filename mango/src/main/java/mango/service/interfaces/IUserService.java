@@ -1,12 +1,14 @@
 package mango.service.interfaces;
 
 import java.util.Collection;
+import java.util.Map;
 
+import mango.dto.UserResponseDTO;
 import mango.model.User;
 
 public interface IUserService {
 
-	public Collection<User> getAll();
+	public UserResponseDTO getArray(Integer page, Integer size, Map<Integer, User> data);
 	
 	public User find(String email);
 	

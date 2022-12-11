@@ -19,7 +19,7 @@ public class UserController {
 	
 	@GetMapping
 	public ResponseEntity getUsers(@RequestBody Integer page, Integer size) {
-		UserResponseDTO response = service.getUserDetails(page, size);
+		UserResponseDTO response = service.getArray(page, size, UserService.allUsers);
 		return new ResponseEntity(response, HttpStatus.OK);
 	}
 

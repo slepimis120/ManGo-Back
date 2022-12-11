@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import mango.dto.UserResponseDTO;
 import mango.model.User;
 import mango.service.interfaces.IUserService;
 import org.springframework.stereotype.Service;
@@ -13,10 +14,6 @@ public class AdminService implements IUserService {
 
 	private Map<String, User> allAdmins = new HashMap<String, User>();
 
-	@Override
-	public Collection<User> getAll() {
-		return this.allAdmins.values();
-	}
 
 	@Override
 	public User find(String email) {
@@ -56,5 +53,11 @@ public class AdminService implements IUserService {
 	@Override
 	public void deleteAll() {
 		allAdmins.clear();
+	}
+
+	@Override
+	public UserResponseDTO getArray(Integer page, Integer size, Map<Integer, User> data) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

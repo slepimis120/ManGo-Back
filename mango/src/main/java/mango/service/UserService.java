@@ -12,11 +12,12 @@ import mango.service.interfaces.IUserService;
 
 public class UserService implements IUserService{
 
-	private Map<Integer, User> allUsers = new HashMap<Integer, User>();
+	public static Map<Integer, User> allUsers = new HashMap<Integer, User>();
 	
-	public UserResponseDTO getUserDetails(Integer page, Integer size) {
+	@Override
+	public UserResponseDTO getArray(Integer page, Integer size, Map<Integer, User> data) {
 		int start = page * size;
-		Object[] allUsersArray = allUsers.entrySet().toArray();
+		Object[] allUsersArray = data.entrySet().toArray();
 		ArrayList<UserDTO> returnList = new ArrayList<UserDTO>();
 		for(int i=0; i < size; i++) {
 			User currentUser = (User) allUsersArray[start + i];
@@ -26,18 +27,6 @@ public class UserService implements IUserService{
 		}
 		UserResponseDTO response = new UserResponseDTO(allUsersArray.length, returnList);
 		return response;	
-	}
-
-	@Override
-	public Collection<User> getAll() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public User find(String email) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override
@@ -62,6 +51,12 @@ public class UserService implements IUserService{
 	public void deleteAll() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public User find(String email) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 

@@ -21,10 +21,7 @@ public class AdminController {
 	@Autowired
 	IUserService service;
 	
-	@GetMapping
-	public Collection<User> getUsers() {
-		return service.getAll();
-	}
+
 
 	@GetMapping("/{email}")
 	public User findUser(@PathVariable String email) {
