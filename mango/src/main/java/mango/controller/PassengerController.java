@@ -1,6 +1,17 @@
 package mango.controller;
 
 import mango.dto.ExpandedUserDTO;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import mango.dto.UserDTO;
 import mango.dto.UserResponseDTO;
 import mango.model.RideCount;
@@ -23,13 +34,15 @@ public class PassengerController {
 	}
 	
 	@GetMapping
-	public ResponseEntity getUsers(@RequestParam Integer page, Integer size) {
+
+	public ResponseEntity getArray(@RequestParam Integer page, Integer size) {
+
 		UserResponseDTO response = service.getArray(page, size);
 		return new ResponseEntity(response, HttpStatus.OK);
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity findUser(@PathVariable Integer id) {
+	public ResponseEntity find(@PathVariable Integer id) {
 		UserDTO response =  service.find(id);
 		return new ResponseEntity(response, HttpStatus.OK);
 	}
