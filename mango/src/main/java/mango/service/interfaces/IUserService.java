@@ -1,20 +1,21 @@
 package mango.service.interfaces;
 
 import java.util.Collection;
+import java.util.Map;
 
+import mango.dto.ExpandedUserDTO;
+import mango.dto.UserDTO;
+import mango.dto.UserResponseDTO;
 import mango.model.User;
 
 public interface IUserService {
 
-	public Collection<User> getAll();
+	public UserResponseDTO getArray(Integer page, Integer size);
 	
-	public User find(String email);
+	public UserDTO find(Integer id);
 	
-	public User insert(User user);
+	public UserDTO insert(ExpandedUserDTO data);
 
-	public User update(User user);
+	public UserDTO update(Integer id, ExpandedUserDTO update);
 	
-	public User delete(String email);
-	
-	public void deleteAll();
 }
