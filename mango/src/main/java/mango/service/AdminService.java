@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import mango.dto.UserDTO;
 import mango.dto.UserResponseDTO;
 import mango.model.User;
 import mango.service.interfaces.IUserService;
@@ -16,10 +17,10 @@ public class AdminService implements IUserService {
 
 
 	@Override
-	public User find(String email) {
-		User found = allAdmins.get(email);
+	public UserDTO find(Integer id) {
+		User found = allAdmins.get(id);
 		if (found != null)
-			return allAdmins.get(email);
+			return null;
 		throw new RuntimeException();
 	}
 
@@ -40,20 +41,7 @@ public class AdminService implements IUserService {
 		throw new RuntimeException();
 	}
 
-	@Override
-	public User delete(String email) {
-		User found = allAdmins.get(email);
-		if (found != null) {
-			allAdmins.remove(email);
-			return found;
-		}
-		throw new RuntimeException();
-	}
 
-	@Override
-	public void deleteAll() {
-		allAdmins.clear();
-	}
 
 	@Override
 	public UserResponseDTO getArray(Integer page, Integer size) {

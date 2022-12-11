@@ -42,22 +42,9 @@ public class UserService implements IUserService{
 	}
 
 	@Override
-	public User delete(String email) {
+	public UserDTO find(Integer id) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	@Override
-	public void deleteAll() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public User find(String email) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 
 }

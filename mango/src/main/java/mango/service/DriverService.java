@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import mango.dto.UserDTO;
 import mango.dto.UserResponseDTO;
 import mango.model.User;
 import mango.service.interfaces.IUserService;
@@ -16,10 +17,10 @@ public class DriverService implements IUserService {
 
 
 	@Override
-	public User find(String email) {
-		User found = allDrivers.get(email);
+	public UserDTO find(Integer id) {
+		User found = allDrivers.get(id);
 		if (found != null)
-			return allDrivers.get(email);
+			return null;
 		throw new RuntimeException();
 	}
 
@@ -40,20 +41,6 @@ public class DriverService implements IUserService {
 		throw new RuntimeException();
 	}
 
-	@Override
-	public User delete(String email) {
-		User found = allDrivers.get(email);
-		if (found != null) {
-			allDrivers.remove(email);
-			return found;
-		}
-		throw new RuntimeException();
-	}
-
-	@Override
-	public void deleteAll() {
-		allDrivers.clear();
-	}
 
 	@Override
 	public UserResponseDTO getArray(Integer page, Integer size) {

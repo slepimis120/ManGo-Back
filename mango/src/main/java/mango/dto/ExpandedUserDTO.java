@@ -1,48 +1,26 @@
 package mango.dto;
 
-import mango.model.Passenger;
-import mango.model.User;
+public class ExpandedUserDTO {
 
-public class UserDTO {
-
-	private Integer id;
 	private String name;
 	private String surname;
 	private String profilePicture;
 	private String telephoneNumber;
 	private String email;
 	private String address;
-
-    public UserDTO (Integer id, String name, String surname, String profilePicture, 
-    		String telephoneNumber, String email, String address){
-    	this.id = id;
-    	this.name = name;
-    	this.surname = surname;
-    	this.profilePicture = profilePicture;
-    	this.telephoneNumber = telephoneNumber;
-    	this.email = email;
-    	this.address = address;
-    }
-    
-    public UserDTO(Passenger passenger) {
-    	this.id = passenger.getId();
-    	this.name = passenger.getName();
-    	this.surname = passenger.getSurname();
-    	this.profilePicture = passenger.getProfilePicture();
-    	this.telephoneNumber = passenger.getTelephoneNumber();
-    	this.email = passenger.getEmail();
-    	this.address = passenger.getAddress();
-    }
-    
-    public UserDTO() {}
-
-	public Integer getId() {
-		return id;
+	private String password;
+	
+	public ExpandedUserDTO(String name, String surname, String profilePicture, String telephoneNumber, String email,
+			String address, String password) {
+		this.name = name;
+		this.surname = surname;
+		this.profilePicture = profilePicture;
+		this.telephoneNumber = telephoneNumber;
+		this.email = email;
+		this.address = address;
+		this.password = password;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
 
 	public String getName() {
 		return name;
@@ -90,5 +68,13 @@ public class UserDTO {
 
 	public void setAddress(String address) {
 		this.address = address;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 }

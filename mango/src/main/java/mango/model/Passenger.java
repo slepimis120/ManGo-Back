@@ -2,6 +2,8 @@ package mango.model;
 
 import java.util.ArrayList;
 
+import mango.dto.ExpandedUserDTO;
+
 public class Passenger extends User{
 	
 	private ArrayList <Ride> rides;
@@ -14,6 +16,11 @@ public class Passenger extends User{
 
 	public Passenger(User user){
 		super(user.getId(), user.getName(), user.getSurname(), user.getProfilePicture(), user.getTelephoneNumber(), user.getEmail(), user.getAddress(), user.getPassword(), user.isBlocked());
+		this.rides = new ArrayList<Ride>();
+	}
+	
+	public Passenger(ExpandedUserDTO data) {
+		super(data);
 		this.rides = new ArrayList<Ride>();
 	}
 

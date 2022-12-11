@@ -3,14 +3,12 @@ package mango.controller;
 import mango.dto.LocationDTO;
 import mango.mapper.LocationDTOMapper;
 import mango.model.Location;
-import mango.model.Vehicle;
 import mango.service.VehicleService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import mango.service.interfaces.IVehicleService;
 
 @RestController
 @RequestMapping("/api/vehicle")

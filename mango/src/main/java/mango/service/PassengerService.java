@@ -5,11 +5,13 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import mango.dto.ExpandedUserDTO;
 import mango.dto.PassengerDTO;
 import mango.dto.UserDTO;
 import mango.dto.UserResponseDTO;
 import mango.model.Passenger;
 import mango.model.User;
+import mango.dto.UserDTO;
 import mango.service.interfaces.IUserService;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
@@ -22,13 +24,13 @@ public class PassengerService implements IUserService{
 	public static Map<Integer, Passenger> allPassengers = new HashMap<Integer, Passenger>();
 
 	@Override
-	public User insert(User user) {
-		int size = allPassengers.size();
-		user.setId(size + 1);
-		Passenger passenger = new Passenger(user);
-		allPassengers.put(user.getId(), passenger);
-		UserService.allUsers.put(user.getId(), user);
-		return user;
+	public UserDTO insert(ExpandedUserDTO data) {
+		Passenger passenger = new Passenger(data);
+		int size = UserService.allUsers.size();
+		passenger.setId(size + 1);
+		allPassengers.put(passenger.getId(), passenger);
+		UserService.allUsers.put(passenger.getId(), passenger);
+		return new UserDTO(passenger);
 	}
 	
 	@Override
@@ -52,42 +54,34 @@ public class PassengerService implements IUserService{
 	
 
 	@Override
-	public User find(String email) {
-		User found = allPassengers.get(email);
-		if (found != null)
-			return allPassengers.get(email);
+	public UserDTO find(Integer id) {
+		Passenger passenger = allPassengers.get(id);
+		if (passenger != null) {
+			UserDTO userDTO = new UserDTO(passenger);
+			return userDTO;
+		}
 		return null;
 	}
 
 
 
 	@Override
-	public User update(User user) {
-		User found = allPassengers.get(user.getEmail());
-		if (found != null) {
-			found.setName(user.getName());
-			found.setSurname(user.getSurname());
-			return found;
+	public UserDTO update(Integer id, ExpandedUserDTO update) {
+		Passenger passenger = allPassengers.get(id);
+		if (passenger != null) {
+			passenger.setName(update.getName());
+			passenger.setSurname(update.getSurname());
+			passenger.setAddress(update.getAddress());
+			passenger.setEmail(update.getEmail());
+			passenger.setPassword(update.getPassword());
+			if(update.getProfilePicture() != null) 
+				passenger.setProfilePicture(update.getProfilePicture());
+			if(update.getTelephoneNumber() != null)
+				passenger.setTelephoneNumber(update.getTelephoneNumber());
+			return new UserDTO(passenger);
+			
 		}
 		throw new RuntimeException();
 	}
-
-	@Override
-	public User delete(String email) {
-		User found = allPassengers.get(email);
-		if (found != null) {
-			allPassengers.remove(email);
-			return found;
-		}
-		throw new RuntimeException();
-	}
-
-	@Override
-	public void deleteAll() {
-		allPassengers.clear();
-	}
-
-
-
 
 }

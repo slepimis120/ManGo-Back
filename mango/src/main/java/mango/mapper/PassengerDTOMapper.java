@@ -4,9 +4,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import mango.dto.PassengerDTO;
-import mango.dto.UserDTO;
 import mango.model.Passenger;
-import mango.model.User;
 
 public class PassengerDTOMapper {
 

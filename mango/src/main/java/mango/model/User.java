@@ -1,5 +1,7 @@
 package mango.model;
 
+import mango.dto.ExpandedUserDTO;
+
 public abstract class User {
 	private Integer id;
 	private String name;
@@ -25,6 +27,18 @@ public abstract class User {
 		this.blocked = blocked;
 	}
 
+	public User(ExpandedUserDTO data) {
+		this.id = -1;
+		this.name = data.getName();
+		this.surname = data.getSurname();
+		this.profilePicture = data.getProfilePicture();
+		this.telephoneNumber = data.getTelephoneNumber();
+		this.email = data.getEmail();
+		this.address = data.getAddress();
+		this.password = data.getPassword();
+		this.blocked = false;
+	}
+	
     public User() {
 
     }
