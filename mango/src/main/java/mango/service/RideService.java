@@ -137,4 +137,8 @@ public class RideService implements IRideService {
         }
         return null;
     }
+
+    public Map<Integer, Ride> getAllRides(){
+        return allRides;
+    }
 }
