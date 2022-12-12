@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import mango.service.UserService;
 import mango.dto.ExpandedUserDTO;
+import mango.dto.LoginDTO;
 import mango.dto.NoteDTO;
 import mango.dto.NoteResponseDTO;
 import mango.dto.UserDTO;
@@ -68,6 +69,12 @@ public class UserController {
 	public ResponseEntity sendMessage(@PathVariable Integer id, @RequestBody Integer receiverId, String message,
 			String type, Integer rideId) {
         UserMessageDTO response =  service.sendMessage(id, receiverId, message, type, rideId);
+        return new ResponseEntity(response, HttpStatus.OK);
+	}
+	
+	@PostMapping("/login")
+	public ResponseEntity login(@RequestBody String email, String password) {
+        LoginDTO response =  service.login(email, password);
         return new ResponseEntity(response, HttpStatus.OK);
 	}
 	

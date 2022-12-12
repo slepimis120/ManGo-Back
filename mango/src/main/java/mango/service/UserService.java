@@ -1,13 +1,16 @@
 package mango.service;
 
+import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import mango.dto.ExpandedUserDTO;
+import mango.dto.LoginDTO;
 import mango.dto.NoteDTO;
 import mango.dto.NoteResponseDTO;
 import mango.dto.UserDTO;
@@ -138,6 +141,16 @@ public class UserService implements IUserService{
 						userMessage.getSenderId(), userMessage.getReceiverId(), userMessage.getMessage(),
 						userMessage.getType(), userMessage.getRideId());
 		return userMessageDTO;
+	}
+
+	public LoginDTO login(String email, String password) {
+		byte[] array = new byte[7];
+	    new Random().nextBytes(array);
+	    String accessToken = new String(array, Charset.forName("UTF-8"));
+	    new Random().nextBytes(array);
+	    String refreshToken = new String(array, Charset.forName("UTF-8"));
+	    LoginDTO loginDTO = new LoginDTO(accessToken, refreshToken);
+	    return loginDTO;
 	}
 	
 
