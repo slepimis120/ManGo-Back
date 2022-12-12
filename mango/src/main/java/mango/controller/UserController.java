@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import mango.service.UserService;
 import mango.dto.ExpandedUserDTO;
+import mango.dto.NoteDTO;
 import mango.dto.UserDTO;
 import mango.dto.UserResponseDTO;
 
@@ -42,5 +43,10 @@ public class UserController {
 		return new ResponseEntity(response, HttpStatus.NO_CONTENT);
 	}
 	
+	@PostMapping("/{id}/note")
+	public ResponseEntity insertNote(@PathVariable Integer id, @RequestBody String message) {
+        NoteDTO response =  service.insertNote(id, message);
+        return new ResponseEntity(response, HttpStatus.OK);
+	}
 
 }

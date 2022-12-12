@@ -1,13 +1,17 @@
 package mango.service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 import mango.dto.ExpandedUserDTO;
+import mango.dto.NoteDTO;
 import mango.dto.UserDTO;
 import mango.dto.UserResponseDTO;
+import mango.model.Note;
 import mango.model.Passenger;
 import mango.model.User;
 import mango.service.interfaces.IUserService;
@@ -15,6 +19,7 @@ import mango.service.interfaces.IUserService;
 public class UserService implements IUserService{
 
 	public static Map<Integer, User> allUsers = new HashMap<Integer, User>();
+	public static Map<Integer, Note> allNotes = new HashMap<Integer, Note>();
 
 	@Override
 	public UserResponseDTO getArray(Integer page, Integer size) {
@@ -63,6 +68,18 @@ public class UserService implements IUserService{
 		user.setBlocked(false);
 		return true;
 	}
+	
+	public NoteDTO insertNote(Integer id, String message) {
+		int size = allNotes.size();
+		LocalDateTime date = LocalDateTime.now();
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-ddTHH:mm:ssZ");
+		String dateFormated = date.format(formatter);
+		Note note = new Note(size + 1, message, date, id);
+		allNotes.put(note.getId(), note);
+		NoteDTO noteDTO = new NoteDTO(note.getId(), message, dateFormated);
+		return noteDTO;
+	}
+
 	
 
 }
