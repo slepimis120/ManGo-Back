@@ -15,7 +15,9 @@ import mango.model.Note;
 import mango.model.Passenger;
 import mango.model.User;
 import mango.service.interfaces.IUserService;
+import org.springframework.stereotype.Service;
 
+@Service
 public class UserService implements IUserService{
 
 	public static Map<Integer, User> allUsers = new HashMap<Integer, User>();
