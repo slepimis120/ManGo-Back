@@ -1,24 +1,25 @@
 package mango.service;
 
+import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import mango.dto.ExpandedUserDTO;
+import mango.dto.LoginDTO;
 import mango.dto.NoteDTO;
 import mango.dto.NoteResponseDTO;
 import mango.dto.UserDTO;
 import mango.dto.UserMessageDTO;
 import mango.dto.UserMessageResponseDTO;
 import mango.dto.UserResponseDTO;
-import mango.model.Note;
-import mango.model.Passenger;
-import mango.model.User;
-import mango.model.UserMessage;
+import mango.model.*;
 import mango.service.interfaces.IUserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -27,6 +28,13 @@ public class UserService implements IUserService{
 	public static Map<Integer, User> allUsers = new HashMap<Integer, User>();
 	public static Map<Integer, Note> allNotes = new HashMap<Integer, Note>();
 	public static Map<Integer, UserMessage> allMessages = new HashMap<Integer, UserMessage>();
+
+	RideService rideService;
+
+	@Autowired
+	public UserService(RideService rideService){
+		this.rideService = rideService;
+	}
 
 	@Override
 	public UserResponseDTO getArray(Integer page, Integer size) {
@@ -79,8 +87,8 @@ public class UserService implements IUserService{
 	public NoteDTO insertNote(Integer id, String message) {
 		int size = allNotes.size();
 		LocalDateTime date = LocalDateTime.now();
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-ddTHH:mm:ssZ");
-		String dateFormated = date.format(formatter);
+		DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+		String dateFormated = date.format(format);
 		Note note = new Note(size + 1, message, date, id);
 		allNotes.put(note.getId(), note);
 		NoteDTO noteDTO = new NoteDTO(note.getId(), message, dateFormated);
@@ -96,8 +104,8 @@ public class UserService implements IUserService{
 			if(entry.getValue().getUserId() == id) {
 				if(i >= start && i < end ){
 					Note currentNote = entry.getValue();
-					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-ddTHH:mm:ssZ");
-					String dateFormated = currentNote.getDate().format(formatter);
+					DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+					String dateFormated = currentNote.getDate().format(format);
 					NoteDTO currentNoteDTO = new NoteDTO(currentNote.getId(), currentNote.getMessage(), dateFormated);
 					returnList.add(currentNoteDTO);
 				}
@@ -110,11 +118,11 @@ public class UserService implements IUserService{
 	public UserMessageResponseDTO getUserMessages(Integer id) {
 		ArrayList<UserMessageDTO> returnList = new ArrayList<UserMessageDTO>();
 		for (Map.Entry<Integer, UserMessage> entry : allMessages.entrySet()) {
-			if(entry.getValue().getReceiverId() == id || entry.getValue().getSenderId() == id){
+			if(entry.getValue().getReceiverId().equals(id) || entry.getValue().getSenderId().equals(id)){
 				UserMessage currentMessage = entry.getValue();
-				
-				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-ddTHH:mm:ssZ");
-				String dateFormated = currentMessage.getTimeOfSending().format(formatter);
+
+				DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+				String dateFormated = currentMessage.getTimeOfSending().format(format);
 				
 				UserMessageDTO currentMessageDTO = new UserMessageDTO(currentMessage.getId(), dateFormated,
 						currentMessage.getSenderId(), currentMessage.getReceiverId(), currentMessage.getMessage(),
@@ -131,14 +139,47 @@ public class UserService implements IUserService{
 		LocalDateTime timeOfSending = LocalDateTime.now();
 		UserMessage userMessage = new UserMessage(size + 1, timeOfSending, id, receiverId, message, type, rideId);
 		allMessages.put(size + 1, userMessage);
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-ddTHH:mm:ssZ");
-		String dateFormated = userMessage.getTimeOfSending().format(formatter);
-		
-		UserMessageDTO userMessageDTO = new UserMessageDTO(userMessage.getId(), dateFormated,
+		DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+		String dateFormated = userMessage.getTimeOfSending().format(format);
+
+		return new UserMessageDTO(userMessage.getId(), dateFormated,
 						userMessage.getSenderId(), userMessage.getReceiverId(), userMessage.getMessage(),
 						userMessage.getType(), userMessage.getRideId());
-		return userMessageDTO;
 	}
-	
 
+	public LoginDTO login(String email, String password) {
+		byte[] array = new byte[7];
+	    new Random().nextBytes(array);
+	    String accessToken = new String(array, Charset.forName("UTF-8"));
+	    new Random().nextBytes(array);
+	    String refreshToken = new String(array, Charset.forName("UTF-8"));
+	    LoginDTO loginDTO = new LoginDTO(accessToken, refreshToken);
+	    return loginDTO;
+	}
+
+	public RideCount userRides(Integer id, Integer page, Integer size, String sort, String from, String to){
+		RideCount count = new RideCount();
+		ArrayList<Ride> rideList = new ArrayList<Ride>();
+		Integer rideCount = 0;
+		Integer check = 0;
+		for (Map.Entry<Integer, Ride> entry : rideService.getAllRides().entrySet()) {
+			check = 0;
+			for (Passenger passenger: entry.getValue().getPassengers()){
+				if(passenger.getId().equals(id)){
+					rideList.add(entry.getValue());
+					rideCount = rideCount + 1;
+					check = 1;
+				}
+			}
+			if(check == 0){
+				if(entry.getValue().getDriver().getId().equals(id)){
+					rideList.add(entry.getValue());
+					rideCount = rideCount + 1;
+				}
+			}
+		}
+		count.setResults(rideList);
+		count.setTotalCount(rideCount);
+		return count;
+	}
 }
