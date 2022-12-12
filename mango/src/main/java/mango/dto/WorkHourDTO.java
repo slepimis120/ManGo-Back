@@ -4,10 +4,10 @@ import java.time.LocalDateTime;
 
 public class WorkHourDTO {
 	private Integer id;
-	private LocalDateTime start;
-	private LocalDateTime end;
+	private String start;
+	private String end;
 
-	public WorkHourDTO(Integer id, LocalDateTime start, LocalDateTime end) {
+	public WorkHourDTO(Integer id, String start, String end) {
 		super();
 		this.id = id;
 		this.start = start;
@@ -21,16 +21,16 @@ public class WorkHourDTO {
 	public void setId(Integer id) {
 		this.id = id;
 	}
-	public LocalDateTime getStart() {
+	public String getStart() {
 		return start;
 	}
-	public void setStart(LocalDateTime start) {
+	public void setStart(String start) {
 		this.start = start;
 	}
-	public LocalDateTime getEnd() {
+	public String getEnd() {
 		return end;
 	}
-	public void setEnd(LocalDateTime end) {
+	public void setEnd(String end) {
 		this.end = end;
 
 	}

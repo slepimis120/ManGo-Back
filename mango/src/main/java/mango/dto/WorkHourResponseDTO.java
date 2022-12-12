@@ -6,11 +6,11 @@ import mango.model.WorkHour;
 
 public class WorkHourResponseDTO {
 	private ArrayList<WorkHourDTO> workHoursDTO;
-	private Integer totalCout;
+	private Integer totalCount;
 	public WorkHourResponseDTO(ArrayList<WorkHourDTO> workHoursDTO, Integer totalCout) {
 		super();
 		this.workHoursDTO = workHoursDTO;
-		this.totalCout = totalCout;
+		this.totalCount = totalCout;
 	}
 		
 	public WorkHourResponseDTO() {}
@@ -24,11 +24,11 @@ public class WorkHourResponseDTO {
 	}
 
 	public Integer getTotalCout() {
-		return totalCout;
+		return totalCount;
 	}
 
 	public void setTotalCout(Integer totalCout) {
-		this.totalCout = totalCout;
+		this.totalCount = totalCout;
 	}
 
 

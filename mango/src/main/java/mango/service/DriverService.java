@@ -1,17 +1,9 @@
 package mango.service;
-import mango.dto.DriverDocumentDTO;
-import mango.dto.ExpandedUserDTO;
-import mango.dto.UserDTO;
-import mango.dto.UserResponseDTO;
-import mango.dto.WorkHourDTO;
-import mango.dto.WorkHourResponseDTO;
+import mango.dto.*;
 import mango.mapper.DriverDocumentDTOMapper;
 import mango.mapper.LocationDTOMapper;
 import mango.mapper.WorkHourDTOMapper;
-import mango.model.Driver;
-import mango.model.DriverDocument;
-import mango.model.Location;
-import mango.model.WorkHour;
+import mango.model.*;
 import mango.service.interfaces.IUserService;
 
 import java.text.SimpleDateFormat;
@@ -19,9 +11,12 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -30,7 +25,16 @@ public class DriverService implements IUserService {
 	public static Map<Integer, Driver> allDrivers = new HashMap<Integer, Driver>();
 	public static Map<Integer, DriverDocument> allDocuments = new HashMap<Integer, DriverDocument>();
 	public static Map<Integer, WorkHour> allWorkHours = new HashMap<Integer, WorkHour>();
-	
+
+	VehicleService vehicleService;
+	RideService rideService;
+
+
+	@Autowired
+	public DriverService(@Lazy VehicleService vehicleService, @Lazy RideService rideService){
+		this.vehicleService = vehicleService;
+		this.rideService = rideService;
+	}
 	
 	@Override
 	public UserResponseDTO getArray(Integer page, Integer size) {
@@ -122,9 +126,9 @@ public class DriverService implements IUserService {
 		WorkHour tmp = null;
         WorkHourDTOMapper mapper = new WorkHourDTOMapper(new ModelMapper());
 		ArrayList<WorkHourDTO> workHours = new ArrayList<WorkHourDTO>();
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-ddTHH:mm:ssZ");
-		LocalDateTime fromTime = LocalDateTime.parse(from);
-		LocalDateTime toTime = LocalDateTime.parse(to);
+		DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+		LocalDateTime fromTime = LocalDateTime.parse(from, format);
+		LocalDateTime toTime = LocalDateTime.parse(to, format);
 		
 		for(Map.Entry<Integer, WorkHour> entry : allWorkHours.entrySet()) {
 			tmp = entry.getValue();
@@ -141,9 +145,9 @@ public class DriverService implements IUserService {
 	}
 	
 	public WorkHourDTO insertWorkHour(Integer idDriver, Integer id, String start, String end) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-ddTHH:mm:ssZ");
-		LocalDateTime startTime = LocalDateTime.parse(start);
-		LocalDateTime endTime = LocalDateTime.parse(end);
+		DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+		LocalDateTime startTime = LocalDateTime.parse(start, format);
+		LocalDateTime endTime = LocalDateTime.parse(end, format);
 		WorkHour workHour = new WorkHour(id, startTime, endTime, idDriver);
 		allWorkHours.put(id, workHour);
 		WorkHourDTOMapper mapper = new WorkHourDTOMapper(new ModelMapper());
@@ -166,9 +170,9 @@ public class DriverService implements IUserService {
 
 	public WorkHourDTO updateWorkHour(Integer workingHourId, Integer id, String start, String end) {
 		WorkHour workHour = allWorkHours.get(id);
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-ddTHH:mm:ssZ");
-		LocalDateTime startTime = LocalDateTime.parse(start);
-		LocalDateTime endTime = LocalDateTime.parse(end);
+		DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+		LocalDateTime startTime = LocalDateTime.parse(start, format);
+		LocalDateTime endTime = LocalDateTime.parse(end, format);
 		if(workHour != null) {
 			workHour.setId(workingHourId);
 			workHour.setEnd(endTime);
@@ -177,6 +181,49 @@ public class DriverService implements IUserService {
 			WorkHourDTO newWorkHour = mapper.fromWorkHourtoDTO(workHour);
 			return newWorkHour;
 		}
-		throw new RuntimeException();
+		return null;
+	}
+
+	public Vehicle postVehicle(Vehicle vehicle, Integer id){
+		vehicle.setDriverId(id);
+		vehicle.setId(vehicleService.allVehicles().size() + 1);
+		vehicleService.allVehicles().put(vehicle.getId(), vehicle);
+		return vehicle;
+	}
+
+	public Vehicle getVehicle(Integer id){
+		Vehicle vehicle = null;
+		for (Map.Entry<Integer, Vehicle> entry : vehicleService.allVehicles().entrySet()) {
+			if(entry.getValue().getDriverId().equals(id)){
+				vehicle = entry.getValue();
+			}
+		}
+		return vehicle;
+	}
+
+	public Vehicle changeVehicle(Integer id,Vehicle vehicle){
+		for (Map.Entry<Integer, Vehicle> entry : vehicleService.allVehicles().entrySet()) {
+			if(entry.getValue().getDriverId().equals(id)){
+				vehicle.setId(entry.getValue().getId());
+				vehicle.setDriverId(entry.getValue().getDriverId());
+				vehicleService.allVehicles().put(entry.getValue().getId(), vehicle);
+			}
+		}
+		return vehicle;
+	}
+
+	public RideCount getRides(Integer id, Integer page, Integer size, String sort, String from, String to){
+		RideCount count = new RideCount();
+		ArrayList<Ride> rideList = new ArrayList<Ride>();
+		Integer rideCount = 0;
+		for (Map.Entry<Integer, Ride> entry : rideService.getAllRides().entrySet()) {
+			if(entry.getValue().getDriver().getId().equals(id)){
+				rideList.add(entry.getValue());
+				rideCount = rideCount + 1;
+			}
+		}
+		count.setResults(rideList);
+		count.setTotalCount(rideCount);
+		return count;
 	}
 }
