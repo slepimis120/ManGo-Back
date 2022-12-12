@@ -1,6 +1,9 @@
 package mango.controller;
 
+import mango.dto.*;
+import mango.model.RideCount;
 import mango.service.interfaces.IUserService;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,14 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import mango.service.UserService;
-import mango.dto.ExpandedUserDTO;
-import mango.dto.LoginDTO;
-import mango.dto.NoteDTO;
-import mango.dto.NoteResponseDTO;
-import mango.dto.UserDTO;
-import mango.dto.UserMessageDTO;
-import mango.dto.UserMessageResponseDTO;
-import mango.dto.UserResponseDTO;
 
 @RestController
 @RequestMapping("/api/user")
@@ -30,8 +25,8 @@ public class UserController {
 	UserService service;
 	
 	@GetMapping
-	public ResponseEntity getUsers(@RequestParam Integer page, Integer size) {
-		UserResponseDTO response = service.getArray(page, size);
+	public ResponseEntity getUsers(@RequestBody PagingDTO pagingDTO) {
+		UserResponseDTO response = service.getArray(pagingDTO.getPage(), pagingDTO.getSize());
 		return new ResponseEntity(response, HttpStatus.OK);
 	}
 
@@ -54,21 +49,20 @@ public class UserController {
 	}
 	
 	@GetMapping("/{id}/note")
-	public ResponseEntity getNote(@PathVariable Integer id, @RequestParam Integer page, Integer size) {
-		NoteResponseDTO response = service.getNotes(id, page, size);
+	public ResponseEntity getNote(@PathVariable Integer id, @RequestBody PagingDTO pagingDTO) {
+		NoteResponseDTO response = service.getNotes(id, pagingDTO.getPage(), pagingDTO.getSize());
 		return new ResponseEntity(response, HttpStatus.OK);
 	}
 	
-	@GetMapping("/{id}/messages")
+	@GetMapping("/{id}/message")
 	public ResponseEntity getUserMessages(@PathVariable Integer id) {
 		UserMessageResponseDTO response = service.getUserMessages(id);
 		return new ResponseEntity(response, HttpStatus.OK);
 	}
 	
-	@PostMapping("/{id}/messages")
-	public ResponseEntity sendMessage(@PathVariable Integer id, @RequestBody Integer receiverId, String message,
-			String type, Integer rideId) {
-        UserMessageDTO response =  service.sendMessage(id, receiverId, message, type, rideId);
+	@PostMapping("/{id}/message")
+	public ResponseEntity sendMessage(@PathVariable Integer id, @RequestBody MessageDTO messageDTO) {
+        UserMessageDTO response =  service.sendMessage(id, messageDTO.getReceiverId(), messageDTO.getMessage(), messageDTO.getType(), messageDTO.getRideId());
         return new ResponseEntity(response, HttpStatus.OK);
 	}
 	
@@ -78,5 +72,9 @@ public class UserController {
         return new ResponseEntity(response, HttpStatus.OK);
 	}
 	
-
+	@GetMapping("/{id}/ride")
+	public ResponseEntity getRides(@PathVariable Integer id, @RequestBody PagingDTO pagingDTO){
+		RideCount response = service.userRides(id, pagingDTO.getPage(), pagingDTO.getSize(), pagingDTO.getSort(), pagingDTO.getFrom(), pagingDTO.getTo());
+		return new ResponseEntity(response, HttpStatus.OK);
+	}
 }

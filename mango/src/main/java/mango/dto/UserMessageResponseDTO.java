@@ -4,11 +4,11 @@ import java.util.ArrayList;
 
 public class UserMessageResponseDTO {
 	private Integer totalCount;
-	private ArrayList<UserMessageDTO> messages;
-	public UserMessageResponseDTO(Integer totalCount, ArrayList<UserMessageDTO> messages) {
+	private ArrayList<UserMessageDTO> results;
+	public UserMessageResponseDTO(Integer totalCount, ArrayList<UserMessageDTO> results) {
 		super();
 		this.totalCount = totalCount;
-		this.messages = messages;
+		this.results = results;
 	}
 	
 	public UserMessageResponseDTO() {}
@@ -21,12 +21,12 @@ public class UserMessageResponseDTO {
 		this.totalCount = totalCount;
 	}
 
-	public ArrayList<UserMessageDTO> getMessages() {
-		return messages;
+	public ArrayList<UserMessageDTO> getResults() {
+		return results;
 	}
 
-	public void setMessages(ArrayList<UserMessageDTO> messages) {
-		this.messages = messages;
+	public void setResults(ArrayList<UserMessageDTO> results) {
+		this.results = results;
 	}
 	
 	
