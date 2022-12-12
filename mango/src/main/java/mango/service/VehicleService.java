@@ -33,4 +33,7 @@ public class VehicleService implements IVehicleService {
         return false;
     }
 
+    public Map<Integer, Vehicle> allVehicles(){
+        return allVehicles;
+    }
 }

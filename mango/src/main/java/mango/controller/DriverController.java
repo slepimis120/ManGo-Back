@@ -2,25 +2,14 @@ package mango.controller;
 
 import java.util.ArrayList;
 
+import mango.dto.*;
+import mango.model.RideCount;
+import mango.model.Vehicle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import mango.dto.DriverDocumentDTO;
-import mango.dto.ExpandedUserDTO;
-import mango.dto.UserDTO;
-import mango.dto.UserResponseDTO;
-import mango.dto.WorkHourDTO;
-import mango.dto.WorkHourResponseDTO;
 import mango.model.DriverDocument;
 import mango.service.DriverService;
 
@@ -68,36 +57,60 @@ public class DriverController {
         return new ResponseEntity(response, HttpStatus.OK);
 	}
 	
-	@DeleteMapping("/document/{document-id}")
+	@DeleteMapping("/document/{id}")
 	public ResponseEntity deleteDocument(@PathVariable Integer id) {
-		DriverDocument response =  service.deleteDocument(id);
+		DriverDocument response = service.deleteDocument(id);
 		if(response == null) {
 			return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
 		}
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
 	}
 	
 	@GetMapping("/{id}/working-hour")
-	public ResponseEntity findWorkHours(@PathVariable Integer id, @RequestParam Integer page, Integer size, String from, String to) {
-		WorkHourResponseDTO  response = service.findWorkHours(id, page, size, from, to);
+	public ResponseEntity findWorkHours(@PathVariable Integer id, @RequestBody WorkHourQueryDTO workHourQueryDTO) {
+		WorkHourResponseDTO  response = service.findWorkHours(id, workHourQueryDTO.getPage(), workHourQueryDTO.getSize(), workHourQueryDTO.getFrom(), workHourQueryDTO.getTo());
 		return new ResponseEntity(response, HttpStatus.OK);
 	}
 	
 	@PostMapping("/{id_driver}/working-hour")
-	public ResponseEntity insertWorkHour(@PathVariable Integer id_driver, @RequestBody Integer id, String start, String end ) {
-        WorkHourDTO response =  service.insertWorkHour(id_driver, id, start, end);
+	public ResponseEntity insertWorkHour(@PathVariable Integer id_driver, @RequestBody WorkHourDTO workhour) {
+        WorkHourDTO response =  service.insertWorkHour(id_driver, workhour.getId(), workhour.getStart(), workhour.getEnd());
         return new ResponseEntity(response, HttpStatus.OK);
 	}
 	
-	@GetMapping("/working-hour/{working-hour-id}")
+	@GetMapping("/working-hour/{id}")
 	public ResponseEntity findWorkHour(@PathVariable Integer id) {
 		WorkHourDTO response =  service.findWorkHour(id);
 		return new ResponseEntity(response, HttpStatus.OK);
 	}
 	
-	@RequestMapping(value="/working-hour/{working-hour-id}",method = RequestMethod.PUT)
-	public ResponseEntity updateWorkHour(@PathVariable Integer workingHourId, @RequestBody Integer id, String start, String end) {
-		WorkHourDTO response = service.updateWorkHour(workingHourId, id, start, end);
+	@PutMapping(value="/working-hour/{workingHourId}")
+	public ResponseEntity updateWorkHour(@PathVariable Integer workingHourId, @RequestBody WorkHourDTO workhour) {
+		WorkHourDTO response = service.updateWorkHour(workingHourId, workhour.getId(), workhour.getStart(), workhour.getEnd());
+		return new ResponseEntity(response, HttpStatus.OK);
+	}
+
+	@PostMapping("{id}/vehicle")
+	public ResponseEntity postVehicle(@PathVariable Integer id, @RequestBody Vehicle vehicle){
+		Vehicle response = service.postVehicle(vehicle, id);
+		return new ResponseEntity(response, HttpStatus.OK);
+	}
+
+	@GetMapping("{id}/vehicle")
+	public ResponseEntity getVehicle(@PathVariable Integer id){
+		Vehicle response = service.getVehicle(id);
+		return new ResponseEntity(response, HttpStatus.OK);
+	}
+
+	@PutMapping("{id}/vehicle")
+	public ResponseEntity changeVehicle(@PathVariable Integer id, @RequestBody Vehicle vehicle){
+		Vehicle response = service.changeVehicle(id, vehicle);
+		return new ResponseEntity(response, HttpStatus.OK);
+	}
+
+	@GetMapping("{id}/ride")
+	public ResponseEntity getRides(@PathVariable Integer id, @RequestBody RideQueryDTO rideQueryDTO){
+		RideCount response = service.getRides(id, rideQueryDTO.getPage(), rideQueryDTO.getSize(), rideQueryDTO.getSort(), rideQueryDTO.getFrom(), rideQueryDTO.getTo());
 		return new ResponseEntity(response, HttpStatus.OK);
 	}
 }
