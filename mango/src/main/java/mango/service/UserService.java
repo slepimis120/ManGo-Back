@@ -56,6 +56,7 @@ public class UserService implements IUserService{
 	}
 
 	@Override
+	
 	public UserDTO find(Integer id) {
 		// TODO Auto-generated method stub
 		return null;

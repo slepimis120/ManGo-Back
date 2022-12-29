@@ -9,6 +9,7 @@ import mango.service.interfaces.IRideService;
 import mango.service.interfaces.IVehicleService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,5 +36,13 @@ public class VehicleService implements IVehicleService {
 
     public Map<Integer, Vehicle> allVehicles(){
         return allVehicles;
+    }
+    
+    public ArrayList<Vehicle> getVehicles(){
+        ArrayList<Vehicle> vehicles = new ArrayList<Vehicle>();
+        for (Map.Entry<Integer,Vehicle> entry : allVehicles.entrySet()) {
+            vehicles.add(entry.getValue());
+        }
+        return vehicles;
     }
 }

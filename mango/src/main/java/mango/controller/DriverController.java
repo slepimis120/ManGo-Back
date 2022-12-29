@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import mango.model.DriverDocument;
 import mango.service.DriverService;
 
+@CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*")
 @RestController
 @RequestMapping("/api/driver")
 public class DriverController {

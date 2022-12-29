@@ -2,9 +2,11 @@ package mango.controller;
 
 import mango.dto.ExpandedUserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -12,17 +14,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import mango.dto.UserDTO;
-import mango.dto.UserResponseDTO;
-import mango.model.RideCount;
 import mango.service.PassengerService;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import mango.dto.UserResponseDTO;
 
+@CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*")
 @RestController
 @RequestMapping("/api/passenger")
 public class PassengerController {
+	
 	@Autowired
 	PassengerService service;
 	
@@ -33,15 +35,14 @@ public class PassengerController {
 	}
 	
 	@GetMapping
-
-	public ResponseEntity getArray(@RequestParam Integer page, Integer size) {
-
+	public ResponseEntity getUsers(@RequestParam Integer page, Integer size) {
+		System.out.println("TEST?");
 		UserResponseDTO response = service.getArray(page, size);
 		return new ResponseEntity(response, HttpStatus.OK);
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity find(@PathVariable Integer id) {
+	public ResponseEntity findUser(@PathVariable Integer id) {
 		UserDTO response =  service.find(id);
 		return new ResponseEntity(response, HttpStatus.OK);
 	}
@@ -51,16 +52,5 @@ public class PassengerController {
 		UserDTO response = service.update(id, update);
 		return new ResponseEntity(response, HttpStatus.OK);
 	}
-
-	@GetMapping("/{id}/ride")
-	public ResponseEntity passengerRides(@PathVariable Integer id, @RequestParam Integer page, Integer size, String sort, String from, String to){
-		RideCount response = service.passengerRides(id, page, size, sort, from, to);
-		return new ResponseEntity(response, HttpStatus.OK);
-	}
-
-	@GetMapping("/activate/{activationId}")
-	public ResponseEntity activatePassenger(@PathVariable Integer activationId){
-		return new ResponseEntity(HttpStatus.OK);
-	}
-
+	
 }
