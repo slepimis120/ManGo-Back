@@ -1,17 +1,30 @@
 package mango.model;
 
+import jakarta.persistence.*;
+
+@Entity
 public class DriverDocument {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
+
+	@Column(name = "NAME", nullable = false)
 	private String name;
+
+	@Column(name = "DOCUMENTIMAGE", nullable = false)
 	private String documentImage;
-	private Integer driverId;
+
+	@OneToOne
+	@JoinColumn(name = "DRIVERID", referencedColumnName = "id")
+	private Driver driverId;
 	
-	public DriverDocument(Integer id, String name, String documentImage, Integer driverId) {
+	public DriverDocument(Integer id, String name, String documentImage, Driver driver) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.documentImage = documentImage;
-		this.driverId = driverId;
+		this.driverId = driver;
 	}
 	
 	public DriverDocument() {}
@@ -34,10 +47,10 @@ public class DriverDocument {
 	public void setDocumentImage(String documentImage) {
 		this.documentImage = documentImage;
 	}
-	public Integer getDriverId() {
+	public Driver getDriverId() {
 		return driverId;
 	}
-	public void setDriverId(Integer driverId) {
+	public void setDriverId(Driver driverId) {
 		this.driverId = driverId;
 	}
 	

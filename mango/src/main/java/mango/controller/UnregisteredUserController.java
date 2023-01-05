@@ -1,7 +1,7 @@
 package mango.controller;
 
+import mango.dto.CalculatedRideEstimatesDTO;
 import mango.dto.RideEstimatesDTO;
-import mango.model.RideEstimates;
 import mango.service.UnregisteredUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,7 +22,7 @@ public class UnregisteredUserController {
 
     @PostMapping
     public ResponseEntity rideEstimate(@RequestBody RideEstimatesDTO rideEstimates) {
-        RideEstimates response = service.rideEstimate(rideEstimates.getLocations(), rideEstimates.getVehicleType(), rideEstimates.isBabyTransport(), rideEstimates.isPetTransport());
+        CalculatedRideEstimatesDTO response = service.rideEstimate(rideEstimates.getLocations(), rideEstimates.getVehicleType(), rideEstimates.isBabyTransport(), rideEstimates.isPetTransport());
         return new ResponseEntity(response, HttpStatus.OK);
     }
 

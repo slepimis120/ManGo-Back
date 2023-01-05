@@ -1,31 +1,52 @@
 package mango.model;
 
+import jakarta.persistence.*;
+
+import java.util.ArrayList;
+
+@Entity
 public class Vehicle {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private Integer driverId;
+    @OneToOne
+    @JoinColumn(name = "DRIVERID", referencedColumnName = "id")
+    private Driver driverId;
 
+    @Column(name = "VEHICLETYPE", nullable = false)
+    @Enumerated(EnumType.STRING)
     private Type vehicleType;
 
+    @Column(name = "MODEL", nullable = false)
     private String model;
 
+    @Column(name = "LICENSENUMBER", nullable = false)
     private String licenseNumber;
 
+    @OneToOne
+    @JoinColumn(name = "CURRENTLOCATION", referencedColumnName = "address")
     private Location currentLocation;
 
+    @Column(name = "PASSENGERSEATS", nullable = false)
     private Integer passengerSeats;
 
+    @Column(name = "BABYTRANSPORT", nullable = false)
     private boolean babyTransport;
 
+    @Column(name = "PETTRANSPORT", nullable = false)
     private boolean petTransport;
+
+    @OneToMany(mappedBy = "vehicleType")
+    private ArrayList<Ride> rides;
 
     public enum Type{
         STANDARD, LUXURY, VAN
     }
 
-    public Vehicle (Integer driverId, Type vehicleType, String model, String licenseNumber, Location currentLocation, Integer passengerSeats, boolean babyTransport, boolean petTransport){
-        this.driverId = driverId;
+    public Vehicle (Driver driver, Type vehicleType, String model, String licenseNumber, Location currentLocation, Integer passengerSeats, boolean babyTransport, boolean petTransport){
+        this.driverId = driver;
         this.vehicleType = vehicleType;
         this.model = model;
         this.licenseNumber = licenseNumber;
@@ -101,11 +122,11 @@ public class Vehicle {
         this.id = id;
     }
 
-    public Integer getDriverId() {
+    public Driver getDriverId() {
         return driverId;
     }
 
-    public void setDriverId(Integer driverId) {
+    public void setDriverId(Driver driverId) {
         this.driverId = driverId;
     }
 }

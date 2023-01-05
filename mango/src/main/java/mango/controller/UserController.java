@@ -1,7 +1,6 @@
 package mango.controller;
 
 import mango.dto.*;
-import mango.model.RideCount;
 import mango.service.interfaces.IUserService;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,7 +75,7 @@ public class UserController {
 	
 	@GetMapping("/{id}/ride")
 	public ResponseEntity getRides(@PathVariable Integer id, @RequestBody PagingDTO pagingDTO){
-		RideCount response = service.userRides(id, pagingDTO.getPage(), pagingDTO.getSize(), pagingDTO.getSort(), pagingDTO.getFrom(), pagingDTO.getTo());
+		RideCountDTO response = service.userRides(id, pagingDTO.getPage(), pagingDTO.getSize(), pagingDTO.getSort(), pagingDTO.getFrom(), pagingDTO.getTo());
 		return new ResponseEntity(response, HttpStatus.OK);
 	}
 }

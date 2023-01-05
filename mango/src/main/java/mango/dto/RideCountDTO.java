@@ -1,18 +1,20 @@
-package mango.model;
+package mango.dto;
+
+import mango.model.Ride;
 
 import java.util.ArrayList;
 
-public class RideCount {
+public class RideCountDTO {
     private Integer totalCount;
 
     private ArrayList<Ride> results;
 
-    public RideCount(Integer totalCount, ArrayList<Ride> results){
+    public RideCountDTO(Integer totalCount, ArrayList<Ride> results){
         this.totalCount = totalCount;
         this.results = results;
     }
 
-    public RideCount(){}
+    public RideCountDTO(){}
 
 
     public Integer getTotalCount() {

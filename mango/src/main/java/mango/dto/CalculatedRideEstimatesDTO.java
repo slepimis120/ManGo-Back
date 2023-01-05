@@ -1,17 +1,28 @@
-package mango.model;
+package mango.dto;
 
-public class RideEstimates {
+import jakarta.persistence.Column;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import mango.model.RideLocation;
+import mango.model.Vehicle;
+
+import java.util.ArrayList;
+
+public class CalculatedRideEstimatesDTO {
+
+    private int id;
 
     private Integer estimatedTimeInMinutes;
 
     private Integer estimatedCost;
 
-    public RideEstimates(Integer estimatedTimeInMinutes, Integer estimatedCost){
+    public CalculatedRideEstimatesDTO(Integer estimatedTimeInMinutes, Integer estimatedCost){
         this.estimatedTimeInMinutes = estimatedTimeInMinutes;
         this.estimatedCost = estimatedCost;
     }
 
-    public RideEstimates(){}
+    public CalculatedRideEstimatesDTO(){}
 
     public Integer getEstimatedTimeInMinutes() {
         return estimatedTimeInMinutes;
@@ -28,4 +39,5 @@ public class RideEstimates {
     public void setEstimatedCost(Integer estimatedCost) {
         this.estimatedCost = estimatedCost;
     }
+
 }

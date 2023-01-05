@@ -1,25 +1,41 @@
 package mango.model;
 
+import jakarta.persistence.*;
+
+@Entity
 public class Review {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private Integer reviewId;
+    @OneToOne
+    @JoinColumn(name = "RIDEID",  referencedColumnName = "id")
+    private Ride rideId;
 
-    private Integer rideId;
+    @Column(name = "RATING", nullable = false)
     private Integer rating;
 
+    @Column(name = "COMMENT", nullable = false)
     private String comment;
 
-    private Passenger passenger;
+    @ManyToOne
+    @JoinColumn(name = "PASSENGERID",  referencedColumnName = "id")
+    private Passenger passengers;
 
-    public Review(Integer id, Integer reviewId, Integer rideId, Integer rating, String comment, Passenger passenger){
+
+    @OneToOne(mappedBy = "vehicleReview")
+    private ReviewOverview vehicleReview;
+
+    @OneToOne(mappedBy = "driverReview")
+    private ReviewOverview driverReview;
+
+    public Review(Integer id, Ride rideId, Integer rating, String comment, Passenger passengers){
         this.id = id;
-        this.reviewId = reviewId;
         this.rideId = rideId;
         this.rating = rating;
         this.comment = comment;
-        this.passenger = passenger;
+        this.passengers = passengers;
     }
 
     public Review(){}
@@ -48,27 +64,19 @@ public class Review {
         this.comment = comment;
     }
 
-    public Passenger getPassenger() {
-        return passenger;
-    }
-
-    public void setPassenger(Passenger passenger) {
-        this.passenger = passenger;
-    }
-
-    public Integer getReviewId() {
-        return reviewId;
-    }
-
-    public void setReviewId(Integer reviewId) {
-        this.reviewId = reviewId;
-    }
-
-    public Integer getRideId() {
+    public Ride getRideId() {
         return rideId;
     }
 
-    public void setRideId(Integer rideId) {
+    public void setRideId(Ride rideId) {
         this.rideId = rideId;
+    }
+
+    public Passenger getPassengers() {
+        return passengers;
+    }
+
+    public void setPassengers(Passenger passengers) {
+        this.passengers = passengers;
     }
 }

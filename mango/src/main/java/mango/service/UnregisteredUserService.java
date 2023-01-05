@@ -1,6 +1,6 @@
 package mango.service;
 
-import mango.model.RideEstimates;
+import mango.dto.CalculatedRideEstimatesDTO;
 import mango.model.RideLocation;
 import mango.model.Vehicle;
 import mango.service.interfaces.IUndregisteredUserService;
@@ -12,8 +12,8 @@ import java.util.ArrayList;
 public class UnregisteredUserService implements IUndregisteredUserService {
 
     @Override
-    public RideEstimates rideEstimate(ArrayList<RideLocation> locations, Vehicle.Type type, boolean babyTransport, boolean petTransport) {
-        RideEstimates estimates = new RideEstimates(10, 450);
+    public CalculatedRideEstimatesDTO rideEstimate(ArrayList<RideLocation> locations, Vehicle.Type type, boolean babyTransport, boolean petTransport) {
+        CalculatedRideEstimatesDTO estimates = new CalculatedRideEstimatesDTO(10, 450);
         return estimates;
     }
 }

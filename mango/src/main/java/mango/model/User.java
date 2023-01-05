@@ -1,18 +1,49 @@
 package mango.model;
 
+import jakarta.persistence.*;
 import mango.dto.ExpandedUserDTO;
 
-public abstract class User {
+import java.util.ArrayList;
+
+@Entity
+@Table(name = "USERS")
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "TYPE")
+public class User {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
+
+	@Column(name = "NAME", nullable = false)
 	private String name;
+
+	@Column(name = "SURNAME", nullable = false)
 	private String surname;
+
+	@Column(name = "PROFILEPICTURE", nullable = false)
 	private String profilePicture;
+
+	@Column(name = "TELEPHONENUMBER", nullable = false)
 	private String telephoneNumber;
+
+	@Column(name = "EMAIL", nullable = false)
 	private String email;
+
+	@Column(name = "ADDRESS", nullable = false)
 	private String address;
-	
+
+	@Column(name = "PASSWORD", nullable = false)
 	private String password;
+
+	@Column(name = "BLOCKED", nullable = false)
 	private boolean blocked;
+
+	@OneToMany(mappedBy = "userId")
+	private ArrayList<Note> note;
+
+	@OneToMany(mappedBy = "userId")
+	private ArrayList<Panic> panic;
 	
 	public User(Integer id, String firstName, String lastName, String profilePictureURL, String phoneNumber, String email,
 				String address, String password, boolean blocked) {

@@ -1,5 +1,6 @@
 package mango.service;
 
+import mango.dto.ReviewResponseDTO;
 import mango.model.*;
 import mango.service.interfaces.IReviewService;
 import org.springframework.stereotype.Service;
@@ -22,14 +23,14 @@ public class ReviewService implements IReviewService {
         Passenger passenger = new Passenger();
         passenger.setId(123);
         passenger.setEmail("user@example.com");
-        newReview.setPassenger(passenger);
+        newReview.setPassengers(passenger);
         allVehicleReviews.put(newReview.getId(), newReview);
         return newReview;
     }
 
     @Override
-    public ReviewResponse getVehicleReviews(Integer vehicleId) {
-        ReviewResponse response = new ReviewResponse();
+    public ReviewResponseDTO getVehicleReviews(Integer vehicleId) {
+        ReviewResponseDTO response = new ReviewResponseDTO();
         for (Map.Entry<Integer, Review> entry : allVehicleReviews.entrySet()) {
             if(entry.getValue().getId().equals(vehicleId)){
                 response.getResults().add(entry.getValue());
@@ -48,14 +49,14 @@ public class ReviewService implements IReviewService {
         Passenger passenger = new Passenger();
         passenger.setId(123);
         passenger.setEmail("user@example.com");
-        newReview.setPassenger(passenger);
+        newReview.setPassengers(passenger);
         allDriverReviews.put(newReview.getId(), newReview);
         return newReview;
     }
 
     @Override
-    public ReviewResponse getDriverReviews(Integer vehicleId) {
-        ReviewResponse response = new ReviewResponse();
+    public ReviewResponseDTO getDriverReviews(Integer vehicleId) {
+        ReviewResponseDTO response = new ReviewResponseDTO();
         for (Map.Entry<Integer, Review> entry : allDriverReviews.entrySet()) {
             if(entry.getValue().getId().equals(vehicleId)){
                 response.getResults().add(entry.getValue());

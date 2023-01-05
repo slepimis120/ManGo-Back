@@ -1,10 +1,10 @@
 package mango.controller;
 
 import mango.dto.ReviewDTO;
+import mango.dto.ReviewResponseDTO;
 import mango.mapper.ReviewDTOMapper;
 import mango.model.Review;
 import mango.model.ReviewOverview;
-import mango.model.ReviewResponse;
 import mango.service.interfaces.IReviewService;
 import mango.service.interfaces.IRideService;
 import org.modelmapper.ModelMapper;
@@ -31,7 +31,7 @@ public class ReviewController {
 
     @GetMapping("/vehicle/{id}")
     public ResponseEntity getVehicleReviews(@PathVariable Integer id) {
-        ReviewResponse response = service.getVehicleReviews(id);
+        ReviewResponseDTO response = service.getVehicleReviews(id);
         return new ResponseEntity(response, HttpStatus.OK);
     }
 
@@ -46,7 +46,7 @@ public class ReviewController {
 
     @GetMapping("/driver/{id}")
     public ResponseEntity getDriverReviews(@PathVariable Integer id) {
-        ReviewResponse response = service.getDriverReviews(id);
+        ReviewResponseDTO response = service.getDriverReviews(id);
         return new ResponseEntity(response, HttpStatus.OK);
     }
 

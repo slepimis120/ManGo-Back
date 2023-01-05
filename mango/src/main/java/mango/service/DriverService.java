@@ -98,7 +98,7 @@ public class DriverService implements IUserService {
 	public ArrayList<DriverDocumentDTO> findDocuments(Integer id) {
 		ArrayList<DriverDocumentDTO> documents = new ArrayList<DriverDocumentDTO>();
 		for(Map.Entry<Integer, DriverDocument> entry : allDocuments.entrySet()) {
-			if(entry.getValue().getDriverId() == id){
+			if(entry.getValue().getDriverId().getId() == id){
 				DriverDocumentDTOMapper mapper = new DriverDocumentDTOMapper(new ModelMapper());
 				DriverDocumentDTO newDriverDocument = mapper.fromDriverDocumenttoDTO(entry.getValue());
 				documents.add(newDriverDocument);
@@ -110,7 +110,9 @@ public class DriverService implements IUserService {
 	public DriverDocumentDTO insertDocument(Integer id, String name, String documentImage) {
 		int size = allDocuments.size();
 		size++;
-		DriverDocument document = new DriverDocument(size, name, documentImage, id);
+		Driver driver = new Driver();
+		driver.setId(id);
+		DriverDocument document = new DriverDocument(size, name, documentImage, driver);
 		allDocuments.put(size, document);
 		DriverDocumentDTOMapper mapper = new DriverDocumentDTOMapper(new ModelMapper());
 		DriverDocumentDTO newDriverDocument = mapper.fromDriverDocumenttoDTO(document);
@@ -185,7 +187,7 @@ public class DriverService implements IUserService {
 	}
 
 	public Vehicle postVehicle(Vehicle vehicle, Integer id){
-		vehicle.setDriverId(id);
+		vehicle.getDriverId().setId(id);
 		vehicle.setId(vehicleService.allVehicles().size() + 1);
 		vehicleService.allVehicles().put(vehicle.getId(), vehicle);
 		return vehicle;
@@ -212,8 +214,8 @@ public class DriverService implements IUserService {
 		return vehicle;
 	}
 
-	public RideCount getRides(Integer id, Integer page, Integer size, String sort, String from, String to){
-		RideCount count = new RideCount();
+	public RideCountDTO getRides(Integer id, Integer page, Integer size, String sort, String from, String to){
+		RideCountDTO count = new RideCountDTO();
 		ArrayList<Ride> rideList = new ArrayList<Ride>();
 		Integer rideCount = 0;
 		for (Map.Entry<Integer, Ride> entry : rideService.getAllRides().entrySet()) {

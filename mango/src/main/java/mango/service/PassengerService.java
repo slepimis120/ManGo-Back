@@ -1,11 +1,11 @@
 package mango.service;
 
 import mango.dto.ExpandedUserDTO;
+import mango.dto.RideCountDTO;
 import mango.dto.UserDTO;
 import mango.dto.UserResponseDTO;
 import mango.model.Passenger;
 import mango.model.Ride;
-import mango.model.RideCount;
 import mango.service.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -84,8 +84,8 @@ public class PassengerService implements IUserService{
 		throw new RuntimeException();
 	}
 
-	public RideCount passengerRides(Integer id, Integer page, Integer size, String sort, String from, String to){
-		RideCount count = new RideCount();
+	public RideCountDTO passengerRides(Integer id, Integer page, Integer size, String sort, String from, String to){
+		RideCountDTO count = new RideCountDTO();
 		ArrayList<Ride> rideList = new ArrayList<Ride>();
 		Integer rideCount = 0;
 		for (Map.Entry<Integer, Ride> entry : rideService.getAllRides().entrySet()) {

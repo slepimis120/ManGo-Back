@@ -3,7 +3,6 @@ package mango.controller;
 import java.util.ArrayList;
 
 import mango.dto.*;
-import mango.model.RideCount;
 import mango.model.Vehicle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -111,7 +110,7 @@ public class DriverController {
 
 	@GetMapping("{id}/ride")
 	public ResponseEntity getRides(@PathVariable Integer id, @RequestBody RideQueryDTO rideQueryDTO){
-		RideCount response = service.getRides(id, rideQueryDTO.getPage(), rideQueryDTO.getSize(), rideQueryDTO.getSort(), rideQueryDTO.getFrom(), rideQueryDTO.getTo());
+		RideCountDTO response = service.getRides(id, rideQueryDTO.getPage(), rideQueryDTO.getSize(), rideQueryDTO.getSort(), rideQueryDTO.getFrom(), rideQueryDTO.getTo());
 		return new ResponseEntity(response, HttpStatus.OK);
 	}
 }

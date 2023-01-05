@@ -1,6 +1,6 @@
 package mango.controller;
 
-import mango.model.PanicResponse;
+import mango.dto.PanicResponseDTO;
 import mango.service.interfaces.IPanicService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,7 +20,7 @@ public class PanicController {
 
     @GetMapping
     public ResponseEntity getAll(){
-        PanicResponse response = service.getAll();
+        PanicResponseDTO response = service.getAll();
         return new ResponseEntity(response, HttpStatus.OK);
     }
 }

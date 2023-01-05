@@ -1,19 +1,21 @@
-package mango.model;
+package mango.dto;
+
+import mango.model.Review;
 
 import java.util.Collection;
 
-public class ReviewResponse {
+public class ReviewResponseDTO {
 
     private Collection<Review> results;
 
     private Integer totalCount;
 
-    public ReviewResponse(Collection<Review> results, Integer totalCount){
+    public ReviewResponseDTO(Collection<Review> results, Integer totalCount){
         this.results = results;
         this.totalCount = totalCount;
     }
 
-    public ReviewResponse(){}
+    public ReviewResponseDTO(){}
 
     public Collection<Review> getResults() {
         return results;
@@ -30,4 +32,5 @@ public class ReviewResponse {
     public void setTotalCount(Integer totalCount) {
         this.totalCount = totalCount;
     }
+
 }

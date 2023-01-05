@@ -9,14 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import mango.dto.ExpandedUserDTO;
-import mango.dto.LoginDTO;
-import mango.dto.NoteDTO;
-import mango.dto.NoteResponseDTO;
-import mango.dto.UserDTO;
-import mango.dto.UserMessageDTO;
-import mango.dto.UserMessageResponseDTO;
-import mango.dto.UserResponseDTO;
+import mango.dto.*;
 import mango.model.*;
 import mango.service.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,7 +83,9 @@ public class UserService implements IUserService{
 		LocalDateTime date = LocalDateTime.now();
 		DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
 		String dateFormated = date.format(format);
-		Note note = new Note(size + 1, message, date, id);
+		User user = new User();
+		user.setId(id);
+		Note note = new Note(size + 1, message, date, user);
 		allNotes.put(note.getId(), note);
 		NoteDTO noteDTO = new NoteDTO(note.getId(), message, dateFormated);
 		return noteDTO;
@@ -119,15 +114,15 @@ public class UserService implements IUserService{
 	public UserMessageResponseDTO getUserMessages(Integer id) {
 		ArrayList<UserMessageDTO> returnList = new ArrayList<UserMessageDTO>();
 		for (Map.Entry<Integer, UserMessage> entry : allMessages.entrySet()) {
-			if(entry.getValue().getReceiverId().equals(id) || entry.getValue().getSenderId().equals(id)){
+			if(entry.getValue().getReceiver().getId().equals(id) || entry.getValue().getSender().getId().equals(id)){
 				UserMessage currentMessage = entry.getValue();
 
 				DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
 				String dateFormated = currentMessage.getTimeOfSending().format(format);
 				
 				UserMessageDTO currentMessageDTO = new UserMessageDTO(currentMessage.getId(), dateFormated,
-						currentMessage.getSenderId(), currentMessage.getReceiverId(), currentMessage.getMessage(),
-						currentMessage.getType(), currentMessage.getRideId());
+						currentMessage.getSender().getId(), currentMessage.getReceiver().getId(), currentMessage.getMessage(),
+						currentMessage.getType().toString(), currentMessage.getRide().getId());
 				returnList.add(currentMessageDTO);
 			}
 		}
@@ -138,14 +133,14 @@ public class UserService implements IUserService{
 			Integer rideId) {
 		int size = allMessages.size();
 		LocalDateTime timeOfSending = LocalDateTime.now();
-		UserMessage userMessage = new UserMessage(size + 1, timeOfSending, id, receiverId, message, type, rideId);
+		UserMessage userMessage = new UserMessage(size + 1, timeOfSending, id, receiverId, message, UserMessage.Type.valueOf(type), rideId);
 		allMessages.put(size + 1, userMessage);
 		DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
 		String dateFormated = userMessage.getTimeOfSending().format(format);
 
 		return new UserMessageDTO(userMessage.getId(), dateFormated,
-						userMessage.getSenderId(), userMessage.getReceiverId(), userMessage.getMessage(),
-						userMessage.getType(), userMessage.getRideId());
+						userMessage.getSender().getId(), userMessage.getReceiver().getId(), userMessage.getMessage(),
+						userMessage.getType().toString(), userMessage.getRide().getId());
 	}
 
 	public LoginDTO login(String email, String password) {
@@ -158,8 +153,8 @@ public class UserService implements IUserService{
 	    return loginDTO;
 	}
 
-	public RideCount userRides(Integer id, Integer page, Integer size, String sort, String from, String to){
-		RideCount count = new RideCount();
+	public RideCountDTO userRides(Integer id, Integer page, Integer size, String sort, String from, String to){
+		RideCountDTO count = new RideCountDTO();
 		ArrayList<Ride> rideList = new ArrayList<Ride>();
 		Integer rideCount = 0;
 		Integer check = 0;

@@ -1,18 +1,33 @@
 package mango.model;
 
+import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 
+@Entity
 public class WorkHour {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
+
+	@Column(name = "START", nullable = false)
 	private LocalDateTime start;
+
+	@Column(name = "END", nullable = false)
 	private LocalDateTime end;
-	private Integer driverId;
+
+	@ManyToOne
+	@JoinColumn(name = "DRIVERID",  referencedColumnName = "id")
+	private Driver driver;
+
 	public WorkHour(Integer id, LocalDateTime start, LocalDateTime end, Integer driverId) {
 		super();
 		this.id = id;
 		this.start = start;
 		this.end = end;
-		this.driverId = driverId;
+		this.driver = new Driver();
+		this.driver.setId(driverId);
 	}
 	public WorkHour() {
 		super();
@@ -36,10 +51,10 @@ public class WorkHour {
 		this.end = end;
 	}
 	public Integer getDriverId() {
-		return driverId;
+		return driver.getId();
 	}
 	public void setDriverId(Integer driverId) {
-		this.driverId = driverId;
+		this.driver.setId(driverId);
 	}
 	
 	

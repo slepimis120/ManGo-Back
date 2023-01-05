@@ -1,13 +1,27 @@
 package mango.model;
 
+import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 
+@Entity
 public class Note {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
+
+	@Column(name = "MESSAGE", nullable = false)
 	private String message;
+
+	@Column(name = "DATE", nullable = false)
 	private LocalDateTime date;
-	private Integer userId;
-	public Note(Integer id, String message, LocalDateTime date, Integer userId) {
+
+	@ManyToOne
+	@JoinColumn(name = "USERID",  referencedColumnName = "id")
+	private User userId;
+
+	public Note(Integer id, String message, LocalDateTime date, User userId) {
 		super();
 		this.id = id;
 		this.message = message;
@@ -42,11 +56,11 @@ public class Note {
 	}
 
 	public Integer getUserId() {
-		return userId;
+		return userId.getId();
 	}
 
 	public void setUserId(Integer userId) {
-		this.userId = userId;
+		this.userId.setId(userId);
 	}
 	
 	

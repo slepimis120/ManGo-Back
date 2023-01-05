@@ -1,9 +1,24 @@
 package mango.model;
 
+import jakarta.persistence.*;
+
+@Entity
 public class RideLocation {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+    @ManyToOne
+    @JoinColumn(name="DEPARTURE", unique=false, nullable=true)
     private Location departure;
 
+    @ManyToOne
+    @JoinColumn(name="DESTINATION", unique=false, nullable=true)
     private Location destination;
+
+    @ManyToOne
+    @JoinColumn(name = "RIDEID",  referencedColumnName = "id")
+    private Ride ride;
 
 
     public RideLocation(Location departure, Location destination) {

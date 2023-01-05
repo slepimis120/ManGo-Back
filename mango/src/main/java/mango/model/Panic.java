@@ -1,22 +1,33 @@
 package mango.model;
 
+import jakarta.persistence.*;
+
 import java.util.Date;
 
+@Entity
 public class Panic {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private User user;
+    @ManyToOne
+    @JoinColumn(name = "USERID",  referencedColumnName = "id")
+    private User userId;
 
+    @ManyToOne
+    @JoinColumn(name = "RIDEID",  referencedColumnName = "id")
     private Ride ride;
 
+    @Column(name = "TIME", nullable = false)
     private Date time;
 
+    @Column(name = "REASON", nullable = false)
     private String reason;
 
     public Panic(Integer id, User user, Ride ride, Date time, String reason) {
         this.id = id;
-        this.user = user;
+        this.userId = user;
         this.ride = ride;
         this.time = time;
         this.reason = reason;
@@ -33,11 +44,11 @@ public class Panic {
     }
 
     public User getUser() {
-        return user;
+        return userId;
     }
 
     public void setUser(User user) {
-        this.user = user;
+        this.userId = user;
     }
 
     public Ride getRide() {

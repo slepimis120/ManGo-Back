@@ -1,26 +1,56 @@
 package mango.model;
 
+import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 
+@Entity
 public class UserMessage {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
+	@Column(name = "TIMEOFSENDING", nullable = false)
 	private LocalDateTime timeOfSending;
-	private Integer senderId;
-	private Integer receiverId;
+
+	@ManyToOne
+	@JoinColumn(name = "SENDERID",  referencedColumnName = "id")
+	private User sender;
+
+	@ManyToOne
+	@JoinColumn(name = "RECEIVERID",  referencedColumnName = "id")
+	private User receiver;
+
+	@Column(name = "MESSAGE", nullable = false)
 	private String message;
-	private String type;
-	private Integer rideId;
+	@Column(name = "TYPE", nullable = false)
+	@Enumerated(EnumType.STRING)
+	private Type type;
+
+	@ManyToOne
+	@JoinColumn(name = "RIDEID",  referencedColumnName = "id")
+	private Ride ride;
+
+	public enum Type{
+		SUPPORT, RIDE, PANIC
+	}
+
 	public UserMessage(Integer id, LocalDateTime timeOfSending, Integer senderId, Integer receiverId, String message,
-			String type, Integer rideId) {
+			Type type, Integer ride) {
 		super();
 		this.id = id;
 		this.timeOfSending = timeOfSending;
-		this.senderId = senderId;
-		this.receiverId = receiverId;
+		this.sender.setId(senderId);
+		this.receiver.setId(receiverId);
 		this.message = message;
 		this.type = type;
-		this.rideId = rideId;
+		this.ride.setId(ride);
 	}
+
+	public UserMessage() {
+
+	}
+
 	public Integer getId() {
 		return id;
 	}
@@ -33,17 +63,17 @@ public class UserMessage {
 	public void setTimeOfSending(LocalDateTime timeOfSending) {
 		this.timeOfSending = timeOfSending;
 	}
-	public Integer getSenderId() {
-		return senderId;
+	public User getSender() {
+		return sender;
 	}
-	public void setSenderId(Integer senderId) {
-		this.senderId = senderId;
+	public void setSender(User sender) {
+		this.sender = sender;
 	}
-	public Integer getReceiverId() {
-		return receiverId;
+	public User getReceiver() {
+		return receiver;
 	}
-	public void setReceiverId(Integer receiverId) {
-		this.receiverId = receiverId;
+	public void setReceiver(User receiver) {
+		this.receiver = receiver;
 	}
 	public String getMessage() {
 		return message;
@@ -51,17 +81,17 @@ public class UserMessage {
 	public void setMessage(String message) {
 		this.message = message;
 	}
-	public String getType() {
+	public Type getType() {
 		return type;
 	}
-	public void setType(String type) {
+	public void setType(Type type) {
 		this.type = type;
 	}
-	public Integer getRideId() {
-		return rideId;
+	public Ride getRide() {
+		return ride;
 	}
-	public void setRideId(Integer rideId) {
-		this.rideId = rideId;
+	public void setRide(Ride ride) {
+		this.ride = ride;
 	}
 	
 	
