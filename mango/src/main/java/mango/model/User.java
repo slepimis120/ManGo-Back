@@ -1,9 +1,11 @@
 package mango.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import lombok.ToString;
 import mango.dto.ExpandedUserDTO;
 
-import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "USERS")
@@ -39,11 +41,15 @@ public class User {
 	@Column(name = "BLOCKED", nullable = false)
 	private boolean blocked;
 
-	@OneToMany(mappedBy = "userId")
-	private ArrayList<Note> note;
+	@OneToMany(mappedBy = "user")
+	@ToString.Exclude
+	@JsonIgnoreProperties
+	private List<Note> note;
 
 	@OneToMany(mappedBy = "userId")
-	private ArrayList<Panic> panic;
+	@ToString.Exclude
+	@JsonIgnoreProperties
+	private List<Panic> panic;
 	
 	public User(Integer id, String firstName, String lastName, String profilePictureURL, String phoneNumber, String email,
 				String address, String password, boolean blocked) {
@@ -145,5 +151,9 @@ public class User {
 	public void setBlocked(boolean blocked) {
 		this.blocked = blocked;
 	}
+
+	public List<Note> getNote(){return note;}
+
+	public void setNote(List<Note> note){this.note = note;}
 
 }

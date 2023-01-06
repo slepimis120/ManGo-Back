@@ -1,5 +1,7 @@
 package mango.dto;
 
+import mango.model.Location;
+
 public class LocationDTO {
 
     private String address;
@@ -8,10 +10,10 @@ public class LocationDTO {
 
     private Float longitude;
 
-    public LocationDTO(String address, Float latitude, Float longitude){
-        this.address = address;
-        this.latitude = latitude;
-        this.longitude = longitude;
+    public LocationDTO(Location location){
+        this.address = location.getAddress();
+        this.latitude = location.getLatitude();
+        this.longitude = location.getLongitude();
     }
 
     public LocationDTO(){}

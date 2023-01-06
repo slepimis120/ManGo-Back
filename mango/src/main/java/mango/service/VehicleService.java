@@ -1,48 +1,36 @@
 package mango.service;
 
-import mango.dto.LocationDTO;
 import mango.model.Location;
-import mango.model.Ride;
-import mango.model.Ride.Status;
 import mango.model.Vehicle;
-import mango.service.interfaces.IRideService;
-import mango.service.interfaces.IVehicleService;
+import mango.repository.LocationRepository;
+import mango.repository.VehicleRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 @Service
-public class VehicleService implements IVehicleService {
+public class VehicleService {
 
-    private Map<Integer, Vehicle> allVehicles = new HashMap<Integer, Vehicle>();
+    @Autowired
+    private VehicleRepository vehicleRepository;
 
-    @Override
-    public boolean updateLocation(Location location, Integer id) {
-        Vehicle vehicle = new Vehicle();
-        int size = allVehicles.size();
-        vehicle.setId(size + 1);
-        vehicle.setVehicleType(Vehicle.Type.VAN);
-        allVehicles.put(vehicle.getId(), vehicle);
-        for (Map.Entry<Integer,Vehicle> entry : allVehicles.entrySet()) {
-            if (entry.getValue().getId().equals(id)) {
-                entry.getValue().setCurrentLocation(location);
-                return true;
-            }
-        }
-        return false;
+    @Autowired
+    private LocationRepository locationRepository;
+
+    public Vehicle findOne(Integer id) {
+        return vehicleRepository.findById(id).orElseGet(null);
     }
 
-    public Map<Integer, Vehicle> allVehicles(){
-        return allVehicles;
+    public List<Vehicle> findAll() {
+        return vehicleRepository.findAll();
     }
-    
-    public ArrayList<Vehicle> getVehicles(){
-        ArrayList<Vehicle> vehicles = new ArrayList<Vehicle>();
-        for (Map.Entry<Integer,Vehicle> entry : allVehicles.entrySet()) {
-            vehicles.add(entry.getValue());
-        }
-        return vehicles;
+
+    public Vehicle save(Vehicle vehicle) {
+        return vehicleRepository.save(vehicle);
+    }
+
+    public void insertNewLocation(Location location){
+        locationRepository.save(location);
     }
 }

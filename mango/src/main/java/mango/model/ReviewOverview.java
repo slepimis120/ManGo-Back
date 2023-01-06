@@ -1,8 +1,12 @@
 package mango.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
 public class ReviewOverview {
 
     @Id
@@ -20,32 +24,4 @@ public class ReviewOverview {
     @ManyToOne
     @JoinColumn(name = "RIDEID",  referencedColumnName = "id")
     private Ride ride;
-
-
-
-    public ReviewOverview(Review vehicleReview, Review driverReview){
-        this.vehicleReview = vehicleReview;
-        this.driverReview = driverReview;
-    }
-
-    public ReviewOverview(){
-
-    }
-
-
-    public Review getVehicleReview() {
-        return vehicleReview;
-    }
-
-    public void setVehicleReview(Review vehicleReview) {
-        this.vehicleReview = vehicleReview;
-    }
-
-    public Review getDriverReview() {
-        return driverReview;
-    }
-
-    public void setDriverReview(Review driverReview) {
-        this.driverReview = driverReview;
-    }
 }

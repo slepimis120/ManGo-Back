@@ -1,12 +1,15 @@
 package mango.controller;
 
 import mango.dto.LocationDTO;
+import mango.dto.VehicleDTO;
 import mango.mapper.LocationDTOMapper;
 import mango.model.Location;
 import mango.model.Vehicle;
+import mango.repository.VehicleRepository;
 import mango.service.VehicleService;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,16 +26,19 @@ public class VehicleController {
     VehicleService service;
 
     @PutMapping("/{id}/location")
-    public ResponseEntity updateLocation(@RequestBody LocationDTO location, @PathVariable Integer id) {
+    public ResponseEntity updateLocation(@RequestBody LocationDTO locationDTO, @PathVariable Integer id) {
+
+        Vehicle vehicle = service.findOne(id);
+        if (vehicle == null){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
         LocationDTOMapper mapper = new LocationDTOMapper(new ModelMapper());
-        Location newLocation = mapper.fromDTOtoLocation(location);
-        boolean response = service.updateLocation(newLocation, id);
-        return new ResponseEntity(response, HttpStatus.NO_CONTENT);
-    }
-    
-    @GetMapping()
-    public ResponseEntity getVehicles() {
-        ArrayList<Vehicle> response = service.getVehicles();
-        return new ResponseEntity(response, HttpStatus.OK);
+        Location location = mapper.fromDTOtoLocation(locationDTO);
+        service.insertNewLocation(location);
+        vehicle.setCurrentLocation(location);
+
+        vehicle = service.save(vehicle);
+        return new ResponseEntity(vehicle, HttpStatus.NO_CONTENT);
     }
 }

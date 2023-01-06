@@ -3,11 +3,7 @@ package mango.service;
 import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 import mango.dto.*;
 import mango.model.*;
@@ -97,7 +93,7 @@ public class UserService implements IUserService{
 		ArrayList<NoteDTO> returnList = new ArrayList<NoteDTO>();
 		int i = 0;
 		for (Map.Entry<Integer, Note> entry : allNotes.entrySet()) {
-			if(entry.getValue().getUserId() == id) {
+			if(Objects.equals(entry.getValue().getUser().getId(), id)) {
 				if(i >= start && i < end ){
 					Note currentNote = entry.getValue();
 					DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");

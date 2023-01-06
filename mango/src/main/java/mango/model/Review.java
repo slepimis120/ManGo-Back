@@ -1,8 +1,12 @@
 package mango.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
 public class Review {
 
     @Id
@@ -29,54 +33,4 @@ public class Review {
 
     @OneToOne(mappedBy = "driverReview")
     private ReviewOverview driverReview;
-
-    public Review(Integer id, Ride rideId, Integer rating, String comment, Passenger passengers){
-        this.id = id;
-        this.rideId = rideId;
-        this.rating = rating;
-        this.comment = comment;
-        this.passengers = passengers;
-    }
-
-    public Review(){}
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getRating() {
-        return rating;
-    }
-
-    public void setRating(Integer rating) {
-        this.rating = rating;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
-
-    public Ride getRideId() {
-        return rideId;
-    }
-
-    public void setRideId(Ride rideId) {
-        this.rideId = rideId;
-    }
-
-    public Passenger getPassengers() {
-        return passengers;
-    }
-
-    public void setPassengers(Passenger passengers) {
-        this.passengers = passengers;
-    }
 }

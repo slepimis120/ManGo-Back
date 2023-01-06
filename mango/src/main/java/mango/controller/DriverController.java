@@ -3,6 +3,7 @@ package mango.controller;
 import java.util.ArrayList;
 
 import mango.dto.*;
+import mango.model.Driver;
 import mango.model.Vehicle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,7 @@ public class DriverController {
 	
 	@PostMapping
 	public ResponseEntity insert(@RequestBody ExpandedUserDTO data) {
+		Driver driver = new Driver();
         UserDTO response =  service.insert(data);
         return new ResponseEntity(response, HttpStatus.OK);
 	}

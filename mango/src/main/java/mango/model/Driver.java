@@ -1,28 +1,33 @@
 package mango.model;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import lombok.ToString;
 import mango.dto.ExpandedUserDTO;
 
 @Entity
 @DiscriminatorValue("DRIVER")
 public class Driver extends User{
 
-	@OneToOne(mappedBy = "driverId")
+	@OneToOne(mappedBy = "driver")
+	@ToString.Exclude
 	private Vehicle vehicle;
 
 	@OneToOne(mappedBy = "driverId")
+	@ToString.Exclude
 	private DriverDocument driverDocument;
 
 	@OneToMany(mappedBy = "driver")
-	private ArrayList <Ride> rides;
+	@ToString.Exclude
+	private List<Ride> rides;
 
 	@OneToMany(mappedBy = "driver")
-	private ArrayList <WorkHour> workHours;
+	@ToString.Exclude
+	private List<WorkHour> workHours;
 
 	public Driver(Integer id, String firstName, String lastName, String profilePictureURL, String phoneNumber, String email,
 			String address, String password, boolean blocked) {

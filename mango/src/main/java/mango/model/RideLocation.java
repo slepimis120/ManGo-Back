@@ -1,8 +1,12 @@
 package mango.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
 public class RideLocation {
 
     @Id
@@ -19,28 +23,4 @@ public class RideLocation {
     @ManyToOne
     @JoinColumn(name = "RIDEID",  referencedColumnName = "id")
     private Ride ride;
-
-
-    public RideLocation(Location departure, Location destination) {
-        this.departure = departure;
-        this.destination = destination;
-    }
-
-    public RideLocation(){}
-
-    public Location getDeparture() {
-        return departure;
-    }
-
-    public void setDeparture(Location departure) {
-        this.departure = departure;
-    }
-
-    public Location getDestination() {
-        return destination;
-    }
-
-    public void setDestination(Location destination) {
-        this.destination = destination;
-    }
 }

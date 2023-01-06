@@ -2,8 +2,8 @@ package mango.model;
 
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 public class Ride {
@@ -26,15 +26,14 @@ public class Ride {
     private Driver driver;
 
     @ManyToMany
-    private ArrayList<Passenger> passengers;
+    private List<Passenger> passengers;
 
     @Column(name = "ESTIMATEDTIMEINMINUTES", nullable = true)
     private Integer estimatedTimeInMinutes;
 
-    @ManyToOne
-    @JoinColumn(name = "VEHICLETYPE", referencedColumnName = "vehicleType")
+    @Column(name = "VEHICLETYPE", nullable = false)
     @Enumerated(EnumType.STRING)
-    private Vehicle vehicleType;
+    private Vehicle.Type vehicleType;
 
     @Column(name = "BABYTRANSPORT", nullable = false)
     private boolean babyTransport;
@@ -47,24 +46,24 @@ public class Ride {
     private Status status;
 
     @OneToMany(mappedBy = "id")
-    private ArrayList<RideLocation> locations;
+    private List<RideLocation> locations;
 
     @OneToOne(mappedBy = "ride")
     private Rejection rejection;
 
     @OneToMany(mappedBy = "ride")
-    private ArrayList<Panic> panic;
+    private List<Panic> panic;
 
     @OneToMany(mappedBy = "ride")
-    private ArrayList<UserMessage> userMessages;
+    private List<UserMessage> userMessages;
 
     @OneToMany(mappedBy = "ride")
-    private ArrayList<ReviewOverview> reviewOverview;
+    private List<ReviewOverview> reviewOverview;
 
     public enum Status{pending, accepted, rejected, active, finished, cancelled}
 
 
-    public Ride(Driver driver, ArrayList<RideLocation> locations, ArrayList<Passenger> passengers, Vehicle vehicleType, boolean babyTransport, boolean petTransport){
+    public Ride(Driver driver, List<RideLocation> locations, List<Passenger> passengers, Vehicle.Type vehicleType, boolean babyTransport, boolean petTransport){
         this.id = 0;
         this.driver = driver;
         this.locations = locations;
@@ -81,27 +80,27 @@ public class Ride {
 
     public Ride(){}
 
-    public ArrayList<RideLocation> getLocations() {
+    public List<RideLocation> getLocations() {
         return locations;
     }
 
-    public void setLocations(ArrayList<RideLocation> locations) {
+    public void setLocations(List<RideLocation> locations) {
         this.locations = locations;
     }
 
-    public ArrayList<Passenger> getPassengers() {
+    public List<Passenger> getPassengers() {
         return passengers;
     }
 
-    public void setPassengers(ArrayList<Passenger> passengers) {
+    public void setPassengers(List<Passenger> passengers) {
         this.passengers = passengers;
     }
 
-    public Vehicle getVehicleType() {
+    public Vehicle.Type getVehicleType() {
         return vehicleType;
     }
 
-    public void setVehicleType(Vehicle vehicleType) {
+    public void setVehicleType(Vehicle.Type vehicleType) {
         this.vehicleType = vehicleType;
     }
 
