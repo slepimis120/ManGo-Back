@@ -2,6 +2,7 @@ package mango.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import mango.dto.ExpandedUserDTO;
 
@@ -9,9 +10,11 @@ import mango.dto.ExpandedUserDTO;
 @DiscriminatorValue("PASSENGER")
 public class Passenger extends User{
 
+	@JsonBackReference
 	@ManyToMany(mappedBy = "passengers")
 	private List<Ride> rides;
 
+	@JsonBackReference
 	@OneToMany(mappedBy = "passengers")
 	private List <Review> reviews;
 

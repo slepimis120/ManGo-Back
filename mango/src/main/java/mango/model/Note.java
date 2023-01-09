@@ -1,5 +1,6 @@
 package mango.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,6 +25,7 @@ public class Note {
 	private LocalDateTime date;
 
 	@ManyToOne
+	@JsonManagedReference
 	@JoinColumn(name = "USERID",  referencedColumnName = "id")
 	private User user;
 }

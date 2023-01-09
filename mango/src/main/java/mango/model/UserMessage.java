@@ -1,5 +1,6 @@
 package mango.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -27,6 +28,7 @@ public class UserMessage {
 	@Enumerated(EnumType.STRING)
 	private Type type;
 
+	@JsonManagedReference
 	@ManyToOne
 	@JoinColumn(name = "RIDEID",  referencedColumnName = "id")
 	private Ride ride;

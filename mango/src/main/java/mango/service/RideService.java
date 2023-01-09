@@ -141,8 +141,8 @@ public class RideService implements IRideService {
                 panic.setUser(entry.getValue().getPassengers().get(0));
                 Date date = new Date();
                 panic.setTime(date);
-                panic.setId(panicService.getAllPanic().size() + 1);
-                panicService.getAllPanic().put(panic.getId(), panic);
+                panic.setId(panicService.getAll().size() + 1);
+                panicService.insertNewPanic(panic);
                 return panic;
             }
         }

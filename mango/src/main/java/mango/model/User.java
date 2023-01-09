@@ -1,6 +1,8 @@
 package mango.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.ToString;
 import mango.dto.ExpandedUserDTO;
@@ -41,14 +43,12 @@ public class User {
 	@Column(name = "BLOCKED", nullable = false)
 	private boolean blocked;
 
-	@OneToMany(mappedBy = "user")
-	@ToString.Exclude
-	@JsonIgnoreProperties
+	@JsonBackReference
+	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
 	private List<Note> note;
 
-	@OneToMany(mappedBy = "userId")
-	@ToString.Exclude
-	@JsonIgnoreProperties
+	@JsonBackReference
+	@OneToMany(mappedBy = "user")
 	private List<Panic> panic;
 	
 	public User(Integer id, String firstName, String lastName, String profilePictureURL, String phoneNumber, String email,

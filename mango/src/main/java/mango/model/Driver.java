@@ -2,6 +2,8 @@ package mango.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
@@ -21,6 +23,7 @@ public class Driver extends User{
 	@ToString.Exclude
 	private DriverDocument driverDocument;
 
+	@JsonBackReference
 	@OneToMany(mappedBy = "driver")
 	@ToString.Exclude
 	private List<Ride> rides;

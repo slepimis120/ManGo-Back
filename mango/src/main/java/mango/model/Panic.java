@@ -1,5 +1,6 @@
 package mango.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.Date;
@@ -12,11 +13,13 @@ public class Panic {
     private Integer id;
 
     @ManyToOne
+    @JsonManagedReference
     @JoinColumn(name = "USERID",  referencedColumnName = "id")
-    private User userId;
+    private User user;
 
     @ManyToOne
-    @JoinColumn(name = "RIDEID",  referencedColumnName = "id")
+    @JsonManagedReference
+    @JoinColumn(name = "RIDE",  referencedColumnName = "id")
     private Ride ride;
 
     @Column(name = "TIME", nullable = false)
@@ -27,7 +30,7 @@ public class Panic {
 
     public Panic(Integer id, User user, Ride ride, Date time, String reason) {
         this.id = id;
-        this.userId = user;
+        this.user = user;
         this.ride = ride;
         this.time = time;
         this.reason = reason;
@@ -44,11 +47,11 @@ public class Panic {
     }
 
     public User getUser() {
-        return userId;
+        return user;
     }
 
     public void setUser(User user) {
-        this.userId = user;
+        this.user = user;
     }
 
     public Ride getRide() {

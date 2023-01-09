@@ -19,7 +19,8 @@ public class VehicleService {
     private LocationRepository locationRepository;
 
     public Vehicle findOne(Integer id) {
-        return vehicleRepository.findById(id).orElseGet(null);
+        Vehicle vehicle =  vehicleRepository.findById(id).orElseGet(null);
+        return vehicle;
     }
 
     public List<Vehicle> findAll() {

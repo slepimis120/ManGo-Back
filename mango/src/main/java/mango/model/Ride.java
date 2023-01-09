@@ -1,5 +1,7 @@
 package mango.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.Date;
@@ -21,11 +23,13 @@ public class Ride {
     @Column(name = "TOTALCOST", nullable = true)
     private Integer totalCost;
 
+    @JsonManagedReference
     @ManyToOne
     @JoinColumn(name = "DRIVERID",  referencedColumnName = "id")
     private Driver driver;
 
-    @ManyToMany
+    @JsonManagedReference
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<Passenger> passengers;
 
     @Column(name = "ESTIMATEDTIMEINMINUTES", nullable = true)
@@ -45,18 +49,22 @@ public class Ride {
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    @OneToMany(mappedBy = "id")
+    @JsonManagedReference
+    @OneToMany(mappedBy = "id", fetch = FetchType.EAGER)
     private List<RideLocation> locations;
 
     @OneToOne(mappedBy = "ride")
     private Rejection rejection;
 
+    @JsonBackReference
     @OneToMany(mappedBy = "ride")
     private List<Panic> panic;
 
+    @JsonBackReference
     @OneToMany(mappedBy = "ride")
     private List<UserMessage> userMessages;
 
+    @JsonBackReference
     @OneToMany(mappedBy = "ride")
     private List<ReviewOverview> reviewOverview;
 

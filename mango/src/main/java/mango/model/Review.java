@@ -1,5 +1,6 @@
 package mango.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,6 +24,7 @@ public class Review {
     @Column(name = "COMMENT", nullable = false)
     private String comment;
 
+    @JsonManagedReference
     @ManyToOne
     @JoinColumn(name = "PASSENGERID",  referencedColumnName = "id")
     private Passenger passengers;

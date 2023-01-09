@@ -30,7 +30,7 @@ public class VehicleController {
 
         Vehicle vehicle = service.findOne(id);
         if (vehicle == null){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Vehicle does not exist!");
         }
 
         LocationDTOMapper mapper = new LocationDTOMapper(new ModelMapper());
@@ -38,7 +38,7 @@ public class VehicleController {
         service.insertNewLocation(location);
         vehicle.setCurrentLocation(location);
 
-        vehicle = service.save(vehicle);
-        return new ResponseEntity(vehicle, HttpStatus.NO_CONTENT);
+        service.save(vehicle);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body("Coordinates successfully updated");
     }
 }
