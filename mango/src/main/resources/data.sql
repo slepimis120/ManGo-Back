@@ -28,7 +28,11 @@ VALUES ('MOMIR', 'linkSlika', 1),
 
 INSERT INTO LOCATION (ADDRESS, LATITUDE, LONGITUDE)
 VALUES ('Janka Čmelika 23', 45.257030, 19.813430),
-       ('Miše Dimitrijevića 43', 45.243832, 19.830820);
+       ('Miše Dimitrijevića 43', 45.243832, 19.830820),
+       ('Faculty of Technical Sciences', 45.246520, 19.851710),
+       ('Srpsko Narodno Pozorište', 45.255359, 19.843049),
+       ('Autobuska Stanica Novi Sad', 45.264706, 19.828317),
+       ('Lazino Tele', 45.256873, 19.8451709);
 
 
 
@@ -44,7 +48,7 @@ VALUES ('Hey Yo Hey Yo Hey Yo', '2023-04-01T04:49:27Z', 1),
 
 
 
-INSERT INTO RIDE (STARTTIME, ENDTIME, TOTALCOST, DRIVERID, ESTIMATEDTIMEINMINUTES, VEHICLETYPE, BABYTRANSPORT, PETTRANSPORT, STATUS)
+INSERT INTO RIDE (STARTTIME, ENDTIME, TOTALCOST, DRIVER, ESTIMATEDTIMEINMINUTES, VEHICLETYPE, BABYTRANSPORT, PETTRANSPORT, STATUS)
 VALUES ('2023-01-14T04:50:15Z', null, null, 1, null, 'STANDARD', false, false, 'pending'),
        ('2022-12-10T13:35:49Z', '2022-12-12T04:50:09Z', 350, 2, 30, 'VAN', false, false, 'finished'),
        ('2022-12-28T22:20:39Z', '2022-12-28T23:50:08Z', 680, 1, 90, 'STANDARD', false, false, 'finished'),
@@ -58,29 +62,29 @@ VALUES ('Ne ide mi se do Miše Dimitrijevića', '2010-05-07T04:50:05Z', 4);
 
 
 INSERT INTO RIDE_PASSENGERS (RIDES_ID, PASSENGERS_ID)
-VALUES(1, 1),
-      (2, 1),
-      (2, 2);
+VALUES(1, 5),
+      (2, 5),
+      (2, 6),
+      (3, 7),
+      (3, 8),
+      (4, 9),
+      (4, 10);
 
 
 
 INSERT INTO RIDE_LOCATION (DEPARTURE, DESTINATION, RIDEID)
 VALUES (1, 2, 1),
-       (2, 1, 2);
+       (2, 1, 2),
+       (3, 4, 3),
+       (5, 6, 4);
 
 
 
-INSERT INTO REVIEW (RIDEID, RATING, COMMENT, PASSENGERID)
-VALUES (2, 5, 'Sjajna voznja', 1),
-       (2, 4, 'Pa okej auto šta ja znam', 1),
-       (2, 3, 'Dosadila vožnja', 2),
-       (2, 4, 'Okej auto', 2);
-
-
-
-INSERT INTO REVIEW_OVERVIEW(DRIVERREVIEW, VEHICLEREVIEW, RIDEID)
-VALUES (1, 2, 2),
-       (3, 4, 2);
+INSERT INTO REVIEW (RIDEID, RATING, COMMENT, PASSENGERID, REVIEWTYPE)
+VALUES (2, 5, 'Sjajna voznja', 5, 'DRIVER'),
+       (2, 4, 'Pa okej auto šta ja znam', 5, 'VEHICLE'),
+       (2, 3, 'Dosadila vožnja', 6, 'DRIVER'),
+       (2, 4, 'Okej auto', 6, 'VEHICLE');
 
 
 
@@ -97,4 +101,26 @@ VALUES(1, 1, '2023-01-14T04:50:15Z', 'Mnogo je dosadan vozac :/');
 
 INSERT INTO WORK_HOUR(STARTTIME, ENDTIME, DRIVERID)
 VALUES('2023-01-14T04:50:15Z', '2023-01-14T06:50:15Z', 1);
+
+
+
+
+INSERT INTO FAVORITE_LOCATIONS(FAVORITENAME, VEHICLETYPE, BABYTRANSPORT, PETTRANSPORT)
+VALUES('Kuća - Poso', 'STANDARD', true, false),
+      ('Faks', 'STANDARD', false, false);
+
+
+
+
+INSERT INTO FAVORITE_LOCATIONS_LOCATIONS(FAVORITE_LOCATIONS_ID, LOCATIONS_ID)
+VALUES(1, 1),
+      (2, 2);
+
+
+
+
+INSERT INTO USERS_FAVORITE_LOCATIONS(PASSENGERS_ID, FAVORITE_LOCATIONS_ID)
+VALUES(5, 1),
+      (5, 2);
+
 

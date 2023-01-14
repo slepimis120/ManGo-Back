@@ -3,25 +3,29 @@ package mango.dto;
 import mango.model.Review;
 
 import java.util.Collection;
+import java.util.List;
 
 public class ReviewResponseDTO {
 
-    private Collection<Review> results;
+    private List<ReviewDTO> results;
 
     private Integer totalCount;
 
-    public ReviewResponseDTO(Collection<Review> results, Integer totalCount){
+    public ReviewResponseDTO(List<ReviewDTO> results, Integer totalCount){
         this.results = results;
         this.totalCount = totalCount;
     }
 
-    public ReviewResponseDTO(){}
+    public ReviewResponseDTO(){
+        this.results = null;
+        this.totalCount = 0;
+    }
 
-    public Collection<Review> getResults() {
+    public List<ReviewDTO> getResults() {
         return results;
     }
 
-    public void setResults(Collection<Review> results) {
+    public void setResults(List<ReviewDTO> results) {
         this.results = results;
     }
 

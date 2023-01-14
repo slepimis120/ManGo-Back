@@ -19,8 +19,7 @@ public class VehicleService {
     private LocationRepository locationRepository;
 
     public Vehicle findOne(Integer id) {
-        Vehicle vehicle =  vehicleRepository.findById(id).orElseGet(null);
-        return vehicle;
+        return vehicleRepository.findById(id).orElse(null);
     }
 
     public List<Vehicle> findAll() {
@@ -33,5 +32,13 @@ public class VehicleService {
 
     public void insertNewLocation(Location location){
         locationRepository.save(location);
+    }
+
+    public boolean ifVehicleExists(Integer id){
+        return vehicleRepository.findById(id).orElse(null) != null;
+    }
+
+    public Vehicle getVehicleByDriverId(Integer id){
+        return vehicleRepository.getVehicleByDriverId(id);
     }
 }

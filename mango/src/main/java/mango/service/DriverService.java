@@ -1,15 +1,14 @@
 package mango.service;
 import mango.dto.*;
 import mango.mapper.DriverDocumentDTOMapper;
-import mango.mapper.LocationDTOMapper;
 import mango.mapper.WorkHourDTOMapper;
 import mango.model.*;
+import mango.repository.DriverRepository;
+import mango.repository.RideRepository;
 import mango.service.interfaces.IUserService;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import org.modelmapper.ModelMapper;
@@ -20,18 +19,21 @@ import org.springframework.stereotype.Service;
 @Service
 public class DriverService implements IUserService {
 
+	@Autowired
+	private DriverRepository driverRepository;
+
+	@Autowired
+	private RideRepository rideRepository;
+
 	public static Map<Integer, Driver> allDrivers = new HashMap<Integer, Driver>();
 	public static Map<Integer, DriverDocument> allDocuments = new HashMap<Integer, DriverDocument>();
 	public static Map<Integer, WorkHour> allWorkHours = new HashMap<Integer, WorkHour>();
 
 	VehicleService vehicleService;
-	RideService rideService;
-
 
 	@Autowired
-	public DriverService(@Lazy VehicleService vehicleService, @Lazy RideService rideService){
+	public DriverService(@Lazy VehicleService vehicleService){
 		this.vehicleService = vehicleService;
-		this.rideService = rideService;
 	}
 	
 	@Override
@@ -235,14 +237,21 @@ public class DriverService implements IUserService {
 		RideCountDTO count = new RideCountDTO();
 		ArrayList<Ride> rideList = new ArrayList<Ride>();
 		Integer rideCount = 0;
-		for (Map.Entry<Integer, Ride> entry : rideService.getAllRides().entrySet()) {
-			if(entry.getValue().getDriver().getId().equals(id)){
-				rideList.add(entry.getValue());
-				rideCount = rideCount + 1;
-			}
+		for (Ride ride : findRidesByDriver(id)) {
+			rideList.add(ride);
+			rideCount = rideCount + 1;
 		}
 		count.setResults(rideList);
 		count.setTotalCount(rideCount);
 		return count;
+	}
+
+
+	public boolean ifDriverExists(Integer id){
+		return driverRepository.findById(id).orElse(null) != null;
+	}
+
+	public List<Ride> findRidesByDriver(Integer driverId){
+		return rideRepository.findRidesByDriver(driverId);
 	}
 }

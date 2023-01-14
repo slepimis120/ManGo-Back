@@ -2,14 +2,14 @@ package mango.dto;
 
 import mango.model.Ride;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class RideCountDTO {
     private Integer totalCount;
 
-    private ArrayList<Ride> results;
+    private List<Ride> results;
 
-    public RideCountDTO(Integer totalCount, ArrayList<Ride> results){
+    public RideCountDTO(Integer totalCount, List<Ride> results){
         this.totalCount = totalCount;
         this.results = results;
     }
@@ -25,11 +25,11 @@ public class RideCountDTO {
         this.totalCount = totalCount;
     }
 
-    public ArrayList<Ride> getResults() {
+    public List<Ride> getResults() {
         return results;
     }
 
-    public void setResults(ArrayList<Ride> results) {
+    public void setResults(List<Ride> results) {
         this.results = results;
     }
 }

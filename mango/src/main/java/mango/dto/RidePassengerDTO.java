@@ -1,5 +1,7 @@
 package mango.dto;
 
+import mango.model.Passenger;
+
 public class RidePassengerDTO {
 
     private Integer id;
@@ -12,6 +14,11 @@ public class RidePassengerDTO {
     }
 
     public RidePassengerDTO(){}
+
+    public RidePassengerDTO(Passenger passenger){
+        this.id = passenger.getId();
+        this.email = passenger.getEmail();
+    }
 
     public Integer getId() {
         return id;

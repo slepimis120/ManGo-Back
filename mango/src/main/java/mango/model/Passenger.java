@@ -3,8 +3,10 @@ package mango.model;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import mango.dto.ExpandedUserDTO;
+import mango.dto.RidePassengerDTO;
 
 @Entity
 @DiscriminatorValue("PASSENGER")
@@ -17,6 +19,10 @@ public class Passenger extends User{
 	@JsonBackReference
 	@OneToMany(mappedBy = "passengers")
 	private List <Review> reviews;
+
+	@JsonManagedReference
+	@ManyToMany(fetch = FetchType.EAGER)
+	private List<FavoriteLocations> favoriteLocations;
 
 	public Passenger(Integer id, String firstName, String lastName, String profilePictureURL, String phoneNumber, String email,
 			String address, String password, boolean blocked) {
@@ -31,7 +37,12 @@ public class Passenger extends User{
 		super(data);
 	}
 
-	public String getName() {
+    public Passenger(RidePassengerDTO passengerDTO) {
+		this.setId(passengerDTO.getId());
+		this.setEmail(passengerDTO.getEmail());
+    }
+
+    public String getName() {
 		return super.getName();
 	}
 

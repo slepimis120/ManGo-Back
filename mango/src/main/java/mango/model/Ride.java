@@ -3,7 +3,9 @@ package mango.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import mango.dto.*;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -25,7 +27,7 @@ public class Ride {
 
     @JsonManagedReference
     @ManyToOne
-    @JoinColumn(name = "DRIVERID",  referencedColumnName = "id")
+    @JoinColumn(name = "DRIVER",  referencedColumnName = "id")
     private Driver driver;
 
     @JsonManagedReference
@@ -50,10 +52,10 @@ public class Ride {
     private Status status;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "id", fetch = FetchType.EAGER)
-    private List<RideLocation> locations;
+    @OneToMany(mappedBy = "ride", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<RideLocation> locations = new ArrayList<RideLocation>();
 
-    @OneToOne(mappedBy = "ride")
+    @OneToOne(mappedBy = "ride", cascade = CascadeType.ALL)
     private Rejection rejection;
 
     @JsonBackReference
@@ -66,7 +68,7 @@ public class Ride {
 
     @JsonBackReference
     @OneToMany(mappedBy = "ride")
-    private List<ReviewOverview> reviewOverview;
+    private List<Review> reviews;
 
     public enum Status{pending, accepted, rejected, active, finished, cancelled}
 
@@ -87,6 +89,26 @@ public class Ride {
     }
 
     public Ride(){}
+
+    public Ride(CreateRideDTO createRideDTO){
+        this.driver = null;
+        for(RideLocationDTO rideLocationDTO : createRideDTO.getLocations()){
+            this.locations.add(new RideLocation(rideLocationDTO));
+        }
+        this.passengers = new ArrayList<>();
+        for(RidePassengerDTO passengerDTO : createRideDTO.getPassengers()){
+            this.passengers.add(new Passenger(passengerDTO));
+        }
+        this.vehicleType = Vehicle.Type.valueOf(createRideDTO.getVehicleType());
+        this.babyTransport = createRideDTO.isBabyTransport();
+        this.petTransport = createRideDTO.isPetTransport();
+        this.startTime = null;
+        this.endTime = null;
+        this.totalCost = null;
+        this.estimatedTimeInMinutes = null;
+        this.status = Status.pending;
+    }
+
 
     public List<RideLocation> getLocations() {
         return locations;

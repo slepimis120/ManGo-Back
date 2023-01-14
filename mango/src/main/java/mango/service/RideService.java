@@ -1,155 +1,129 @@
 package mango.service;
 
+import mango.dto.GetFavoriteLocationsDTO;
+import mango.dto.SendFavoriteLocationsDTO;
 import mango.model.*;
-import mango.service.interfaces.IRideService;
+import mango.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Service
-public class RideService implements IRideService {
-    private Map<Integer, Ride> allRides = new HashMap<Integer, Ride>();
-    PanicService panicService;
+public class RideService{
 
     @Autowired
-    public RideService(PanicService panicService){
-        this.panicService = panicService;
-    }
+    private RideRepository rideRepository;
 
-    @Override
-    public Collection<Ride> getAll() {
-        return this.allRides.values();
-    }
-
-    @Override
-    public Ride find(Integer rideId) {
-        Ride found = allRides.get(rideId);
-        if (found != null)
-            return allRides.get(rideId);
-        return null;
-    }
+    @Autowired
+    private PanicRepository panicRepository;
+    @Autowired
+    private FavoriteLocationRepository favoriteLocationRepository;
 
 
-    @Override
-    public Ride findByDriver(Integer driverId) {
-        for (Map.Entry<Integer, Ride> entry : allRides.entrySet()) {
-            if (entry.getValue().getDriver() != null && entry.getValue().getDriver().getId().equals(driverId) && entry.getValue().getEndTime() == null) {
-                return entry.getValue();
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public Ride findByPassenger(Integer passengerId) {
-        for (Map.Entry<Integer, Ride> entry : allRides.entrySet()) {
-            for(int j = 0; j < entry.getValue().getPassengers().size(); j++){
-                if(entry.getValue().getPassengers() != null && entry.getValue().getPassengers().get(j).getId().equals(passengerId)  && entry.getValue().getEndTime() == null) {
-                    return entry.getValue();
-                }
-            }
-        }
-        return null;
-    }
-
-    @Override
     public Ride insert(Ride ride) {
-        int size = allRides.size();
-        ride.setId(size + 1);
         ride.setStatus(Ride.Status.pending);
-        allRides.put(ride.getId(), ride);
-
-        Driver driver = new Driver();
-        driver.setId(1);
-        driver.setEmail("user@example.com");
-        ride.setDriver(driver);
-
-        Rejection rejection = new Rejection();
-        rejection.setReason("Ride is canceled due to previous problems with the passenger");
         Date date = new Date();
-        rejection.setTimeOfRejection(date);
-        ride.setRejection(rejection);
+        ride.setStartTime(date);
+        for(RideLocation location: ride.getLocations()){
+            location.setRide(ride);
+        }
+        save(ride);
         return ride;
     }
 
-    @Override
     public Ride cancelByPassenger(Integer rideId) {
-        for (Map.Entry<Integer, Ride> entry : allRides.entrySet()) {
-            if(entry.getValue().getId().equals(rideId)){
-                entry.getValue().setStatus(Ride.Status.cancelled);
-                return entry.getValue();
-            }
-        }
-        return null;
+        Ride ride = findById(rideId);
+        ride.setStatus(Ride.Status.cancelled);
+        save(ride);
+        return ride;
     }
 
-    @Override
     public Ride accept(Integer rideId) {
-        for (Map.Entry<Integer, Ride> entry : allRides.entrySet()) {
-            if(entry.getValue().getId().equals(rideId)){
-                entry.getValue().setStatus(Ride.Status.accepted);
-                Date date = new Date();
-                entry.getValue().setStartTime(date);
-                return entry.getValue();
-            }
-        }
-        return null;
+        Ride ride = findById(rideId);
+        ride.setStatus(Ride.Status.accepted);
+        Date date = new Date();
+        ride.setStartTime(date);
+        save(ride);
+        return ride;
     }
 
-    @Override
     public Ride end(Integer rideId) {
-        for (Map.Entry<Integer, Ride> entry : allRides.entrySet()) {
-            if(entry.getValue().getId().equals(rideId)){
-                Date date = new Date();
-                entry.getValue().setEndTime(date);
-                entry.getValue().setStatus(Ride.Status.finished);
-                if(entry.getValue().getStartTime() != null) {
-                    long diffInMillies = Math.abs(date.getTime() - entry.getValue().getStartTime().getTime());
-                    Integer diff = (int) TimeUnit.MINUTES.convert(diffInMillies, TimeUnit.MILLISECONDS);
-                    entry.getValue().setEstimatedTimeInMinutes(diff);
-                }
-                return entry.getValue();
-            }
+        Ride ride = findById(rideId);
+        Date date = new Date();
+        ride.setEndTime(date);
+        ride.setStatus(Ride.Status.finished);
+        if(ride.getStartTime() != null) {
+            long diffInMillies = Math.abs(date.getTime() - ride.getStartTime().getTime());
+            Integer diff = (int) TimeUnit.MINUTES.convert(diffInMillies, TimeUnit.MILLISECONDS);
+            ride.setEstimatedTimeInMinutes(diff);
         }
-        return null;
+        save(ride);
+        return ride;
     }
 
-    @Override
     public Ride cancelByDriver(Integer rideId, Rejection rejection) {
         Date date = new Date();
         rejection.setTimeOfRejection(date);
-        for (Map.Entry<Integer, Ride> entry : allRides.entrySet()) {
-            if (entry.getValue().getId().equals(rideId)) {
-                entry.getValue().setStatus(Ride.Status.cancelled);
-                entry.getValue().setRejection(rejection);
-                return entry.getValue();
-            }
-        }
-        return null;
+        Ride ride = findById(rideId);
+        ride.setStatus(Ride.Status.cancelled);
+        ride.setRejection(rejection);
+        save(ride);
+        return ride;
     }
 
-    @Override
     public Panic panic(Integer rideId, Panic panic) {
-        for (Map.Entry<Integer, Ride> entry : allRides.entrySet()) {
-            if (entry.getValue().getId().equals(rideId)) {
-                panic.setRide(entry.getValue());
-                panic.setUser(entry.getValue().getPassengers().get(0));
-                Date date = new Date();
-                panic.setTime(date);
-                panic.setId(panicService.getAll().size() + 1);
-                panicService.insertNewPanic(panic);
-                return panic;
-            }
+        Ride ride = findById(rideId);
+        panic.setRide(ride);
+        panic.setUser(ride.getPassengers().get(0));
+        Date date = new Date();
+        panic.setTime(date);
+        panicRepository.save(panic);
+        return panic;
+    }
+
+    public FavoriteLocations addFavoriteLocations(GetFavoriteLocationsDTO getFavoriteLocationsDTO){
+        return saveFavoriteLocations(new FavoriteLocations(getFavoriteLocationsDTO));
+    }
+
+    public List<SendFavoriteLocationsDTO> getFavoriteLocations(Integer id){
+        List<SendFavoriteLocationsDTO> sendFavoriteLocationsDTOList = new ArrayList<>();
+        for(FavoriteLocations favoritelocations : favoriteLocationRepository.getByUserId(id)){
+            sendFavoriteLocationsDTOList.add(new SendFavoriteLocationsDTO(favoritelocations));
         }
+        return sendFavoriteLocationsDTOList;
+    }
+
+    public FavoriteLocations deleteFavoriteLocations(Integer id){
         return null;
     }
 
-    public Map<Integer, Ride> getAllRides(){
-        return allRides;
+    public Ride save(Ride ride) {
+        return rideRepository.save(ride);
+    }
+
+    public boolean ifRideExists(Integer id){
+        return rideRepository.findById(id).orElse(null) != null;
+    }
+
+    public Ride findById(Integer id){
+        return rideRepository.findById(id).orElse(null);
+    }
+
+    public Ride findActiveByDriver(Integer passengerId){
+        return rideRepository.findActiveByDriver(passengerId);
+    }
+
+    public Ride findActiveByPassenger(Integer passengerId){
+        return rideRepository.findActiveByPassenger(passengerId);
+    }
+
+    public Integer getTotalCount(Integer id){
+        return favoriteLocationRepository.getTotalCount(id);
+    }
+
+    public FavoriteLocations saveFavoriteLocations(FavoriteLocations favoriteLocations){
+        return favoriteLocationRepository.save(favoriteLocations);
     }
 }

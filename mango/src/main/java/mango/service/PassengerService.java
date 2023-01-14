@@ -6,6 +6,8 @@ import mango.dto.UserDTO;
 import mango.dto.UserResponseDTO;
 import mango.model.Passenger;
 import mango.model.Ride;
+import mango.repository.PassengerRepository;
+import mango.repository.RideRepository;
 import mango.service.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -21,12 +24,11 @@ public class PassengerService implements IUserService{
 	
 	public static Map<Integer, Passenger> allPassengers = new HashMap<Integer, Passenger>();
 
-	RideService rideService;
+	@Autowired
+	private RideRepository rideRepository;
 
 	@Autowired
-	public PassengerService(RideService rideService){
-		this.rideService = rideService;
-	}
+	private PassengerRepository passengerRepository;
 
 	@Override
 	public UserDTO insert(ExpandedUserDTO data) {
@@ -88,10 +90,10 @@ public class PassengerService implements IUserService{
 		RideCountDTO count = new RideCountDTO();
 		ArrayList<Ride> rideList = new ArrayList<Ride>();
 		Integer rideCount = 0;
-		for (Map.Entry<Integer, Ride> entry : rideService.getAllRides().entrySet()) {
-			for (Passenger passenger: entry.getValue().getPassengers()){
+		for (Ride entry : rideRepository.findAll()) {
+			for (Passenger passenger: entry.getPassengers()){
 				if(passenger.getId().equals(id)){
-					rideList.add(entry.getValue());
+					rideList.add(entry);
 					rideCount = rideCount + 1;
 				}
 			}
@@ -99,5 +101,15 @@ public class PassengerService implements IUserService{
 		count.setResults(rideList);
 		count.setTotalCount(rideCount);
 		return count;
+	}
+
+	public boolean isPassengerInRide(Integer rideId, Integer passengerId){
+		List<Passenger> passengers = passengerRepository.getPassengerByRideId(rideId);
+		for(Passenger passenger : passengers){
+			if(passenger.getId().equals(passengerId)){
+				return true;
+			}
+		}
+		return false;
 	}
 }

@@ -5,11 +5,8 @@ import mango.dto.VehicleDTO;
 import mango.mapper.LocationDTOMapper;
 import mango.model.Location;
 import mango.model.Vehicle;
-import mango.repository.VehicleRepository;
 import mango.service.VehicleService;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
