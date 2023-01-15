@@ -1,18 +1,15 @@
 package mango.service;
 import mango.dto.*;
 import mango.mapper.DriverDocumentDTOMapper;
-import mango.mapper.LocationDTOMapper;
 import mango.mapper.WorkHourDTOMapper;
 import mango.model.*;
+import mango.repository.DriverRepository;
+import mango.repository.RideRepository;
 import mango.service.interfaces.IUserService;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,18 +19,21 @@ import org.springframework.stereotype.Service;
 @Service
 public class DriverService implements IUserService {
 
+	@Autowired
+	private DriverRepository driverRepository;
+
+	@Autowired
+	private RideRepository rideRepository;
+
 	public static Map<Integer, Driver> allDrivers = new HashMap<Integer, Driver>();
 	public static Map<Integer, DriverDocument> allDocuments = new HashMap<Integer, DriverDocument>();
 	public static Map<Integer, WorkHour> allWorkHours = new HashMap<Integer, WorkHour>();
 
 	VehicleService vehicleService;
-	RideService rideService;
-
 
 	@Autowired
-	public DriverService(@Lazy VehicleService vehicleService, @Lazy RideService rideService){
+	public DriverService(@Lazy VehicleService vehicleService){
 		this.vehicleService = vehicleService;
-		this.rideService = rideService;
 	}
 	
 	@Override
@@ -128,15 +128,21 @@ public class DriverService implements IUserService {
 		WorkHour tmp = null;
         WorkHourDTOMapper mapper = new WorkHourDTOMapper(new ModelMapper());
 		ArrayList<WorkHourDTO> workHours = new ArrayList<WorkHourDTO>();
-		DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
-		LocalDateTime fromTime = LocalDateTime.parse(from, format);
-		LocalDateTime toTime = LocalDateTime.parse(to, format);
+		Date fromTime= null;
+		Date toTime = null;
+		try {
+			fromTime = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(from);
+			toTime = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(to);
+		} catch (ParseException e) {
+			throw new RuntimeException(e);
+		}
+
 		
 		for(Map.Entry<Integer, WorkHour> entry : allWorkHours.entrySet()) {
 			tmp = entry.getValue();
-			if(tmp.getDriverId() == id){
-				if((tmp.getStart().isAfter(fromTime) || tmp.getStart().isEqual(fromTime)) &&
-						(tmp.getEnd().isBefore(toTime) || tmp.getEnd().isEqual(toTime))) {
+			if(Objects.equals(tmp.getDriver().getId(), id)){
+				if((tmp.getStart().after(fromTime) || tmp.getStart().equals(fromTime)) &&
+						(tmp.getEnd().before(toTime) || tmp.getEnd().equals(toTime))) {
 			        WorkHourDTO newWorkHour = mapper.fromWorkHourtoDTO(tmp);
 					workHours.add(newWorkHour);
 				}
@@ -147,10 +153,18 @@ public class DriverService implements IUserService {
 	}
 	
 	public WorkHourDTO insertWorkHour(Integer idDriver, Integer id, String start, String end) {
-		DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
-		LocalDateTime startTime = LocalDateTime.parse(start, format);
-		LocalDateTime endTime = LocalDateTime.parse(end, format);
-		WorkHour workHour = new WorkHour(id, startTime, endTime, idDriver);
+		Date startTime = null;
+		Date endTime = null;
+		try {
+			startTime = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(start);
+			endTime = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(end);
+		} catch (ParseException e) {
+			throw new RuntimeException(e);
+		}
+
+		Driver driver = new Driver();
+		driver.setId(idDriver);
+		WorkHour workHour = new WorkHour(id, startTime, endTime, driver);
 		allWorkHours.put(id, workHour);
 		WorkHourDTOMapper mapper = new WorkHourDTOMapper(new ModelMapper());
 		WorkHourDTO newWorkHour = mapper.fromWorkHourtoDTO(workHour);
@@ -172,9 +186,14 @@ public class DriverService implements IUserService {
 
 	public WorkHourDTO updateWorkHour(Integer workingHourId, Integer id, String start, String end) {
 		WorkHour workHour = allWorkHours.get(id);
-		DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
-		LocalDateTime startTime = LocalDateTime.parse(start, format);
-		LocalDateTime endTime = LocalDateTime.parse(end, format);
+		Date startTime = null;
+		Date endTime = null;
+		try {
+			startTime = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(start);
+			endTime = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(end);
+		} catch (ParseException e) {
+			throw new RuntimeException(e);
+		}
 		if(workHour != null) {
 			workHour.setId(workingHourId);
 			workHour.setEnd(endTime);
@@ -187,28 +206,28 @@ public class DriverService implements IUserService {
 	}
 
 	public Vehicle postVehicle(Vehicle vehicle, Integer id){
-		vehicle.getDriverId().setId(id);
-		vehicle.setId(vehicleService.allVehicles().size() + 1);
-		vehicleService.allVehicles().put(vehicle.getId(), vehicle);
+		vehicle.getDriver().setId(id);
+		vehicle.setId(vehicleService.findAll().size() + 1);
+		vehicleService.save(vehicle);
 		return vehicle;
 	}
 
 	public Vehicle getVehicle(Integer id){
 		Vehicle vehicle = null;
-		for (Map.Entry<Integer, Vehicle> entry : vehicleService.allVehicles().entrySet()) {
-			if(entry.getValue().getDriverId().equals(id)){
-				vehicle = entry.getValue();
+		for (Vehicle entry : vehicleService.findAll()) {
+			if(entry.getDriver().equals(id)){
+				vehicle = entry;
 			}
 		}
 		return vehicle;
 	}
 
 	public Vehicle changeVehicle(Integer id,Vehicle vehicle){
-		for (Map.Entry<Integer, Vehicle> entry : vehicleService.allVehicles().entrySet()) {
-			if(entry.getValue().getDriverId().equals(id)){
-				vehicle.setId(entry.getValue().getId());
-				vehicle.setDriverId(entry.getValue().getDriverId());
-				vehicleService.allVehicles().put(entry.getValue().getId(), vehicle);
+		for (Vehicle entry : vehicleService.findAll()) {
+			if(entry.getDriver().equals(id)){
+				vehicle.setId(entry.getId());
+				vehicle.setDriver(entry.getDriver());
+				vehicleService.save(vehicle);
 			}
 		}
 		return vehicle;
@@ -218,14 +237,21 @@ public class DriverService implements IUserService {
 		RideCountDTO count = new RideCountDTO();
 		ArrayList<Ride> rideList = new ArrayList<Ride>();
 		Integer rideCount = 0;
-		for (Map.Entry<Integer, Ride> entry : rideService.getAllRides().entrySet()) {
-			if(entry.getValue().getDriver().getId().equals(id)){
-				rideList.add(entry.getValue());
-				rideCount = rideCount + 1;
-			}
+		for (Ride ride : findRidesByDriver(id)) {
+			rideList.add(ride);
+			rideCount = rideCount + 1;
 		}
 		count.setResults(rideList);
 		count.setTotalCount(rideCount);
 		return count;
+	}
+
+
+	public boolean ifDriverExists(Integer id){
+		return driverRepository.findById(id).orElse(null) != null;
+	}
+
+	public List<Ride> findRidesByDriver(Integer driverId){
+		return rideRepository.findRidesByDriver(driverId);
 	}
 }

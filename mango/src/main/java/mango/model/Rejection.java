@@ -1,12 +1,16 @@
 package mango.model;
 
 import jakarta.persistence.*;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 
 @Entity
+@Data
 public class Rejection {
 
     @Id
@@ -22,28 +26,4 @@ public class Rejection {
     @OneToOne
     @JoinColumn(name = "RIDEID",  referencedColumnName = "id")
     private Ride ride;
-
-    public Rejection(String reason, Date timeOfRejection){
-        this.reason = reason;
-        this.timeOfRejection = timeOfRejection;
-
-    }
-
-    public Rejection(){}
-
-    public String getReason() {
-        return reason;
-    }
-
-    public void setReason(String reason) {
-        this.reason = reason;
-    }
-
-    public Date getTimeOfRejection() {
-        return timeOfRejection;
-    }
-
-    public void setTimeOfRejection(Date timeOfRejection) {
-        this.timeOfRejection = timeOfRejection;
-    }
 }

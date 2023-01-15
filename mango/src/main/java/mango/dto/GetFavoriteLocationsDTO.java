@@ -1,20 +1,23 @@
 package mango.dto;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class CreateRideDTO {
+public class GetFavoriteLocationsDTO {
 
-    private List<RidePassengerDTO> passengers;
-    private String vehicleType;
-    private boolean babyTransport;
-    private boolean petTransport;
+    private String favoriteName;
+
     private List<RideLocationDTO> locations;
 
+    private List<RidePassengerDTO> passengers;
 
+    private String vehicleType;
 
+    private boolean babyTransport;
 
-    public CreateRideDTO(List<RideLocationDTO> locations, List<RidePassengerDTO> passengers, String vehicleType, boolean babyTransport, boolean petTransport){
+    private boolean petTransport;
+
+    public GetFavoriteLocationsDTO(String favoriteName, List<RideLocationDTO> locations, List<RidePassengerDTO> passengers, String vehicleType, boolean babyTransport, boolean petTransport) {
+        this.favoriteName = favoriteName;
         this.locations = locations;
         this.passengers = passengers;
         this.vehicleType = vehicleType;
@@ -22,7 +25,21 @@ public class CreateRideDTO {
         this.petTransport = petTransport;
     }
 
-    public CreateRideDTO(){}
+    public String getFavoriteName() {
+        return favoriteName;
+    }
+
+    public void setFavoriteName(String favoriteName) {
+        this.favoriteName = favoriteName;
+    }
+
+    public List<RideLocationDTO> getLocations() {
+        return locations;
+    }
+
+    public void setLocations(List<RideLocationDTO> locations) {
+        this.locations = locations;
+    }
 
     public List<RidePassengerDTO> getPassengers() {
         return passengers;
@@ -56,11 +73,4 @@ public class CreateRideDTO {
         this.petTransport = petTransport;
     }
 
-    public List<RideLocationDTO> getLocations() {
-        return locations;
-    }
-
-    public void setLocations(List<RideLocationDTO> locations) {
-        this.locations = locations;
-    }
 }

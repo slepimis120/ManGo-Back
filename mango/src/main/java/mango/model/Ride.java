@@ -1,9 +1,13 @@
 package mango.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import mango.dto.*;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 public class Ride {
@@ -21,20 +25,21 @@ public class Ride {
     @Column(name = "TOTALCOST", nullable = true)
     private Integer totalCost;
 
+    @JsonManagedReference
     @ManyToOne
-    @JoinColumn(name = "DRIVERID",  referencedColumnName = "id")
+    @JoinColumn(name = "DRIVER",  referencedColumnName = "id")
     private Driver driver;
 
-    @ManyToMany
-    private ArrayList<Passenger> passengers;
+    @JsonManagedReference
+    @ManyToMany(fetch = FetchType.EAGER)
+    private List<Passenger> passengers;
 
     @Column(name = "ESTIMATEDTIMEINMINUTES", nullable = true)
     private Integer estimatedTimeInMinutes;
 
-    @ManyToOne
-    @JoinColumn(name = "VEHICLETYPE", referencedColumnName = "vehicleType")
+    @Column(name = "VEHICLETYPE", nullable = false)
     @Enumerated(EnumType.STRING)
-    private Vehicle vehicleType;
+    private Vehicle.Type vehicleType;
 
     @Column(name = "BABYTRANSPORT", nullable = false)
     private boolean babyTransport;
@@ -46,25 +51,29 @@ public class Ride {
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    @OneToMany(mappedBy = "id")
-    private ArrayList<RideLocation> locations;
+    @JsonManagedReference
+    @OneToMany(mappedBy = "ride", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<RideLocation> locations = new ArrayList<RideLocation>();
 
-    @OneToOne(mappedBy = "ride")
+    @OneToOne(mappedBy = "ride", cascade = CascadeType.ALL)
     private Rejection rejection;
 
+    @JsonBackReference
     @OneToMany(mappedBy = "ride")
-    private ArrayList<Panic> panic;
+    private List<Panic> panic;
 
+    @JsonBackReference
     @OneToMany(mappedBy = "ride")
-    private ArrayList<UserMessage> userMessages;
+    private List<UserMessage> userMessages;
 
+    @JsonBackReference
     @OneToMany(mappedBy = "ride")
-    private ArrayList<ReviewOverview> reviewOverview;
+    private List<Review> reviews;
 
     public enum Status{pending, accepted, rejected, active, finished, cancelled}
 
 
-    public Ride(Driver driver, ArrayList<RideLocation> locations, ArrayList<Passenger> passengers, Vehicle vehicleType, boolean babyTransport, boolean petTransport){
+    public Ride(Driver driver, List<RideLocation> locations, List<Passenger> passengers, Vehicle.Type vehicleType, boolean babyTransport, boolean petTransport){
         this.id = 0;
         this.driver = driver;
         this.locations = locations;
@@ -81,27 +90,47 @@ public class Ride {
 
     public Ride(){}
 
-    public ArrayList<RideLocation> getLocations() {
+    public Ride(CreateRideDTO createRideDTO){
+        this.driver = null;
+        for(RideLocationDTO rideLocationDTO : createRideDTO.getLocations()){
+            this.locations.add(new RideLocation(rideLocationDTO));
+        }
+        this.passengers = new ArrayList<>();
+        for(RidePassengerDTO passengerDTO : createRideDTO.getPassengers()){
+            this.passengers.add(new Passenger(passengerDTO));
+        }
+        this.vehicleType = Vehicle.Type.valueOf(createRideDTO.getVehicleType());
+        this.babyTransport = createRideDTO.isBabyTransport();
+        this.petTransport = createRideDTO.isPetTransport();
+        this.startTime = null;
+        this.endTime = null;
+        this.totalCost = null;
+        this.estimatedTimeInMinutes = null;
+        this.status = Status.pending;
+    }
+
+
+    public List<RideLocation> getLocations() {
         return locations;
     }
 
-    public void setLocations(ArrayList<RideLocation> locations) {
+    public void setLocations(List<RideLocation> locations) {
         this.locations = locations;
     }
 
-    public ArrayList<Passenger> getPassengers() {
+    public List<Passenger> getPassengers() {
         return passengers;
     }
 
-    public void setPassengers(ArrayList<Passenger> passengers) {
+    public void setPassengers(List<Passenger> passengers) {
         this.passengers = passengers;
     }
 
-    public Vehicle getVehicleType() {
+    public Vehicle.Type getVehicleType() {
         return vehicleType;
     }
 
-    public void setVehicleType(Vehicle vehicleType) {
+    public void setVehicleType(Vehicle.Type vehicleType) {
         this.vehicleType = vehicleType;
     }
 

@@ -3,14 +3,11 @@ package mango.service;
 import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 import mango.dto.*;
 import mango.model.*;
+import mango.repository.RideRepository;
 import mango.service.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,16 +15,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserService implements IUserService{
 
+	@Autowired
+	private RideRepository rideRepository;
+
 	public static Map<Integer, User> allUsers = new HashMap<Integer, User>();
 	public static Map<Integer, Note> allNotes = new HashMap<Integer, Note>();
 	public static Map<Integer, UserMessage> allMessages = new HashMap<Integer, UserMessage>();
 
-	RideService rideService;
-
-	@Autowired
-	public UserService(RideService rideService){
-		this.rideService = rideService;
-	}
 
 	@Override
 	public UserResponseDTO getArray(Integer page, Integer size) {
@@ -97,7 +91,7 @@ public class UserService implements IUserService{
 		ArrayList<NoteDTO> returnList = new ArrayList<NoteDTO>();
 		int i = 0;
 		for (Map.Entry<Integer, Note> entry : allNotes.entrySet()) {
-			if(entry.getValue().getUserId() == id) {
+			if(Objects.equals(entry.getValue().getUser().getId(), id)) {
 				if(i >= start && i < end ){
 					Note currentNote = entry.getValue();
 					DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
@@ -155,27 +149,22 @@ public class UserService implements IUserService{
 
 	public RideCountDTO userRides(Integer id, Integer page, Integer size, String sort, String from, String to){
 		RideCountDTO count = new RideCountDTO();
-		ArrayList<Ride> rideList = new ArrayList<Ride>();
-		Integer rideCount = 0;
-		Integer check = 0;
-		for (Map.Entry<Integer, Ride> entry : rideService.getAllRides().entrySet()) {
-			check = 0;
-			for (Passenger passenger: entry.getValue().getPassengers()){
-				if(passenger.getId().equals(id)){
-					rideList.add(entry.getValue());
-					rideCount = rideCount + 1;
-					check = 1;
-				}
-			}
-			if(check == 0){
-				if(entry.getValue().getDriver().getId().equals(id)){
-					rideList.add(entry.getValue());
-					rideCount = rideCount + 1;
-				}
-			}
+		List<Ride> rideList;
+		if(findRidesByPassenger(id) == null){
+			rideList = findRidesByDriver(id);
+		}else{
+			rideList = findRidesByPassenger(id);
 		}
 		count.setResults(rideList);
-		count.setTotalCount(rideCount);
+		count.setTotalCount(rideList.size());
 		return count;
+	}
+
+	public List<Ride> findRidesByPassenger(Integer passengerId){
+		return rideRepository.findRidesByPassenger(passengerId);
+	}
+
+	public List<Ride> findRidesByDriver(Integer driverId){
+		return rideRepository.findRidesByDriver(driverId);
 	}
 }

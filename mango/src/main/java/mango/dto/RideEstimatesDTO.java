@@ -3,11 +3,12 @@ package mango.dto;
 import mango.model.RideLocation;
 import mango.model.Vehicle;
 
-import java.util.ArrayList;
+import java.util.List;
+
 
 public class RideEstimatesDTO {
 
-    private ArrayList<RideLocation> locations;
+    private List<RideLocation> locations;
 
     private Vehicle.Type vehicleType;
 
@@ -16,7 +17,7 @@ public class RideEstimatesDTO {
     private boolean petTransport;
 
 
-    public RideEstimatesDTO(ArrayList<RideLocation> locations, Vehicle.Type vehicleType, boolean babyTransport, boolean petTransport) {
+    public RideEstimatesDTO(List<RideLocation> locations, Vehicle.Type vehicleType, boolean babyTransport, boolean petTransport) {
         this.locations = locations;
         this.vehicleType = vehicleType;
         this.babyTransport = babyTransport;
@@ -25,11 +26,11 @@ public class RideEstimatesDTO {
 
     public RideEstimatesDTO(){}
 
-    public ArrayList<RideLocation> getLocations() {
+    public List<RideLocation> getLocations() {
         return locations;
     }
 
-    public void setLocations(ArrayList<RideLocation> locations) {
+    public void setLocations(List<RideLocation> locations) {
         this.locations = locations;
     }
 

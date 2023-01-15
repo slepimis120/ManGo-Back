@@ -1,17 +1,18 @@
 package mango.controller;
 
 import mango.dto.ReviewDTO;
+import mango.dto.ReviewOverviewDTO;
 import mango.dto.ReviewResponseDTO;
 import mango.mapper.ReviewDTOMapper;
 import mango.model.Review;
-import mango.model.ReviewOverview;
-import mango.service.interfaces.IReviewService;
-import mango.service.interfaces.IRideService;
+import mango.service.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*")
 @RestController
@@ -19,41 +20,78 @@ import org.springframework.web.bind.annotation.*;
 public class ReviewController {
 
     @Autowired
-    IReviewService service;
+    ReviewService reviewService;
+
+    @Autowired
+    DriverService driverService;
+
+    @Autowired
+    VehicleService vehicleService;
+
+    @Autowired
+    RideService rideService;
+
+    @Autowired
+    PassengerService passengerService;
 
     @PostMapping("/{rideId}/vehicle/{id}")
-    public ResponseEntity sendVehicleReview(@RequestBody ReviewDTO review, @PathVariable Integer id, Integer rideId) {
-        ReviewDTOMapper mapper = new ReviewDTOMapper(new ModelMapper());
-        Review newReview = mapper.fromDTOtoReview(review);
-        Review response = service.sendVehicleReview(id, rideId, newReview);
-        return new ResponseEntity(response, HttpStatus.OK);
+    public ResponseEntity sendVehicleReview(@RequestBody ReviewDTO review, @PathVariable("id") Integer id, @PathVariable("rideId") Integer rideId) {
+        if(!rideService.ifRideExists(rideId)){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ride does not exist!");
+        }else if(!passengerService.isPassengerInRide(rideId, id)){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Passenger does not exist or isn't in mentioned ride!");
+        }{
+            ReviewDTOMapper mapper = new ReviewDTOMapper(new ModelMapper());
+            Review newReview = mapper.fromDTOtoReview(review);
+            newReview.setReviewType(Review.Type.VEHICLE);
+            Review response = reviewService.sendReview(id, rideId, newReview);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }
     }
 
     @GetMapping("/vehicle/{id}")
     public ResponseEntity getVehicleReviews(@PathVariable Integer id) {
-        ReviewResponseDTO response = service.getVehicleReviews(id);
-        return new ResponseEntity(response, HttpStatus.OK);
+        if(!vehicleService.ifVehicleExists(id)){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Vehicle does not exist!");
+        }else{
+            ReviewResponseDTO response = reviewService.getVehicleReviews(id);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }
     }
 
 
     @PostMapping("/{rideId}/driver/{id}")
-    public ResponseEntity sendDriverReview(@RequestBody ReviewDTO review, @PathVariable Integer id, Integer rideId) {
-        ReviewDTOMapper mapper = new ReviewDTOMapper(new ModelMapper());
-        Review newReview = mapper.fromDTOtoReview(review);
-        Review response = service.sendDriverReview(id, rideId, newReview);
-        return new ResponseEntity(response, HttpStatus.OK);
+
+    public ResponseEntity sendDriverReview(@RequestBody ReviewDTO review, @PathVariable("id") Integer id, @PathVariable("rideId") Integer rideId)
+        {
+            if(!rideService.ifRideExists(rideId)){
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ride does not exist!");
+            }else{
+                ReviewDTOMapper mapper = new ReviewDTOMapper(new ModelMapper());
+                Review newReview = mapper.fromDTOtoReview(review);
+                newReview.setReviewType(Review.Type.DRIVER);
+                Review response = reviewService.sendReview(id, rideId, newReview);
+                return ResponseEntity.status(HttpStatus.OK).body(response);
+        }
     }
 
     @GetMapping("/driver/{id}")
     public ResponseEntity getDriverReviews(@PathVariable Integer id) {
-        ReviewResponseDTO response = service.getDriverReviews(id);
-        return new ResponseEntity(response, HttpStatus.OK);
+        if(!driverService.ifDriverExists(id)){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Driver does not exist!");
+        }else{
+            ReviewResponseDTO response = reviewService.getDriverReviews(id);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }
     }
 
     @GetMapping("/{rideId}")
     public ResponseEntity getOverview(@PathVariable Integer rideId) {
-        ReviewOverview response = service.getOverview(rideId);
-        return new ResponseEntity(response, HttpStatus.OK);
+        if(!rideService.ifRideExists(rideId)){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ride does not exist!");
+        }else {
+            List<ReviewOverviewDTO> response = reviewService.getOverview(rideId);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }
     }
-
 }

@@ -1,5 +1,6 @@
 package mango.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -9,9 +10,9 @@ public class Review {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "RIDEID",  referencedColumnName = "id")
-    private Ride rideId;
+    private Ride ride;
 
     @Column(name = "RATING", nullable = false)
     private Integer rating;
@@ -19,23 +20,21 @@ public class Review {
     @Column(name = "COMMENT", nullable = false)
     private String comment;
 
+    @Column(name = "REVIEWTYPE", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Review.Type reviewType;
+
+    @JsonManagedReference
     @ManyToOne
     @JoinColumn(name = "PASSENGERID",  referencedColumnName = "id")
     private Passenger passengers;
 
-
-    @OneToOne(mappedBy = "vehicleReview")
-    private ReviewOverview vehicleReview;
-
-    @OneToOne(mappedBy = "driverReview")
-    private ReviewOverview driverReview;
-
-    public Review(Integer id, Ride rideId, Integer rating, String comment, Passenger passengers){
-        this.id = id;
-        this.rideId = rideId;
+    public Review(Integer ride, Integer rating, String comment, Type reviewType) {
+        this.ride = new Ride();
+        this.ride.setId(ride);
         this.rating = rating;
         this.comment = comment;
-        this.passengers = passengers;
+        this.reviewType = reviewType;
     }
 
     public Review(){}
@@ -46,6 +45,15 @@ public class Review {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Ride getRide() {
+        return ride;
+    }
+
+    public void setRide(Integer id) {
+        this.ride = new Ride();
+        this.ride.setId(id);
     }
 
     public Integer getRating() {
@@ -64,12 +72,12 @@ public class Review {
         this.comment = comment;
     }
 
-    public Ride getRideId() {
-        return rideId;
+    public Type getReviewType() {
+        return reviewType;
     }
 
-    public void setRideId(Ride rideId) {
-        this.rideId = rideId;
+    public void setReviewType(Type reviewType) {
+        this.reviewType = reviewType;
     }
 
     public Passenger getPassengers() {
@@ -78,5 +86,9 @@ public class Review {
 
     public void setPassengers(Passenger passengers) {
         this.passengers = passengers;
+    }
+
+    public enum Type{
+        VEHICLE, DRIVER
     }
 }
