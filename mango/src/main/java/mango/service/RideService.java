@@ -112,6 +112,7 @@ public class RideService{
         return sendFavoriteLocationsDTOList;
     }
 
+
     public FavoriteLocations deleteFavoriteLocations(Integer id){
         return null;
     }
