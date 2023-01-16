@@ -161,8 +161,9 @@ public class RideController {
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
-    @GetMapping("/getAvailableDrivers")
+    @PutMapping("/getAvailableDrivers")
     public ResponseEntity getAvailableDriver(@RequestBody CreateRideDTO createRideDTO) throws IOException {
+        System.out.println("AAAA");
         Ride ride = new Ride(createRideDTO);
         if(rideService.getVehicleCount(ride) == 0){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Selected type of vehicle doesn't exist");

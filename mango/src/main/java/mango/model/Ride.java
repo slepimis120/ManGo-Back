@@ -99,10 +99,10 @@ public class Ride {
         for(RidePassengerDTO passengerDTO : createRideDTO.getPassengers()){
             this.passengers.add(new Passenger(passengerDTO));
         }
-        this.vehicleType = Vehicle.Type.valueOf(createRideDTO.getVehicleType());
+        this.vehicleType = Vehicle.Type.valueOf(createRideDTO.getVehicleType().toUpperCase());
         this.babyTransport = createRideDTO.isBabyTransport();
         this.petTransport = createRideDTO.isPetTransport();
-        this.startTime = null;
+        this.startTime = new Date();
         this.endTime = null;
         this.totalCost = null;
         this.estimatedTimeInMinutes = null;
