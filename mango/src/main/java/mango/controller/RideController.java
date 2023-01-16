@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*")
@@ -157,6 +158,16 @@ public class RideController {
 
     @DeleteMapping("favorites/{id}")
     public ResponseEntity deleteFavoriteRide(@PathVariable Integer id){
+        return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
+
+    @GetMapping("/getAvailableDrivers")
+    public ResponseEntity getAvailableDriver(@RequestBody CreateRideDTO createRideDTO) throws IOException {
+        Ride ride = new Ride(createRideDTO);
+        if(rideService.getVehicleCount(ride) == 0){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Selected type of vehicle doesn't exist");
+        }
+        rideService.getSuitableDrivers(ride);
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 }

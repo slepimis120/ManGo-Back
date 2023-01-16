@@ -14530,3 +14530,18 @@ INSERT INTO USERS_FAVORITE_LOCATIONS(PASSENGER_ID, FAVORITE_LOCATIONS_ID) VALUES
 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1302)
 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1291)
 	at mango.MangoApplication.main(MangoApplication.java:10)
+2023-01-16 02:20:10 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT v.* from Vehicle v where (v.babyTransport =[*]= ?) and (v.passengerSeats > ?) and (v.petTransport = ?) and (v.vehicleType = ?))"; expected "ALL (, ANY (, SOME ("; SQL statement:
+SELECT v.* from Vehicle v where (v.babyTransport == ?) and (v.passengerSeats > ?) and (v.petTransport = ?) and (v.vehicleType = ?)) [42001-214]
+2023-01-16 02:21:32 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT v.* from Vehicle v where (v.babyTransport =[*]= ?) and (v.passengerSeats > ?) and (v.petTransport == ?) and (v.vehicleType == ?))"; expected "ALL (, ANY (, SOME ("; SQL statement:
+SELECT v.* from Vehicle v where (v.babyTransport == ?) and (v.passengerSeats > ?) and (v.petTransport == ?) and (v.vehicleType == ?)) [42001-214]
+2023-01-16 02:22:24 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT v.* from Vehicle v where v.babyTransport =[*]= ? and v.passengerSeats > ? and v.petTransport == ? and v.vehicleType == ?)"; expected "ALL (, ANY (, SOME ("; SQL statement:
+SELECT v.* from Vehicle v where v.babyTransport == ? and v.passengerSeats > ? and v.petTransport == ? and v.vehicleType == ?) [42001-214]
+2023-01-16 02:24:23 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT v.* from Vehicle v where v.babyTransport = ? and v.passengerSeats > ? and v.petTransport = ? and v.vehicleType = ?[*])"; SQL statement:
+SELECT v.* from Vehicle v where v.babyTransport = ? and v.passengerSeats > ? and v.petTransport = ? and v.vehicleType = ?) [42000-214]
+2023-01-16 02:25:01 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT * from Vehicle where babyTransport = ? and passengerSeats > ? and petTransport = ? and vehicleType = ?[*])"; SQL statement:
+SELECT * from Vehicle where babyTransport = ? and passengerSeats > ? and petTransport = ? and vehicleType = ?) [42000-214]
