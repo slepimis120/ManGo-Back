@@ -175,6 +175,9 @@ public class RideService{
         ride.setDriver(driver);
         ride.setTotalCost(Math.round(24*currentDistance));
         ride.setEstimatedTimeInMinutes(Math.round(distance));
+        for(RideLocation rideLocation: ride.getLocations()){
+            rideLocation.setRide(ride);
+        }
         save(ride);
     }
 
