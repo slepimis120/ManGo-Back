@@ -20,4 +20,7 @@ public interface RideRepository extends JpaRepository<Ride, Integer> {
 
     @Query(value = "select r.* from Ride r, Ride_Passengers rs where ?1 = rs.passengers_id and r.id = rs.rides_id", nativeQuery = true)
     List<Ride> findRidesByPassenger(Integer id);
+
+    @Query(value = "select r.* from Ride r where (r.driver IS NOT NULL and r.driver = ?1 and r.status = 'pending')", nativeQuery = true)
+    Ride isDriverAssigned(Integer driverId);
 }

@@ -56,7 +56,6 @@ public class RideController {
         }
         ResponseRideDTO responseRide = new ResponseRideDTO(ride);
         return ResponseEntity.status(HttpStatus.OK).body(responseRide);
-
     }
 
     @GetMapping("/passenger/{passengerId}/active")
@@ -123,6 +122,7 @@ public class RideController {
         if(ride.getStatus() != Ride.Status.pending){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Cannot cancel a ride that is not in status PENDING!");
         }
+        newRejection.setRide(ride);
         ride = rideService.cancelByDriver(id, newRejection);
         ResponseRideDTO responseRide = new ResponseRideDTO(ride);
         return ResponseEntity.status(HttpStatus.OK).body(responseRide);
@@ -169,5 +169,15 @@ public class RideController {
         }
         rideService.getSuitableDrivers(ride);
         return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
+
+    @GetMapping("/driver/{driverId}/isAssigned")
+    public ResponseEntity isDriverAssigned(@PathVariable Integer driverId) {
+        Ride ride = rideService.isDriverAssigned(driverId);
+        if(ride == null){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Pending ride does not exist!");
+        }
+        ResponseRideDTO responseRide = new ResponseRideDTO(ride);
+        return ResponseEntity.status(HttpStatus.OK).body(responseRide);
     }
 }

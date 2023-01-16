@@ -49,7 +49,7 @@ VALUES ('Hey Yo Hey Yo Hey Yo', '2023-04-01T04:49:27Z', 1),
 
 
 INSERT INTO RIDE (STARTTIME, ENDTIME, TOTALCOST, DRIVER, ESTIMATEDTIMEINMINUTES, VEHICLETYPE, BABYTRANSPORT, PETTRANSPORT, STATUS)
-VALUES ('2023-01-14T04:50:15Z', null, null, 1, null, 'STANDARD', false, false, 'pending'),
+VALUES ('2023-01-14T04:50:15Z', null, 530, 1, 15, 'STANDARD', false, false, 'pending'),
        ('2022-12-10T13:35:49Z', '2022-12-12T04:50:09Z', 350, 2, 30, 'VAN', false, false, 'finished'),
        ('2022-12-28T22:20:39Z', '2022-12-28T23:50:08Z', 680, 1, 90, 'STANDARD', false, false, 'finished'),
        ('2010-05-07T08:11:11Z', '2010-05-07T04:50:05Z', 700, 2, 60, 'VAN', false, false, 'rejected');

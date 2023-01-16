@@ -129,8 +129,8 @@ public class RideService{
         return rideRepository.findById(id).orElse(null);
     }
 
-    public Ride findActiveByDriver(Integer passengerId){
-        return rideRepository.findActiveByDriver(passengerId);
+    public Ride findActiveByDriver(Integer driverId){
+        return rideRepository.findActiveByDriver(driverId);
     }
 
     public Ride findActiveByPassenger(Integer passengerId){
@@ -173,10 +173,16 @@ public class RideService{
             }
         }
         ride.setDriver(driver);
+        ride.setTotalCost(Math.round(24*currentDistance));
+        ride.setEstimatedTimeInMinutes(Math.round(distance));
         save(ride);
     }
 
     public Integer getVehicleCount(Ride ride){
         return vehicleRepository.findSuitableVehicles(ride.isBabyTransport(), ride.getPassengers().size(), ride.isPetTransport(), ride.getVehicleType().toString()).size();
+    }
+
+    public Ride isDriverAssigned(Integer driverId){
+        return rideRepository.isDriverAssigned(driverId);
     }
 }
