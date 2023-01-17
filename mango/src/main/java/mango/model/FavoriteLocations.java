@@ -21,11 +21,11 @@ public class FavoriteLocations {
     private String favoriteName;
 
     @JsonManagedReference
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private List<RideLocation> locations;
 
-    @JsonBackReference
-    @ManyToMany(mappedBy = "favoriteLocations", cascade = CascadeType.MERGE)
+    @JsonManagedReference
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE})
     private List<Passenger> passengers;
 
     @Column(name = "VEHICLETYPE", nullable = false)
@@ -38,6 +38,9 @@ public class FavoriteLocations {
     @Column(name = "PETTRANSPORT", nullable = false)
     private boolean petTransport;
 
+    @Column(name = "ISDELETED", nullable = false)
+    private boolean isDeleted;
+
 
     public FavoriteLocations(Integer id, String favoriteName, List<RideLocation> locations, List<Passenger> passengers, Vehicle.Type vehicleType, boolean babyTransport, boolean petTransport) {
         this.id = id;
@@ -47,6 +50,7 @@ public class FavoriteLocations {
         this.vehicleType = vehicleType;
         this.babyTransport = babyTransport;
         this.petTransport = petTransport;
+        this.isDeleted = false;
     }
 
     public FavoriteLocations() {
@@ -122,5 +126,13 @@ public class FavoriteLocations {
 
     public void setPetTransport(boolean petTransport) {
         this.petTransport = petTransport;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
     }
 }

@@ -142,7 +142,7 @@ public class RideController {
 
     @PostMapping("/favorites")
     public ResponseEntity setFavoriteLocations(@RequestBody GetFavoriteLocationsDTO getFavoriteLocationsDTO){
-        if(rideService.getTotalCount(5) >= 10){
+        if(rideService.getTotalCount(5) >= 2){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Number of favorite rides cannot exceed 10!");
         }
         FavoriteLocations favoriteLocations = rideService.addFavoriteLocations(getFavoriteLocationsDTO);
@@ -156,14 +156,23 @@ public class RideController {
         return ResponseEntity.status(HttpStatus.OK).body(sendFavoriteLocationsDTOList);
     }
 
-    @DeleteMapping("favorites/{id}")
-    public ResponseEntity deleteFavoriteRide(@PathVariable Integer id){
-        return ResponseEntity.status(HttpStatus.OK).body(null);
+    @DeleteMapping("/favorites/{id}")
+    public ResponseEntity deleteFavoriteLocation(@PathVariable Integer id){
+        if(rideService.deleteFavoriteLocations(id)){
+            return ResponseEntity.status(HttpStatus.OK).body("Successful deletion of favorite location!");
+        }else{
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Favorite location does not exist!");
+        }
+
     }
+
+
+
+
+
 
     @PutMapping("/getAvailableDrivers")
     public ResponseEntity getAvailableDriver(@RequestBody CreateRideDTO createRideDTO) throws IOException {
-        System.out.println("AAAA");
         Ride ride = new Ride(createRideDTO);
         if(rideService.getVehicleCount(ride) == 0){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Selected type of vehicle doesn't exist");

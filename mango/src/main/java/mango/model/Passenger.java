@@ -20,8 +20,8 @@ public class Passenger extends User{
 	@OneToMany(mappedBy = "passengers")
 	private List <Review> reviews;
 
-	@JsonManagedReference
-	@ManyToMany(fetch = FetchType.EAGER)
+	@JsonBackReference
+	@ManyToMany(mappedBy = "passengers")
 	private List<FavoriteLocations> favoriteLocations;
 
 	public Passenger(Integer id, String firstName, String lastName, String profilePictureURL, String phoneNumber, String email,

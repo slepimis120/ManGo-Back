@@ -29,13 +29,13 @@ public class RideService{
     private FavoriteLocationRepository favoriteLocationRepository;
     @Autowired
     private VehicleRepository vehicleRepository;
-    @Autowired
-    private DriverRepository driverRepository;
 
     @Autowired
     private LocationRepository locationRepository;
+    private final PassengerRepository passengerRepository;
 
-    public RideService() throws MalformedURLException {
+    public RideService(PassengerRepository passengerRepository) throws MalformedURLException {
+        this.passengerRepository = passengerRepository;
     }
 
 
@@ -101,20 +101,33 @@ public class RideService{
     }
 
     public FavoriteLocations addFavoriteLocations(GetFavoriteLocationsDTO getFavoriteLocationsDTO){
-        return saveFavoriteLocations(new FavoriteLocations(getFavoriteLocationsDTO));
+        FavoriteLocations favoriteLocations = new FavoriteLocations(getFavoriteLocationsDTO);
+        List<Passenger> newPassengers = new ArrayList<>();
+        for(Passenger passenger : favoriteLocations.getPassengers()){
+            newPassengers.add(passengerRepository.findById(passenger.getId()).orElse(null));
+        }
+        favoriteLocations.setPassengers(newPassengers);
+        return saveFavoriteLocations(favoriteLocations);
     }
 
     public List<SendFavoriteLocationsDTO> getFavoriteLocations(Integer id){
         List<SendFavoriteLocationsDTO> sendFavoriteLocationsDTOList = new ArrayList<>();
         for(FavoriteLocations favoritelocations : favoriteLocationRepository.getByUserId(id)){
-            sendFavoriteLocationsDTOList.add(new SendFavoriteLocationsDTO(favoritelocations));
+            if(!favoritelocations.isDeleted()){
+                sendFavoriteLocationsDTOList.add(new SendFavoriteLocationsDTO(favoritelocations));
+            }
         }
         return sendFavoriteLocationsDTOList;
     }
 
-
-    public FavoriteLocations deleteFavoriteLocations(Integer id){
-        return null;
+    public boolean deleteFavoriteLocations(Integer id){
+        FavoriteLocations favoriteLocations = favoriteLocationRepository.findById(id).orElse(null);
+       if (favoriteLocations == null){
+           return false;
+       }
+       favoriteLocations.setDeleted(true);
+       favoriteLocationRepository.save(favoriteLocations);
+       return true;
     }
 
     public Ride save(Ride ride) {
@@ -150,7 +163,6 @@ public class RideService{
         Driver driver = null;
         float distance = 0.0f;
         float currentDistance = 0.0f;
-        System.out.println(vehicles.size());
         for(Vehicle vehicle : vehicles){
             Location location = locationRepository.findById(vehicle.getCurrentLocation().getId()).orElse(null);
             if(location != null){
