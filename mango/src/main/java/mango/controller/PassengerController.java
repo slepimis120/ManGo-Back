@@ -1,6 +1,8 @@
 package mango.controller;
 
 import mango.dto.ExpandedUserDTO;
+import mango.dto.ResponseRideDTO;
+import mango.model.Ride;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,26 +33,25 @@ public class PassengerController {
 	@PostMapping
 	public ResponseEntity insert(@RequestBody ExpandedUserDTO data) {
         UserDTO response =  service.insert(data);
-        return new ResponseEntity(response, HttpStatus.OK);
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 	
 	@GetMapping
 	public ResponseEntity getUsers(@RequestParam Integer page, Integer size) {
-		System.out.println("TEST?");
 		UserResponseDTO response = service.getArray(page, size);
-		return new ResponseEntity(response, HttpStatus.OK);
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity findUser(@PathVariable Integer id) {
 		UserDTO response =  service.find(id);
-		return new ResponseEntity(response, HttpStatus.OK);
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 	
 	@RequestMapping(value="/{id}",method = RequestMethod.PUT)
 	public ResponseEntity update(@PathVariable Integer id, @RequestBody ExpandedUserDTO update) {
 		UserDTO response = service.update(id, update);
-		return new ResponseEntity(response, HttpStatus.OK);
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 	
 }

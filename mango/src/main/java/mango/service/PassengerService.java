@@ -6,6 +6,7 @@ import mango.dto.UserDTO;
 import mango.dto.UserResponseDTO;
 import mango.model.Passenger;
 import mango.model.Ride;
+import mango.model.User;
 import mango.repository.PassengerRepository;
 import mango.repository.RideRepository;
 import mango.service.interfaces.IUserService;
@@ -13,16 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Primary
 public class PassengerService implements IUserService{
-	
-	public static Map<Integer, Passenger> allPassengers = new HashMap<Integer, Passenger>();
 
 	@Autowired
 	private RideRepository rideRepository;
@@ -33,34 +29,26 @@ public class PassengerService implements IUserService{
 	@Override
 	public UserDTO insert(ExpandedUserDTO data) {
 		Passenger passenger = new Passenger(data);
-		int size = UserService.allUsers.size();
-		passenger.setId(size + 1);
-		allPassengers.put(passenger.getId(), passenger);
+		passengerRepository.save(passenger);
 		UserService.allUsers.put(passenger.getId(), passenger);
 		return new UserDTO(passenger);
 	}
 	
 	@Override
 	public UserResponseDTO getArray(Integer page, Integer size) {
-		int start = (page - 1) * size;
-		int end = page * size;
+		int offset = (page - 1) * size;
 		ArrayList<UserDTO> returnList = new ArrayList<UserDTO>();
-		int i = 0;
-		for (Map.Entry<Integer, Passenger> entry : allPassengers.entrySet()) {
-			if(i >= start && i < end){
-				Passenger currentPassenger = entry.getValue();
-				UserDTO currentUserDTO = new UserDTO(currentPassenger.getId(), currentPassenger.getName(), currentPassenger.getSurname(),
-						currentPassenger.getProfilePicture(), currentPassenger.getTelephoneNumber(), currentPassenger.getEmail(), currentPassenger.getAddress());
-				returnList.add(currentUserDTO);
-			}
-			i++;
+		List<Passenger> users = passengerRepository.fetchPassengerOffset(offset, size);
+		for(int i = 0; i < users.size(); i++){
+			UserDTO currentUser = new UserDTO(users.get(i));
+			returnList.add(currentUser);
 		}
-		return new UserResponseDTO(allPassengers.size(), returnList);
+		return new UserResponseDTO(returnList.size(), returnList);
 	}
 
 	@Override
 	public UserDTO find(Integer id) {
-		Passenger passenger = allPassengers.get(id);
+		Passenger passenger = passengerRepository.findById(id).orElse(null);
 		if (passenger != null) {
 			UserDTO userDTO = new UserDTO(passenger);
 			return userDTO;
@@ -70,7 +58,7 @@ public class PassengerService implements IUserService{
 
 	@Override
 	public UserDTO update(Integer id, ExpandedUserDTO update) {
-		Passenger passenger = allPassengers.get(id);
+		Passenger passenger = passengerRepository.findById(id).orElse(null);
 		if (passenger != null) {
 			passenger.setName(update.getName());
 			passenger.setSurname(update.getSurname());

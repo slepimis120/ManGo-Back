@@ -34,6 +34,16 @@ public class UserDTO {
     	this.email = user.getEmail();
     	this.address = user.getAddress();
     }
+
+	public UserDTO(Object[] object){
+		this.id = Integer.getInteger( (String) object[2]) ;
+		this.address = (String) object[3];
+		this.email = (String)object[5];
+		this.name = (String)object[6];
+		this.profilePicture = (String)object[7];
+		this.surname = (String)object[8];
+		this.telephoneNumber = (String)object[9];
+	}
     
     public UserDTO() {}
 
