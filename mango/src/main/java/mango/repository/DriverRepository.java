@@ -13,4 +13,7 @@ public interface DriverRepository extends JpaRepository<Driver, Integer> {
 
     @Query("select r.driver from Ride r where (r.id = :rideId)")
     Driver getDriverByRideId(Integer rideId);
+
+    @Query(value = "SELECT * FROM USERS WHERE TYPE = 'DRIVER' OFFSET ? ROWS FETCH NEXT ? ROWS ONLY", nativeQuery = true)
+    List<Driver> fetchDriversOffset(int offset, int size);
 }

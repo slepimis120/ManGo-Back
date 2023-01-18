@@ -17287,3 +17287,18 @@ INSERT INTO USERS_FAVORITE_LOCATIONS(PASSENGERS_ID, FAVORITE_LOCATIONS_ID) VALUE
 2023-01-17 15:31:26 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "USERS_FAVORITE_LOCATIONS" not found; SQL statement:
 select COUNT(*) from USERS_FAVORITE_LOCATIONS where PASSENGERS_ID = ? and FAVORITE_LOCATIONS_ID in (SELECT ID from FAVORITE_LOCATIONS where ISDELETED = false) [42102-214]
+2023-01-17 22:03:19 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT * FROM WORK_HOUR WHERE DRIVERID = 1 [*]WHERE ENDTIME <= ''2023-01-14 14:50:15"; SQL statement:
+SELECT * FROM WORK_HOUR WHERE DRIVERID = 1 WHERE ENDTIME <= ''2023-01-14 14:50:15 [42000-214]
+2023-01-17 22:03:35 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT * FROM WORK_HOUR WHERE ENDTIME <= ''[*]2023-01-14 14:50:15"; SQL statement:
+SELECT * FROM WORK_HOUR WHERE ENDTIME <= ''2023-01-14 14:50:15 [42000-214]
+2023-01-17 22:04:24 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT * FROM WORK_HOUR WHERE DRIVERID= 1 [*]WHERE ENDTIME <= '2023-01-15 19:50:15'"; SQL statement:
+SELECT * FROM WORK_HOUR WHERE DRIVERID= 1 WHERE ENDTIME <= '2023-01-15 19:50:15' [42000-214]
+2023-01-17 22:04:34 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT * FROM WORK_HOUR WHERE(DRIVERID= 1 [*]ENDTIME <= '2023-01-15 19:50:15')"; expected "[, ::, AT, FORMAT, *, /, %, +, -, ||, NOT, IS, ILIKE, REGEXP, AND, OR, ,, )"; SQL statement:
+SELECT * FROM WORK_HOUR WHERE(DRIVERID= 1 ENDTIME <= '2023-01-15 19:50:15') [42001-214]
+2023-01-17 22:05:07 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT * FROM WORK_HOUR WHERE(DRIVERID= 1 AND ENDTIME <= '2023-01-15 19:50:15' AND STARTTIME >= 2023-01-14 [*]05:50:15)"; expected "[, ::, AT, FORMAT, *, /, %, +, -, ||, NOT, IS, ILIKE, REGEXP, AND, OR, ,, )"; SQL statement:
+SELECT * FROM WORK_HOUR WHERE(DRIVERID= 1 AND ENDTIME <= '2023-01-15 19:50:15' AND STARTTIME >= 2023-01-14 05:50:15) [42001-214]

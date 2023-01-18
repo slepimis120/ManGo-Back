@@ -61,7 +61,7 @@ public class DriverController {
 	
 	@DeleteMapping("/document/{id}")
 	public ResponseEntity deleteDocument(@PathVariable Integer id) {
-		DriverDocument response = service.deleteDocument(id);
+		String response = service.deleteDocument(id);
 		if(response == null) {
 			return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
 		}
@@ -75,8 +75,8 @@ public class DriverController {
 	}
 	
 	@PostMapping("/{id_driver}/working-hour")
-	public ResponseEntity insertWorkHour(@PathVariable Integer id_driver, @RequestBody WorkHourDTO workhour) {
-        WorkHourDTO response =  service.insertWorkHour(id_driver, workhour.getId(), workhour.getStart(), workhour.getEnd());
+	public ResponseEntity insertWorkHour(@PathVariable Integer id_driver, @RequestBody String startHour) {
+        WorkHourDTO response =  service.insertWorkHour(id_driver, startHour);
         return new ResponseEntity(response, HttpStatus.OK);
 	}
 	
@@ -87,8 +87,8 @@ public class DriverController {
 	}
 	
 	@PutMapping(value="/working-hour/{workingHourId}")
-	public ResponseEntity updateWorkHour(@PathVariable Integer workingHourId, @RequestBody WorkHourDTO workhour) {
-		WorkHourDTO response = service.updateWorkHour(workingHourId, workhour.getId(), workhour.getStart(), workhour.getEnd());
+	public ResponseEntity updateWorkHour(@PathVariable Integer workingHourId, @RequestBody String endHour) {
+		WorkHourDTO response = service.updateWorkHour(workingHourId, endHour);
 		return new ResponseEntity(response, HttpStatus.OK);
 	}
 
