@@ -8,6 +8,7 @@ import java.util.*;
 import mango.dto.*;
 import mango.model.*;
 import mango.repository.RideRepository;
+import mango.repository.UserRepository;
 import mango.service.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,9 @@ public class UserService implements IUserService{
 
 	@Autowired
 	private RideRepository rideRepository;
+
+	@Autowired
+	private UserRepository userRepository;
 
 	public static Map<Integer, User> allUsers = new HashMap<Integer, User>();
 	public static Map<Integer, Note> allNotes = new HashMap<Integer, Note>();
@@ -166,5 +170,9 @@ public class UserService implements IUserService{
 
 	public List<Ride> findRidesByDriver(Integer driverId){
 		return rideRepository.findRidesByDriver(driverId);
+	}
+
+	public User getByEmail(String email){
+		return userRepository.findByEmail(email).orElse(null);
 	}
 }

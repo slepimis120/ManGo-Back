@@ -1,14 +1,5 @@
 package mango.dto;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import mango.model.RideLocation;
-import mango.model.Vehicle;
-
-import java.util.ArrayList;
-
 public class CalculatedRideEstimatesDTO {
 
     private int id;

@@ -3,9 +3,11 @@ package mango.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.ToString;
 import mango.dto.ExpandedUserDTO;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import java.util.List;
 
@@ -44,7 +46,8 @@ public class User {
 	private boolean blocked;
 
 	@JsonBackReference
-	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+	@LazyCollection(LazyCollectionOption.FALSE)
+	@OneToMany(mappedBy = "user")
 	private List<Note> note;
 
 	@JsonBackReference
@@ -156,4 +159,8 @@ public class User {
 
 	public void setNote(List<Note> note){this.note = note;}
 
+	@Transient
+	public String getDecriminatorValue() {
+		return this.getClass().getAnnotation(DiscriminatorValue.class).value();
+	}
 }

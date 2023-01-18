@@ -2,8 +2,10 @@ package mango.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.persistence.*;
+import javax.persistence.*;
 import mango.dto.*;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -31,7 +33,8 @@ public class Ride {
     private Driver driver;
 
     @JsonManagedReference
-    @ManyToMany(fetch = FetchType.EAGER)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @ManyToMany
     private List<Passenger> passengers;
 
     @Column(name = "ESTIMATEDTIMEINMINUTES", nullable = true)
@@ -52,7 +55,8 @@ public class Ride {
     private Status status;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "ride", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy = "ride", cascade = CascadeType.ALL)
     private List<RideLocation> locations = new ArrayList<RideLocation>();
 
     @OneToOne(mappedBy = "ride", cascade = CascadeType.ALL)
