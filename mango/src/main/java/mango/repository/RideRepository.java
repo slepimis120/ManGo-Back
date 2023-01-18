@@ -15,7 +15,7 @@ public interface RideRepository extends JpaRepository<Ride, Integer> {
     @Query(value = "select * from Ride where endTime IS NULL and driver IS NOT NULL and driver = ?1", nativeQuery = true)
     Ride findActiveByDriver(Integer id);
 
-    @Query(value = "select * from Ride r where r.driver IS NOT NULL and r.driver.id = ?1", nativeQuery = true)
+    @Query(value = "select * from Ride WHERE DRIVER = ?", nativeQuery = true)
     List<Ride> findRidesByDriver(Integer driverId);
 
     @Query(value = "select r.* from Ride r, Ride_Passengers rs where ?1 = rs.passengers_id and r.id = rs.rides_id", nativeQuery = true)

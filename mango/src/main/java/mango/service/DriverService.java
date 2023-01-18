@@ -17,6 +17,8 @@ import java.util.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -32,8 +34,6 @@ public class DriverService implements IUserService {
 	private WorkHourRepository workHourRepository;
 	@Autowired
 	private UserRepository userRepository;
-
-	VehicleService vehicleService;
 
 	@Autowired
 	public DriverService(@Lazy VehicleService vehicleService){
@@ -66,8 +66,8 @@ public class DriverService implements IUserService {
 	public UserDTO insert(ExpandedUserDTO data) {
 		if(emailExists(data.getEmail())) return null;
 		Driver driver = new Driver(data);
-		driverRepository.save(driver);
-		userRepository.save(driver);
+		driver = driverRepository.save(driver);
+		//userRepository.save(driver);
 		return new UserDTO(driver);
 	}
 
@@ -79,11 +79,11 @@ public class DriverService implements IUserService {
 			driver.setSurname(update.getSurname());
 			driver.setAddress(update.getAddress());
 			driver.setEmail(update.getEmail());
-			driver.setPassword(update.getPassword());
 			if(update.getProfilePicture() != null) 
 				driver.setProfilePicture(update.getProfilePicture());
 			if(update.getTelephoneNumber() != null)
 				driver.setTelephoneNumber(update.getTelephoneNumber());
+			driver = driverRepository.save(driver);
 			return new UserDTO(driver);
 			
 		}
@@ -121,23 +121,16 @@ public class DriverService implements IUserService {
 			documentsRepository.deleteById(id);
 			return "Driver document deleted successfully";
 		}else {
-			return "Document does not exist!";
+			return null;
 		}
 	}
 	
 	public WorkHourResponseDTO findWorkHours(Integer id, Integer page, Integer size, String from, String to) {
+		if(driverRepository.findById(id).orElse(null) == null) return null;
 		int offset = (page - 1) * size;
 		ArrayList<WorkHourDTO> returnList = new ArrayList<WorkHourDTO>();
 		WorkHourDTOMapper mapper = new WorkHourDTOMapper(new ModelMapper());
-		Date startTime= null;
-		Date endTime = null;
-		try {
-			 startTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(from);
-			 endTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(to);
-		} catch (ParseException e) {
-			throw new RuntimeException(e);
-		}
-		List<WorkHour> workHours = workHourRepository.findWorkHours(endTime.toString(), startTime.toString(), offset, size);
+		List<WorkHour> workHours = workHourRepository.findWorkHours(id, to, from, offset, size);
 
 		for(int i = 0; i < workHours.size(); i++) {
 			WorkHourDTO newWorkHour = mapper.fromWorkHourtoDTO(workHours.get(i));
@@ -147,16 +140,17 @@ public class DriverService implements IUserService {
 		return response;
 	}
 	
-	public WorkHourDTO insertWorkHour(Integer idDriver, String start) {
-		Date startTime = null;
+	public WorkHourDTO insertWorkHour(Integer idDriver, String  start) {
+		Driver driver = driverRepository.findById(idDriver).orElse(null);
+		if (driver == null)return  null;
+		Date parsedDate = null;
 		try {
-			startTime = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(start);
+			parsedDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(start);
 		} catch (ParseException e) {
 			throw new RuntimeException(e);
 		}
-		Driver driver = driverRepository.findById(idDriver).orElse(null);
-		WorkHour workHour = new WorkHour(startTime, driver);
-		workHourRepository.save(workHour);
+		WorkHour workHour = new WorkHour(parsedDate, driver);
+		workHour = workHourRepository.save(workHour);
 		WorkHourDTOMapper mapper = new WorkHourDTOMapper(new ModelMapper());
 		WorkHourDTO newWorkHour = mapper.fromWorkHourtoDTO(workHour);
 		return newWorkHour;
@@ -179,7 +173,7 @@ public class DriverService implements IUserService {
 		}
 		if(workHour != null) {
 			workHour.setEnd(endTime);
-			workHourRepository.save(workHour);
+			workHour = workHourRepository.save(workHour);
 
 			WorkHourDTOMapper mapper = new WorkHourDTOMapper(new ModelMapper());
 			WorkHourDTO newWorkHour = mapper.fromWorkHourtoDTO(workHour);
@@ -195,37 +189,44 @@ public class DriverService implements IUserService {
 		return vehicle;
 	}
 
-	public Vehicle getVehicle(Integer id){
+	public ResponseEntity getVehicle(Integer id){
+		if(driverRepository.findById(id).orElse(null) == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Driver does not exist");
+		Vehicle vehicle = findVehicle(id);
+		if(vehicle == null) return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Vehicle is not assigned!");
+		return ResponseEntity.status(HttpStatus.OK).body(vehicle);
+	}
+
+	public Vehicle findVehicle(int id){
 		Vehicle vehicle = null;
 		for (Vehicle entry : vehicleService.findAll()) {
-			if(entry.getDriver().equals(id)){
+			if(entry.getDriver().getId().equals(id)){
 				vehicle = entry;
 			}
 		}
 		return vehicle;
 	}
 
-	public Vehicle changeVehicle(Integer id,Vehicle vehicle){
-		for (Vehicle entry : vehicleService.findAll()) {
-			if(entry.getDriver().equals(id)){
-				vehicle.setId(entry.getId());
-				vehicle.setDriver(entry.getDriver());
-				vehicleService.save(vehicle);
-			}
-		}
-		return vehicle;
+	public VehicleDTO changeVehicle(Integer id,VehicleDTO update){
+		if(driverRepository.findById(id).orElse(null) == null) return null;
+		Vehicle vehicle = findVehicle(id);
+		vehicle.setVehicleType(update.getVehicleType());
+		vehicle.setModel(update.getModel());
+		vehicle.setLicenseNumber(update.getLicenseNumber());
+		vehicle.setPassengerSeats(update.getPassengerSeats());
+		vehicle.setBabyTransport(update.isBabyTransport());
+		vehicle.setPetTransport(update.isPetTransport());
+		vehicleService.save(vehicle);
+		VehicleDTO returnVal = new VehicleDTO(vehicle);
+		return returnVal;
 	}
 
 	public RideCountDTO getRides(Integer id, Integer page, Integer size, String sort, String from, String to){
+		if(driverRepository.findById(id).orElse(null) == null) return null;
 		RideCountDTO count = new RideCountDTO();
 		ArrayList<Ride> rideList = new ArrayList<Ride>();
-		Integer rideCount = 0;
-		for (Ride ride : findRidesByDriver(id)) {
-			rideList.add(ride);
-			rideCount = rideCount + 1;
-		}
-		count.setResults(rideList);
-		count.setTotalCount(rideCount);
+		List<Ride> rides = rideRepository.findRidesByDriver(id);
+		count.setResults(rides);
+		count.setTotalCount(rides.size());
 		return count;
 	}
 
@@ -234,13 +235,10 @@ public class DriverService implements IUserService {
 		return driverRepository.findById(id).orElse(null) != null;
 	}
 
-	public List<Ride> findRidesByDriver(Integer driverId){
-		return rideRepository.findRidesByDriver(driverId);
-	}
 
 	public boolean emailExists(String email){
 		for(Driver driver : driverRepository.findAll()){
-			if(driver.getEmail() == email) return true;
+			if(driver.getEmail().equals(email)) return true;
 		}
 		return false;
 	}

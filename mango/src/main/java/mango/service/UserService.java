@@ -58,15 +58,21 @@ public class UserService implements IUserService{
 		return null;
 	}
 	
-	public Boolean block(Integer id) {
+	public HttpStatus block(Integer id) {
 		User user = userRepository.findById(id).orElse(null);
+		if(user == null) return HttpStatus.NOT_FOUND;
+		if(user.isBlocked()) return HttpStatus.BAD_REQUEST;
 		user.setBlocked(true);
-		return true;
+		userRepository.save(user);
+		return HttpStatus.NO_CONTENT;
 	}
-	public Boolean unblock(Integer id) {
+	public HttpStatus unblock(Integer id) {
 		User user = userRepository.findById(id).orElse(null);
+		if(user == null) return HttpStatus.NOT_FOUND;
+		if(!user.isBlocked()) return HttpStatus.BAD_REQUEST;
 		user.setBlocked(false);
-		return true;
+		userRepository.save(user);
+		return HttpStatus.NO_CONTENT;
 	}
 	
 	public NoteDTO insertNote(Integer id, String message) {
@@ -95,6 +101,7 @@ public class UserService implements IUserService{
 	}
 
 	public UserMessageResponseDTO getUserMessages(Integer id) {
+		if(userRepository.findById(id).orElse(null) == null) return null;
 		ArrayList<UserMessageDTO> returnList = new ArrayList<UserMessageDTO>();
 		List<UserMessage> messages = messagesRepository.getUserMessages(id, id);
 		for(int i = 0; i < messages.size(); i++){
@@ -105,6 +112,8 @@ public class UserService implements IUserService{
 	}
 
 	public UserMessageDTO sendMessage(Integer senderId, Integer receiverId, String message, String type, Integer rideId) {
+		if(userRepository.findById(senderId).orElse(null) == null) return null;
+		if(userRepository.findById(receiverId).orElse(null) == null) return null;
 		LocalDateTime timeOfSending = LocalDateTime.now();
 		User sender = userRepository.findById(senderId).orElse(null);
 		User receiver = userRepository.findById(receiverId).orElse(null);
@@ -148,7 +157,7 @@ public class UserService implements IUserService{
 	public HttpStatus changePassword(Integer id, String newPassword, String oldPassword) {
 		User user = userRepository.findById(id).orElse(null);
 		if(user != null){
-			if(user.getPassword() != oldPassword){
+			if(!user.getPassword().equals(oldPassword)){
 				return HttpStatus.BAD_REQUEST;
 			}
 			user.setPassword(newPassword);
