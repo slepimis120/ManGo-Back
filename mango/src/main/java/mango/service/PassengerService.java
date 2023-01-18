@@ -36,7 +36,7 @@ public class PassengerService implements IUserService{
 			return null;
 		}
 		Passenger passenger = new Passenger(data);
-		passengerRepository.save(passenger);
+		passenger = passengerRepository.save(passenger);
 		UserService.allUsers.put(passenger.getId(), passenger);
 		return new UserDTO(passenger);
 	}
@@ -65,6 +65,9 @@ public class PassengerService implements IUserService{
 
 	@Override
 	public UserDTO update(Integer id, ExpandedUserDTO update) {
+		if(!emailExists(update.getEmail())){
+			return null;
+		}
 		Passenger passenger = passengerRepository.findById(id).orElse(null);
 		if (passenger != null) {
 			passenger.setName(update.getName());
@@ -76,6 +79,7 @@ public class PassengerService implements IUserService{
 				passenger.setProfilePicture(update.getProfilePicture());
 			if(update.getTelephoneNumber() != null)
 				passenger.setTelephoneNumber(update.getTelephoneNumber());
+			passenger = passengerRepository.save(passenger);
 			return new UserDTO(passenger);
 		}
 		return null;
@@ -89,11 +93,12 @@ public class PassengerService implements IUserService{
 		int end = page * size;
 		RideCountDTO returnList = new RideCountDTO();
 		ArrayList<Ride> rideList = new ArrayList<Ride>();
+		System.out.println(from + to);
 		Date fromTime= null;
 		Date toTime = null;
 		try {
-			fromTime = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(from);
-			toTime = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(to);
+			fromTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(from);
+			toTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(to);
 		} catch (ParseException e) {
 			throw new RuntimeException(e);
 		}
@@ -101,6 +106,7 @@ public class PassengerService implements IUserService{
 		for (Ride entry : rideRepository.findAll()) {
 			for (Passenger passenger: entry.getPassengers()){
 				if(passenger.getId().equals(id)){
+					if(entry.getEndTime() == null) continue;
 					if( (entry.getStartTime().after(fromTime) || entry.getStartTime().equals(fromTime))
 							&& (entry.getEndTime().before(toTime) || entry.getEndTime().equals(toTime)) ){
 						if(i >= start && i < end){
@@ -128,8 +134,9 @@ public class PassengerService implements IUserService{
 	}
 
 	public boolean emailExists(String email){
-		for(Passenger passenger : passengerRepository.findAll()){
-			if(passenger.getEmail() == email){
+		List<Passenger> passengers = passengerRepository.findAll();
+		for(Passenger passenger : passengers){
+			if(email.equals(passenger.getEmail())){
 				return true;
 			}
 		}
