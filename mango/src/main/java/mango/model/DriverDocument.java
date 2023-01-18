@@ -26,4 +26,10 @@ public class DriverDocument {
 	@OneToOne
 	@JoinColumn(name = "DRIVERID", referencedColumnName = "id")
 	private Driver driverId;
+
+	public DriverDocument(String name, String documentImage, Driver driverId) {
+		this.name = name;
+		this.documentImage = documentImage;
+		this.driverId = driverId;
+	}
 }

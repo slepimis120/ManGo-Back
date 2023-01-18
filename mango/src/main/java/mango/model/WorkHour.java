@@ -23,4 +23,15 @@ public class WorkHour {
 	@ManyToOne
 	@JoinColumn(name = "DRIVERID",  referencedColumnName = "id")
 	private Driver driver;
+
+	public WorkHour(Date start, Date end, Driver driver) {
+		this.start = start;
+		this.end = end;
+		this.driver = driver;
+	}
+
+	public WorkHour(Date start, Driver driver) {
+		this.start = start;
+		this.driver = driver;
+	}
 }
