@@ -24,11 +24,35 @@ import mango.service.UserService;
 public class UserController {
 	@Autowired
 	UserService service;
+
+	@RequestMapping(value="/{id}/changePassword",method = RequestMethod.PUT)
+	public ResponseEntity changePassword(@PathVariable Integer id, @RequestBody String newPassword, String oldPassword) {
+		HttpStatus response = service.changePassword(id, newPassword, oldPassword);
+		if (response == HttpStatus.NOT_FOUND)
+			return ResponseEntity.status(response).body("User does not exist!");
+		else if(response == HttpStatus.BAD_REQUEST)
+			return ResponseEntity.status(response).body("Current password is not matching!");
+		return ResponseEntity.status(response).body("Password successfully changed!");
+	}
+	@GetMapping("/{id}/resetPassword")
+	public ResponseEntity sendResetMail(@PathVariable Integer id) {
+		HttpStatus response = service.sendResetMail(id);
+		if (response == HttpStatus.NOT_FOUND)
+			return ResponseEntity.status(response).body("User does not exist!");
+		return ResponseEntity.status(response).body("Email with reset code has been sent!");
+	}
+	@RequestMapping(value="/{id}/resetPassword",method = RequestMethod.PUT)
+	public ResponseEntity resetPassword(@PathVariable Integer id, @RequestBody String newPassword, String code) {
+		HttpStatus response = service.resetPassword(id, newPassword, code);
+		if (response == HttpStatus.NOT_FOUND)
+			return ResponseEntity.status(response).body("User does not exist!");
+		return ResponseEntity.status(response).body("Password successfully changed!");
+	}
 	
 	@GetMapping
 	public ResponseEntity getUsers(@RequestBody PagingDTO pagingDTO) {
 		UserResponseDTO response = service.getArray(pagingDTO.getPage(), pagingDTO.getSize());
-		return new ResponseEntity(response, HttpStatus.OK);
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
 	@RequestMapping(value="/{id}/block",method = RequestMethod.PUT)

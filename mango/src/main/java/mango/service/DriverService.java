@@ -5,6 +5,7 @@ import mango.mapper.WorkHourDTOMapper;
 import mango.model.*;
 import mango.repository.DriverRepository;
 import mango.repository.RideRepository;
+import mango.repository.UserRepository;
 import mango.service.interfaces.IUserService;
 
 import java.text.ParseException;
@@ -28,6 +29,9 @@ public class DriverService implements IUserService {
 	public static Map<Integer, Driver> allDrivers = new HashMap<Integer, Driver>();
 	public static Map<Integer, DriverDocument> allDocuments = new HashMap<Integer, DriverDocument>();
 	public static Map<Integer, WorkHour> allWorkHours = new HashMap<Integer, WorkHour>();
+
+	@Autowired
+	private UserRepository userRepository;
 
 	VehicleService vehicleService;
 
@@ -67,10 +71,10 @@ public class DriverService implements IUserService {
 	@Override
 	public UserDTO insert(ExpandedUserDTO data) {
 		Driver driver = new Driver(data);
-		int size = UserService.allUsers.size();
+		int size = 5;
 		driver.setId(size + 1);
 		allDrivers.put(driver.getId(), driver);
-		UserService.allUsers.put(driver.getId(), driver);
+		userRepository.save(driver);
 		return new UserDTO(driver);
 	}
 

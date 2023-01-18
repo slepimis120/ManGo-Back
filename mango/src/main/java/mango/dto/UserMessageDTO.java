@@ -1,6 +1,9 @@
 package mango.dto;
 
+import mango.model.UserMessage;
+
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class UserMessageDTO {
 	private Integer id;
@@ -20,6 +23,18 @@ public class UserMessageDTO {
 		this.message = message;
 		this.type = type;
 		this.rideId = rideId;
+	}
+
+	public  UserMessageDTO(UserMessage message){
+		super();
+		this.id = message.getId();
+		DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+		String dateFormated = message.getTimeOfSending().format(format);
+		this.timeOfSending = dateFormated;
+		this.senderId = message.getSender().getId();
+		this.receiverId = message.getReceiver().getId();
+		this.message = message.getMessage();
+		this.rideId = message.getRide().getId();
 	}
 	public Integer getId() {
 		return id;
