@@ -64,6 +64,9 @@ public class User {
 		this.blocked = blocked;
 	}
 
+	public User(int id){
+		this.id = id;
+	}
 	public User(ExpandedUserDTO data) {
 		this.id = -1;
 		this.name = data.getName();
@@ -155,5 +158,6 @@ public class User {
 	public List<Note> getNote(){return note;}
 
 	public void setNote(List<Note> note){this.note = note;}
+
 
 }
