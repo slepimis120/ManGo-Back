@@ -48,9 +48,16 @@ public class UserMessage {
 		this.type = type;
 		this.ride.setId(ride);
 	}
-
 	public UserMessage() {
+	}
 
+	public UserMessage(LocalDateTime timeOfSending, User sender, User receiver, String message, Type type, Ride ride) {
+		this.timeOfSending = timeOfSending;
+		this.sender = sender;
+		this.receiver = receiver;
+		this.message = message;
+		this.type = type;
+		this.ride = ride;
 	}
 
 	public Integer getId() {
