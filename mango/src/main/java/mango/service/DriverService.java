@@ -58,6 +58,7 @@ public class DriverService implements IUserService {
 
 	@Override
 	public UserDTO insert(ExpandedUserDTO data) {
+		if(emailExists(data.getEmail())) return null;
 		Driver driver = new Driver(data);
 		driverRepository.save(driver);
 		UserService.allUsers.put(driver.getId(), driver);
@@ -80,10 +81,13 @@ public class DriverService implements IUserService {
 			return new UserDTO(driver);
 			
 		}
-		throw new RuntimeException();
+		return null;
 	}
 
 	public ArrayList<DriverDocumentDTO> findDocuments(Integer id) {
+		if(driverRepository.findById(id).orElse(null) == null){
+			return null;
+		}
 		ArrayList<DriverDocumentDTO> returnList = new ArrayList<DriverDocumentDTO>();
 		List<DriverDocument> documents = documentsRepository.findDriverDocuments(id);
 
@@ -98,6 +102,7 @@ public class DriverService implements IUserService {
 	
 	public DriverDocumentDTO insertDocument(Integer driverId, String name, String documentImage) {
 		Driver driver = driverRepository.findById(driverId).orElse(null);
+		if(driver == null) return null;
 		DriverDocument document = new DriverDocument(name, documentImage, driver);
 		documentsRepository.save(document);
 		DriverDocumentDTOMapper mapper = new DriverDocumentDTOMapper(new ModelMapper());
@@ -225,5 +230,12 @@ public class DriverService implements IUserService {
 
 	public List<Ride> findRidesByDriver(Integer driverId){
 		return rideRepository.findRidesByDriver(driverId);
+	}
+
+	public boolean emailExists(String email){
+		for(Driver driver : driverRepository.findAll()){
+			if(driver.getEmail() == email) return true;
+		}
+		return false;
 	}
 }

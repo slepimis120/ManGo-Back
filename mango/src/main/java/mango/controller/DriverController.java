@@ -24,39 +24,53 @@ public class DriverController {
 	
 	@PostMapping
 	public ResponseEntity insert(@RequestBody ExpandedUserDTO data) {
-		Driver driver = new Driver();
         UserDTO response =  service.insert(data);
-        return new ResponseEntity(response, HttpStatus.OK);
+		if(response == null){
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User with that email already exists exists!");
+		}
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 	
 	@GetMapping
 	public ResponseEntity getArray(@RequestParam Integer page, Integer size) {
 		UserResponseDTO response = service.getArray(page, size);
-		return new ResponseEntity(response, HttpStatus.OK);
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 	
 	@GetMapping("/{id}")
 	public ResponseEntity find(@PathVariable Integer id) {
 		UserDTO response =  service.find(id);
-		return new ResponseEntity(response, HttpStatus.OK);
+		if(response == null){
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Driver does not exist!");
+		}
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 	
 	@RequestMapping(value="/{id}",method = RequestMethod.PUT)
 	public ResponseEntity update(@PathVariable Integer id, @RequestBody ExpandedUserDTO update) {
 		UserDTO response = service.update(id, update);
-		return new ResponseEntity(response, HttpStatus.OK);
+		if(response == null){
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Driver does not exist!");
+		}
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 	
 	@GetMapping("/{id}/documents")
 	public ResponseEntity findDocuments(@PathVariable Integer id) {
 		ArrayList<DriverDocumentDTO> response = service.findDocuments(id);
-		return new ResponseEntity(response, HttpStatus.OK);
+		if(response == null){
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Driver does not exist!");
+		}
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 	
 	@PostMapping("/{id}/documents")
 	public ResponseEntity insertDocument(@PathVariable Integer id, @RequestBody String name, String documentImage) {
         DriverDocumentDTO response =  service.insertDocument(id, name, documentImage);
-        return new ResponseEntity(response, HttpStatus.OK);
+		if(response == null){
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Driver does not exist!");
+		}
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 	
 	@DeleteMapping("/document/{id}")
