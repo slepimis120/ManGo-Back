@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -26,8 +28,13 @@ public class PassengerService implements IUserService{
 	@Autowired
 	private PassengerRepository passengerRepository;
 
+
+
 	@Override
 	public UserDTO insert(ExpandedUserDTO data) {
+		if(emailExists(data.getEmail())){
+			return null;
+		}
 		Passenger passenger = new Passenger(data);
 		passengerRepository.save(passenger);
 		UserService.allUsers.put(passenger.getId(), passenger);
@@ -71,30 +78,58 @@ public class PassengerService implements IUserService{
 				passenger.setTelephoneNumber(update.getTelephoneNumber());
 			return new UserDTO(passenger);
 		}
-		throw new RuntimeException();
+		return null;
 	}
 
 	public RideCountDTO passengerRides(Integer id, Integer page, Integer size, String sort, String from, String to){
-		RideCountDTO count = new RideCountDTO();
+		if(passengerRepository.findById(id).orElse(null) == null){
+			return null;
+		}
+		int start = (page - 1) * size;
+		int end = page * size;
+		RideCountDTO returnList = new RideCountDTO();
 		ArrayList<Ride> rideList = new ArrayList<Ride>();
-		Integer rideCount = 0;
+		Date fromTime= null;
+		Date toTime = null;
+		try {
+			fromTime = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(from);
+			toTime = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(to);
+		} catch (ParseException e) {
+			throw new RuntimeException(e);
+		}
+		int i = 0;
 		for (Ride entry : rideRepository.findAll()) {
 			for (Passenger passenger: entry.getPassengers()){
 				if(passenger.getId().equals(id)){
-					rideList.add(entry);
-					rideCount = rideCount + 1;
+					if( (entry.getStartTime().after(fromTime) || entry.getStartTime().equals(fromTime))
+							&& (entry.getEndTime().before(toTime) || entry.getEndTime().equals(toTime)) ){
+						if(i >= start && i < end){
+							rideList.add(entry);
+							i++;
+						}
+
+					}
 				}
 			}
 		}
-		count.setResults(rideList);
-		count.setTotalCount(rideCount);
-		return count;
+		returnList.setResults(rideList);
+		returnList.setTotalCount(rideList.size());
+		return returnList;
 	}
 
 	public boolean isPassengerInRide(Integer rideId, Integer passengerId){
 		List<Passenger> passengers = passengerRepository.getPassengerByRideId(rideId);
 		for(Passenger passenger : passengers){
 			if(passenger.getId().equals(passengerId)){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean emailExists(String email){
+		for(Passenger passenger : passengerRepository.findAll()){
+			if(passenger.getEmail() == email){
 				return true;
 			}
 		}
