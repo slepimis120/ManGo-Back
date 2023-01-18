@@ -19,7 +19,7 @@ import java.io.IOException;
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
 	@Autowired
-	private JwtUserDetailsService jwtUserDetailsService;
+	private UserServiceImpl jwtUserDetailsService;
 	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
 	@Override
@@ -30,6 +30,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 		String jwtToken = null;
 		// JWT Token is in the form "Bearer token". Remove Bearer word and get
 		// only the Token
+		System.out.println(request.getHeader("Authorization"));
 		if (requestTokenHeader != null && requestTokenHeader.contains("Bearer")) {
 			jwtToken = requestTokenHeader.substring(7);
 			try {

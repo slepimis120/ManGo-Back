@@ -19,7 +19,7 @@ import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*")
 @RestController
-@RequestMapping("/api/ride")
+@RequestMapping("/ride")
 public class RideController {
 
     @Autowired

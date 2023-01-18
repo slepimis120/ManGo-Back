@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*")
 @RestController
-@RequestMapping("/api/vehicle")
+@RequestMapping("/vehicle")
 public class VehicleController {
 
     @Autowired

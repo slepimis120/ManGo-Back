@@ -91,3 +91,9 @@ INSERT INTO PANIC(USER, RIDE, TIME, REASON) VALUES(1, 1, '2023-01-14T04:50:15Z',
 2023-01-08 20:21:44 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "INSERT INTO PANIC([*]'USER', RIDE, TIME, REASON) VALUES(1, 1, '2023-01-14T04:50:15Z', 'Mnogo je dosadan vozac :/')"; expected "identifier"; SQL statement:
 INSERT INTO PANIC('USER', RIDE, TIME, REASON) VALUES(1, 1, '2023-01-14T04:50:15Z', 'Mnogo je dosadan vozac :/') [42001-214]
+2023-01-18 19:01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "select * from [*]User where email = ?"; expected "identifier"; SQL statement:
+select * from User where email = ? [42001-214]
+2023-01-18 19:03:33 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "select * from [*]User where email = ?"; expected "identifier"; SQL statement:
+select * from User where email = ? [42001-214]

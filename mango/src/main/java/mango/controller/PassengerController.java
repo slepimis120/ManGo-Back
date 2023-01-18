@@ -22,7 +22,7 @@ import mango.dto.UserResponseDTO;
 
 @CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*")
 @RestController
-@RequestMapping("/api/passenger")
+@RequestMapping("/passenger")
 public class PassengerController {
 	
 	@Autowired
