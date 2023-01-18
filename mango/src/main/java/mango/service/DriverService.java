@@ -7,6 +7,7 @@ import mango.repository.DriverDocumentsRepository;
 import mango.repository.DriverRepository;
 import mango.repository.RideRepository;
 import mango.repository.WorkHourRepository;
+import mango.repository.UserRepository;
 import mango.service.interfaces.IUserService;
 
 import java.text.ParseException;
@@ -29,6 +30,11 @@ public class DriverService implements IUserService {
 	private DriverDocumentsRepository documentsRepository;
 	@Autowired
 	private WorkHourRepository workHourRepository;
+	@Autowired
+	private UserRepository userRepository;
+
+	VehicleService vehicleService;
+
 	@Autowired
 	public DriverService(@Lazy VehicleService vehicleService){
 		this.vehicleService = vehicleService;
@@ -61,7 +67,7 @@ public class DriverService implements IUserService {
 		if(emailExists(data.getEmail())) return null;
 		Driver driver = new Driver(data);
 		driverRepository.save(driver);
-		UserService.allUsers.put(driver.getId(), driver);
+		userRepository.save(driver);
 		return new UserDTO(driver);
 	}
 

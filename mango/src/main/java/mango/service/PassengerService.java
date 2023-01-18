@@ -8,6 +8,7 @@ import mango.model.Passenger;
 import mango.model.Ride;
 import mango.repository.PassengerRepository;
 import mango.repository.RideRepository;
+import mango.repository.UserRepository;
 import mango.service.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -29,14 +30,16 @@ public class PassengerService implements IUserService{
 
 	@Autowired
 	private PassengerRepository passengerRepository;
+	@Autowired
+	private UserRepository userRepository;
 
 	@Override
 	public UserDTO insert(ExpandedUserDTO data) {
 		Passenger passenger = new Passenger(data);
-		int size = UserService.allUsers.size();
+		int size = 5;
 		passenger.setId(size + 1);
 		allPassengers.put(passenger.getId(), passenger);
-		UserService.allUsers.put(passenger.getId(), passenger);
+		userRepository.save(passenger);
 		return new UserDTO(passenger);
 	}
 	
