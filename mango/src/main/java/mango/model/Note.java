@@ -28,4 +28,10 @@ public class Note {
 	@JsonManagedReference
 	@JoinColumn(name = "USERID",  referencedColumnName = "id")
 	private User user;
+
+	public Note(String message, LocalDateTime date, User user) {
+		this.message = message;
+		this.date = date;
+		this.user = user;
+	}
 }

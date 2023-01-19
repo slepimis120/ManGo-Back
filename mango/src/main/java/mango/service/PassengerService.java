@@ -9,6 +9,7 @@ import mango.model.Ride;
 import mango.model.User;
 import mango.repository.PassengerRepository;
 import mango.repository.RideRepository;
+import mango.repository.UserRepository;
 import mango.service.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -27,6 +28,8 @@ public class PassengerService implements IUserService{
 
 	@Autowired
 	private PassengerRepository passengerRepository;
+	@Autowired
+	private UserRepository userRepository;
 
 
 
@@ -37,7 +40,6 @@ public class PassengerService implements IUserService{
 		}
 		Passenger passenger = new Passenger(data);
 		passenger = passengerRepository.save(passenger);
-		UserService.allUsers.put(passenger.getId(), passenger);
 		return new UserDTO(passenger);
 	}
 	
@@ -65,16 +67,12 @@ public class PassengerService implements IUserService{
 
 	@Override
 	public UserDTO update(Integer id, ExpandedUserDTO update) {
-		if(!emailExists(update.getEmail())){
-			return null;
-		}
 		Passenger passenger = passengerRepository.findById(id).orElse(null);
 		if (passenger != null) {
 			passenger.setName(update.getName());
 			passenger.setSurname(update.getSurname());
 			passenger.setAddress(update.getAddress());
 			passenger.setEmail(update.getEmail());
-			passenger.setPassword(update.getPassword());
 			if(update.getProfilePicture() != null) 
 				passenger.setProfilePicture(update.getProfilePicture());
 			if(update.getTelephoneNumber() != null)
