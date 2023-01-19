@@ -28,8 +28,7 @@ public class WebSecurityConfiguration {
 
 	@Bean
 	public WebSecurityCustomizer webSecurityCustomizer() {
-		return (web) -> web.ignoring().requestMatchers(HttpMethod.POST, "/user/login")
-				.requestMatchers(HttpMethod.GET, "/", "/webjars/*");
+		return (web) -> web.ignoring().requestMatchers(HttpMethod.POST, "/user/login");
 	}
 
 	@Bean
@@ -37,7 +36,7 @@ public class WebSecurityConfiguration {
 		http.cors().and();
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 				.and()
-				.csrf().disable().authorizeRequests()   // csrf -> disabled, posto JWT obradjuje zastitu od CSRF napada
+				.csrf().disable().authorizeHttpRequests()   // csrf -> disabled, posto JWT obradjuje zastitu od CSRF napada
 				.requestMatchers("/passenger").permitAll()
 				.anyRequest().permitAll();// sve ostalo mora da bude autentifikovano
 				 // ne koristimo HttpSession i kukije

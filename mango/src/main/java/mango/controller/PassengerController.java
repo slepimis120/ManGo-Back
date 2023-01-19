@@ -1,6 +1,7 @@
 package mango.controller;
 
 import mango.dto.ExpandedUserDTO;
+import mango.security.WebSecurityConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +28,8 @@ public class PassengerController {
 	
 	@Autowired
 	PassengerService service;
+
+
 	
 	@PostMapping
 	public ResponseEntity insert(@RequestBody ExpandedUserDTO data) {
