@@ -1,10 +1,13 @@
 package mango.controller;
 
 import java.util.ArrayList;
+import java.util.Date;
 
+import lombok.Data;
 import mango.dto.*;
 import mango.model.Driver;
 import mango.model.Vehicle;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,96 +27,114 @@ public class DriverController {
 	
 	@PostMapping
 	public ResponseEntity insert(@RequestBody ExpandedUserDTO data) {
-		Driver driver = new Driver();
         UserDTO response =  service.insert(data);
-        return new ResponseEntity(response, HttpStatus.OK);
+		if(response == null){
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User with that email already exists exists!");
+		}
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 	
 	@GetMapping
 	public ResponseEntity getArray(@RequestParam Integer page, Integer size) {
 		UserResponseDTO response = service.getArray(page, size);
-		return new ResponseEntity(response, HttpStatus.OK);
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 	
 	@GetMapping("/{id}")
 	public ResponseEntity find(@PathVariable Integer id) {
 		UserDTO response =  service.find(id);
-		return new ResponseEntity(response, HttpStatus.OK);
+		if(response == null){
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Driver does not exist!");
+		}
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 	
 	@RequestMapping(value="/{id}",method = RequestMethod.PUT)
 	public ResponseEntity update(@PathVariable Integer id, @RequestBody ExpandedUserDTO update) {
 		UserDTO response = service.update(id, update);
-		return new ResponseEntity(response, HttpStatus.OK);
+		if(response == null){
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Driver does not exist!");
+		}
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 	
 	@GetMapping("/{id}/documents")
 	public ResponseEntity findDocuments(@PathVariable Integer id) {
 		ArrayList<DriverDocumentDTO> response = service.findDocuments(id);
-		return new ResponseEntity(response, HttpStatus.OK);
+		if(response == null){
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Driver does not exist!");
+		}
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 	
 	@PostMapping("/{id}/documents")
-	public ResponseEntity insertDocument(@PathVariable Integer id, @RequestBody String name, String documentImage) {
-        DriverDocumentDTO response =  service.insertDocument(id, name, documentImage);
-        return new ResponseEntity(response, HttpStatus.OK);
+	public ResponseEntity insertDocument(@PathVariable Integer id, @RequestBody ShortDriverDocumentDTO document) {
+        DriverDocumentDTO response =  service.insertDocument(id, document.getName(), document.getDocumentImage());
+		if(response == null){
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Driver does not exist!");
+		}
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 	
 	@DeleteMapping("/document/{id}")
 	public ResponseEntity deleteDocument(@PathVariable Integer id) {
-		DriverDocument response = service.deleteDocument(id);
+		String response = service.deleteDocument(id);
 		if(response == null) {
-			return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Document does not exist!");
 		}
-        return new ResponseEntity(HttpStatus.NO_CONTENT);
+		return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
 	}
 	
 	@GetMapping("/{id}/working-hour")
-	public ResponseEntity findWorkHours(@PathVariable Integer id, @RequestBody WorkHourQueryDTO workHourQueryDTO) {
-		WorkHourResponseDTO  response = service.findWorkHours(id, workHourQueryDTO.getPage(), workHourQueryDTO.getSize(), workHourQueryDTO.getFrom(), workHourQueryDTO.getTo());
-		return new ResponseEntity(response, HttpStatus.OK);
+	public ResponseEntity findWorkHours(@PathVariable Integer id,@RequestParam Integer page, Integer size, String from, String to) {
+		WorkHourResponseDTO  response = service.findWorkHours(id, page, size, from, to);
+		if(response == null)
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Driver does not exist!");
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 	
 	@PostMapping("/{id_driver}/working-hour")
-	public ResponseEntity insertWorkHour(@PathVariable Integer id_driver, @RequestBody WorkHourDTO workhour) {
-        WorkHourDTO response =  service.insertWorkHour(id_driver, workhour.getId(), workhour.getStart(), workhour.getEnd());
-        return new ResponseEntity(response, HttpStatus.OK);
+	public ResponseEntity insertWorkHour(@PathVariable Integer id_driver, @RequestBody JSONObject start) {
+        WorkHourDTO response =  service.insertWorkHour(id_driver, start.get("star").toString());
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 	
 	@GetMapping("/working-hour/{id}")
 	public ResponseEntity findWorkHour(@PathVariable Integer id) {
 		WorkHourDTO response =  service.findWorkHour(id);
-		return new ResponseEntity(response, HttpStatus.OK);
+		if(response == null)
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Working hour does not exist!");
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 	
 	@PutMapping(value="/working-hour/{workingHourId}")
-	public ResponseEntity updateWorkHour(@PathVariable Integer workingHourId, @RequestBody WorkHourDTO workhour) {
-		WorkHourDTO response = service.updateWorkHour(workingHourId, workhour.getId(), workhour.getStart(), workhour.getEnd());
-		return new ResponseEntity(response, HttpStatus.OK);
+	public ResponseEntity updateWorkHour(@PathVariable Integer workingHourId, @RequestBody JSONObject end) {
+		WorkHourDTO response = service.updateWorkHour(workingHourId, end.get("end").toString());
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
 	@PostMapping("{id}/vehicle")
 	public ResponseEntity postVehicle(@PathVariable Integer id, @RequestBody Vehicle vehicle){
 		Vehicle response = service.postVehicle(vehicle, id);
-		return new ResponseEntity(response, HttpStatus.OK);
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
 	@GetMapping("{id}/vehicle")
 	public ResponseEntity getVehicle(@PathVariable Integer id){
-		Vehicle response = service.getVehicle(id);
-		return new ResponseEntity(response, HttpStatus.OK);
+		return service.getVehicle(id);
 	}
 
 	@PutMapping("{id}/vehicle")
-	public ResponseEntity changeVehicle(@PathVariable Integer id, @RequestBody Vehicle vehicle){
-		Vehicle response = service.changeVehicle(id, vehicle);
-		return new ResponseEntity(response, HttpStatus.OK);
+	public ResponseEntity changeVehicle(@PathVariable Integer id, @RequestBody VehicleDTO vehicle){
+		VehicleDTO response = service.changeVehicle(id, vehicle);
+		if(response == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Driver does not exist!");
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
 	@GetMapping("{id}/ride")
-	public ResponseEntity getRides(@PathVariable Integer id, @RequestBody RideQueryDTO rideQueryDTO){
-		RideCountDTO response = service.getRides(id, rideQueryDTO.getPage(), rideQueryDTO.getSize(), rideQueryDTO.getSort(), rideQueryDTO.getFrom(), rideQueryDTO.getTo());
-		return new ResponseEntity(response, HttpStatus.OK);
+	public ResponseEntity getRides(@PathVariable Integer id, @RequestParam Integer page, Integer size, String sort, String from, String to){
+		RideCountDTO response = service.getRides(id, page, size, sort,from,to);
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 }
 

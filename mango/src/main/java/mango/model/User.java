@@ -67,6 +67,9 @@ public class User implements UserDetails {
 		this.blocked = blocked;
 	}
 
+	public User(int id){
+		this.id = id;
+	}
 	public User(ExpandedUserDTO data) {
 		this.id = -1;
 		this.name = data.getName();
