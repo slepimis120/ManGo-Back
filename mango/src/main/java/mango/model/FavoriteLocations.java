@@ -1,7 +1,7 @@
 package mango.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import javax.persistence.*;
+import jakarta.persistence.*;
 import mango.dto.GetFavoriteLocationsDTO;
 import mango.dto.RideLocationDTO;
 import mango.dto.RidePassengerDTO;

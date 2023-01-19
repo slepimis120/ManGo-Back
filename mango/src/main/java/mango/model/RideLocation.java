@@ -3,7 +3,7 @@ package mango.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import javax.persistence.*;
+import jakarta.persistence.*;
 import mango.dto.RideLocationDTO;
 
 import java.util.List;

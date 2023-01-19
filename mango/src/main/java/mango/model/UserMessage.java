@@ -1,7 +1,7 @@
 package mango.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 

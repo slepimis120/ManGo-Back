@@ -1,7 +1,7 @@
 package mango.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import javax.persistence.*;
+import jakarta.persistence.*;
 import mango.dto.LocationDTO;
 
 @Entity

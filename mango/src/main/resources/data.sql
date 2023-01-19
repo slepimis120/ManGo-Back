@@ -12,7 +12,7 @@ VALUES ('PASSENGER','Marko', 'Markov', 'linkOdSlikee', '+381694422334', 'marko@g
        ('PASSENGER', 'Merak', 'Meraklović', 'liiknic', '+39287726313', 'meraklovski@gmail.com', 'Maksima Gorkog 2', 'mmerak', false),
        ('PASSENGER', 'Nemanja', 'Šimšić', 'link', '+381695511006', 'slepimis120@gmail.com', 'Miše Dimitrijevića 45', 'nemanjas', false),
        ('PASSENGER', 'Aleksandra', 'Balažević', 'slika', '+3937827612', 'aleksandrab@gmail.com', 'Bulevar despota Stefana 5А', 'sakisaki', false),
-       ('PASSENGER', 'Mina', 'Slanina', 'slikamineslanine', '+312731231', 'minaslanina@gmail.com', 'Heroja Pinkija 54', 'slanina', false),
+       ('PASSENGER', 'Mina', 'Slanina', 'slikamineslanine', '+312731231', 'minaslanina@gmail.com', 'Heroja Pinkija 54', '$2a$12$KON4OJgt3NrtyvX0hmkq7uYslGH.eEwZFB4lYTFztFW3ccynO1H9.', false),
        ('PASSENGER', 'Mila', 'Miloševski', 'mila', '+382719321', 'milamilosevski@yahoo.com', 'Mitrovačka 37', 'milavelika', false),
        ('PASSENGER', 'Miloš', 'Obrenović', 'milos', '+383726123', 'milosobrenovic@hotmail.com', 'Šarplaninska 30', 'mikiveliki', false);
 
