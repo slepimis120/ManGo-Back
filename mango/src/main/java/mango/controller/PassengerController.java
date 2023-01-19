@@ -1,13 +1,14 @@
 package mango.controller;
 
-import mango.dto.*;
-import mango.model.Ride;
+import mango.dto.ExpandedUserDTO;
+import mango.dto.RideCountDTO;
+import mango.dto.UserDTO;
+import mango.dto.UserResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -21,11 +22,13 @@ import org.springframework.http.ResponseEntity;
 
 @CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*")
 @RestController
-@RequestMapping("/api/passenger")
+@RequestMapping("/passenger")
 public class PassengerController {
 	
 	@Autowired
 	PassengerService service;
+
+
 	
 	@PostMapping
 	public ResponseEntity insert(@RequestBody ExpandedUserDTO data) {

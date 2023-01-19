@@ -3,7 +3,6 @@ package mango.model;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import mango.dto.ExpandedUserDTO;
 import mango.dto.RidePassengerDTO;

@@ -18,7 +18,7 @@ import mango.service.DriverService;
 
 @CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*")
 @RestController
-@RequestMapping("/api/driver")
+@RequestMapping("/driver")
 public class DriverController {
 
 	@Autowired

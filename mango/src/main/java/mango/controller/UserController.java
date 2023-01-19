@@ -1,31 +1,32 @@
 package mango.controller;
 
 import mango.dto.*;
-import mango.service.interfaces.IUserService;
-import org.apache.coyote.Response;
+import mango.model.User;
+import mango.security.jwt.JwtTokenUtil;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
 
 import mango.service.UserService;
 
-@CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*")
+@CrossOrigin(origins = {"http://localhost:4200", "http://localhost:8080"}, allowedHeaders = "*")
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/user")
 public class UserController {
 	@Autowired
 	UserService service;
 
+	@Autowired
+	private AuthenticationManager authenticationManager;
+	@Autowired
+	private JwtTokenUtil tokenUtils;
 	@RequestMapping(value="/{id}/changePassword",method = RequestMethod.PUT)
 	public ResponseEntity changePassword(@PathVariable Integer id, @RequestBody ChangePasswordDTO password) {
 		HttpStatus response = service.changePassword(id, password.getNewPassword(), password.getVerification());
@@ -98,15 +99,29 @@ public class UserController {
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 	
-	@PostMapping("/login")
-	public ResponseEntity login(@RequestBody String email, String password) {
-        LoginDTO response =  service.login(email, password);
-		return ResponseEntity.status(HttpStatus.OK).body(response);
-	}
-	
 	@GetMapping("/{id}/ride")
 	public ResponseEntity getRides(@PathVariable Integer id, @RequestParam Integer page, Integer size, String sort, String from, String to){
 		RideCountDTO response = service.userRides(id, page, size, sort, from, to);
 		return ResponseEntity.status(HttpStatus.OK).body(response);
+	}
+
+	@PostMapping(value="/login")
+	public ResponseEntity logIn(@RequestBody UserLoginDTO request) {
+		UsernamePasswordAuthenticationToken authReq = new UsernamePasswordAuthenticationToken(request.getEmail(),
+				request.getPassword());
+		Authentication auth = authenticationManager.authenticate(authReq);
+
+		SecurityContext sc = SecurityContextHolder.getContext();
+		sc.setAuthentication(auth);
+
+		User user = service.getByEmail(request.getEmail());
+		String token = tokenUtils.generateToken(request.getEmail(),sc.getAuthentication().getAuthorities().toArray()[0].toString(),user.getId()); // prosledjujemo email, role i id korisnika
+		String refreshToken = tokenUtils.generateRefreshToken(request.getEmail(),sc.getAuthentication().getAuthorities().toArray()[0].toString(),user.getId());
+
+		UserLoginResponseDTO jwt = new UserLoginResponseDTO();
+		jwt.setAccessToken(token);
+		jwt.setRefreshToken(refreshToken);
+
+		return ResponseEntity.status(HttpStatus.OK).body(jwt);
 	}
 }

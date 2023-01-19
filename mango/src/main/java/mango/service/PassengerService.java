@@ -6,9 +6,9 @@ import mango.dto.UserDTO;
 import mango.dto.UserResponseDTO;
 import mango.model.Passenger;
 import mango.model.Ride;
-import mango.model.User;
 import mango.repository.PassengerRepository;
 import mango.repository.RideRepository;
+import mango.security.WebSecurityConfiguration;
 import mango.repository.UserRepository;
 import mango.service.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +25,9 @@ public class PassengerService implements IUserService{
 
 	@Autowired
 	private RideRepository rideRepository;
+
+	@Autowired
+	WebSecurityConfiguration webSecurityConfiguration;
 
 	@Autowired
 	private PassengerRepository passengerRepository;

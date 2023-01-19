@@ -154,6 +154,9 @@ public class UserService implements IUserService{
 		return rideRepository.findRidesByDriver(driverId);
 	}
 
+	public User getByEmail(String email){
+		return userRepository.findByEmail(email).orElse(null);
+	}
 	public HttpStatus changePassword(Integer id, String newPassword, String oldPassword) {
 		User user = userRepository.findById(id).orElse(null);
 		if(user != null){

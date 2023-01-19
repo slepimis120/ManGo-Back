@@ -1,20 +1,20 @@
 INSERT INTO USERS (type, name, surname, profilepicture, telephonenumber, email, address, password, blocked)
-VALUES ('DRIVER', 'Momir', 'Momirovski', 'slikalink', '+2318302845', 'momir@gmail.com', 'Žarka Zrenjanina 6', 'mmomirko', false),
-       ('DRIVER', 'Marina', 'Marinara', 'dhajsoda', '+32198312321', 'marinara@gmail.com', 'Žitni Trg 8', 'mmarinara', false),
-       ('DRIVER', 'Adam', 'Driver', 'adamdriverslika', '+8372917233', 'adamdriver@gmail.com', 'Vršačka 5', 'jasamdriver', false),
-       ('DRIVER', 'Ansel', 'Elgort', 'anselslika', '+3827129312', 'jasambabydriver@gmail.com', 'Futoški put 8', 'babydriver', false);
+VALUES ('DRIVER', 'Momir', 'Momirovski', 'slikalink', '+2318302845', 'momir@gmail.com', 'Žarka Zrenjanina 6', '$2a$12$uP203LOQlxC1ogH74JWdP.iGxobvImrEu2CSROTSiyoDnVmvnIRoy', false),
+       ('DRIVER', 'Marina', 'Marinara', 'dhajsoda', '+32198312321', 'marinara@gmail.com', 'Žitni Trg 8', '$2a$12$cxicWxEAHet6C4X3uC/Jvuw11UZPzPpDZQZ.VdvNmMBt7VwNWLD2K', false),
+       ('DRIVER', 'Adam', 'Driver', 'adamdriverslika', '+8372917233', 'adamdriver@gmail.com', 'Vršačka 5', '$2a$12$2R7Jfri8eWFanFVXGZQv0OXtcW6bj/A3ZSTUWdNWIbwi.7oSQL4GK', false),
+       ('DRIVER', 'Ansel', 'Elgort', 'anselslika', '+3827129312', 'jasambabydriver@gmail.com', 'Futoški put 8', '$2a$12$YUqVzEmMwW24KgHIdp6y9.GfW9oBOfC4qtgavmWYlMLlYEDoeIn5y', false);
 
 
 
 INSERT INTO USERS (TYPE, NAME, SURNAME, PROFILEPICTURE, TELEPHONENUMBER, EMAIL, ADDRESS, PASSWORD, BLOCKED)
-VALUES ('PASSENGER','Marko', 'Markov', 'linkOdSlikee', '+381694422334', 'marko@gmail.com', 'Bulevar Oslobođenja 3', 'mmarko', false),
-       ('PASSENGER','Milica', 'Milicevic', 'slikolink', '+381673829374', 'milica@gmail.com', 'Bulevar Cara Lazara 5', 'mmilica', false),
-       ('PASSENGER', 'Merak', 'Meraklović', 'liiknic', '+39287726313', 'meraklovski@gmail.com', 'Maksima Gorkog 2', 'mmerak', false),
-       ('PASSENGER', 'Nemanja', 'Šimšić', 'link', '+381695511006', 'slepimis120@gmail.com', 'Miše Dimitrijevića 45', 'nemanjas', false),
-       ('PASSENGER', 'Aleksandra', 'Balažević', 'slika', '+3937827612', 'aleksandrab@gmail.com', 'Bulevar despota Stefana 5А', 'sakisaki', false),
-       ('PASSENGER', 'Mina', 'Slanina', 'slikamineslanine', '+312731231', 'minaslanina@gmail.com', 'Heroja Pinkija 54', 'slanina', false),
-       ('PASSENGER', 'Mila', 'Miloševski', 'mila', '+382719321', 'milamilosevski@yahoo.com', 'Mitrovačka 37', 'milavelika', false),
-       ('PASSENGER', 'Miloš', 'Obrenović', 'milos', '+383726123', 'milosobrenovic@hotmail.com', 'Šarplaninska 30', 'mikiveliki', false);
+VALUES ('PASSENGER','Marko', 'Markov', 'linkOdSlikee', '+381694422334', 'marko@gmail.com', 'Bulevar Oslobođenja 3', '$2a$12$2Alb2iGAxZMZrDhv.dy/c.AugR6jIc6oatS1faGwPp4snLUt46u5m', false),
+       ('PASSENGER','Milica', 'Milicevic', 'slikolink', '+381673829374', 'milica@gmail.com', 'Bulevar Cara Lazara 5', '$2a$12$PKKEkuSUTFEewKxFlBKgr.NjxQ7TgupPw/POF1Oxj8janOdjUGHZW', false),
+       ('PASSENGER', 'Merak', 'Meraklović', 'liiknic', '+39287726313', 'meraklovski@gmail.com', 'Maksima Gorkog 2', '$2a$12$tYBoA1BTB5SqH6kcMazv9.MSvcF/zkITHGXHxRLUa29wurJPrqLbm', false),
+       ('PASSENGER', 'Nemanja', 'Šimšić', 'link', '+381695511006', 'slepimis120@gmail.com', 'Miše Dimitrijevića 45', '$2a$12$OJZ7tFZCB0BQEwtB1qHEdOEBixlIINYvNxRrcNJzZcysAofkAnlDC', false),
+       ('PASSENGER', 'Aleksandra', 'Balažević', 'slika', '+3937827612', 'aleksandrab@gmail.com', 'Bulevar despota Stefana 5А', '$2a$12$HJ5kBOLGf9CZrAeOWOq85.7jOUiCGBWXYbw99jGBaxed6U1EyOSdy', false),
+       ('PASSENGER', 'Mina', 'Slanina', 'slikamineslanine', '+312731231', 'minaslanina@gmail.com', 'Heroja Pinkija 54', '$2a$12$nqnuJrjnccwhYkvWAErUhegH.wOUS1kvVhDWH9ghTVwKK6VJC1Us2', false),
+       ('PASSENGER', 'Mila', 'Miloševski', 'mila', '+382719321', 'milamilosevski@yahoo.com', 'Mitrovačka 37', '$2a$12$HyqaJxFBRSFvFDNBjrwOqeHJiDvKl/./vZfY07Ob5Sp4o0f8UI.ui', false),
+       ('PASSENGER', 'Miloš', 'Obrenović', 'milos', '+383726123', 'milosobrenovic@hotmail.com', 'Šarplaninska 30', '$2a$12$PcWXgpagykNEhjS0JvXG2OM5v8GDrnoVKPLaIC0bhSYukq5.Ig.OC', false);
 
 
 

@@ -1,11 +1,12 @@
 package mango.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import mango.dto.GetFavoriteLocationsDTO;
 import mango.dto.RideLocationDTO;
 import mango.dto.RidePassengerDTO;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,11 +22,13 @@ public class FavoriteLocations {
     private String favoriteName;
 
     @JsonManagedReference
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private List<RideLocation> locations;
 
     @JsonManagedReference
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE})
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @ManyToMany(cascade = {CascadeType.MERGE})
     private List<Passenger> passengers;
 
     @Column(name = "VEHICLETYPE", nullable = false)
