@@ -16,6 +16,13 @@ VALUES ('PASSENGER','Marko', 'Markov', 'linkOdSlikee', '+381694422334', 'marko@g
        ('PASSENGER', 'Mila', 'Miloševski', 'mila', '+382719321', 'milamilosevski@yahoo.com', 'Mitrovačka 37', '$2a$12$HyqaJxFBRSFvFDNBjrwOqeHJiDvKl/./vZfY07Ob5Sp4o0f8UI.ui', false),
        ('PASSENGER', 'Miloš', 'Obrenović', 'milos', '+383726123', 'milosobrenovic@hotmail.com', 'Šarplaninska 30', '$2a$12$PcWXgpagykNEhjS0JvXG2OM5v8GDrnoVKPLaIC0bhSYukq5.Ig.OC', false);
 
+INSERT INTO ACTIVATION (PASSENGERID, SENDDATE, ISACTIVATED)
+VALUES (5, '2023-04-01T04:49:27Z', true),
+       (6, '2023-04-01T04:49:27Z', true),
+       (7, '2023-04-01T04:49:27Z', true),
+       (8, '2023-04-01T04:49:27Z', true),
+       (9, '2023-04-01T04:49:27Z', true),
+       (10, '2023-04-01T04:49:27Z', true);
 
 
 INSERT INTO DRIVER_DOCUMENT (NAME, DOCUMENTIMAGE, DRIVERID)

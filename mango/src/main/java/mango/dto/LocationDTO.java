@@ -1,13 +1,22 @@
 package mango.dto;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import mango.model.Location;
 
 public class LocationDTO {
 
     private String address;
 
+    @NotNull
+    @Min(value = -90)
+    @Max(value = 90)
     private Float latitude;
 
+    @NotNull
+    @Min(value = -180)
+    @Max(value = 180)
     private Float longitude;
 
     public LocationDTO(Location location){

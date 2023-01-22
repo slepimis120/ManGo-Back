@@ -4,8 +4,10 @@ import mango.dto.ExpandedUserDTO;
 import mango.dto.RideCountDTO;
 import mango.dto.UserDTO;
 import mango.dto.UserResponseDTO;
+import mango.model.Activation;
 import mango.model.Passenger;
 import mango.model.Ride;
+import mango.repository.ActivationRepository;
 import mango.repository.PassengerRepository;
 import mango.repository.RideRepository;
 import mango.security.WebSecurityConfiguration;
@@ -27,6 +29,10 @@ public class PassengerService implements IUserService{
 	private RideRepository rideRepository;
 
 	@Autowired
+	private ActivationRepository activationRepository;
+
+
+	@Autowired
 	WebSecurityConfiguration webSecurityConfiguration;
 
 	@Autowired
@@ -36,14 +42,13 @@ public class PassengerService implements IUserService{
 
 
 
-	@Override
-	public UserDTO insert(ExpandedUserDTO data) {
+	public Passenger insertPassenger(ExpandedUserDTO data) {
 		if(emailExists(data.getEmail())){
 			return null;
 		}
 		Passenger passenger = new Passenger(data);
 		passenger = passengerRepository.save(passenger);
-		return new UserDTO(passenger);
+		return passenger;
 	}
 	
 	@Override
@@ -142,5 +147,15 @@ public class PassengerService implements IUserService{
 			}
 		}
 		return false;
+	}
+
+	public boolean activatePassenger(Activation activation){
+		activation.setActivated(true);
+		activationRepository.save(activation);
+		return true;
+	}
+
+	public Activation getActivation(Integer id){
+		return activationRepository.getById(id);
 	}
 }

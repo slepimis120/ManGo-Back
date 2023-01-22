@@ -1,5 +1,7 @@
 package mango.dto;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import mango.model.RideLocation;
 import mango.model.Vehicle;
 
@@ -8,16 +10,24 @@ import java.util.List;
 
 public class RideEstimatesDTO {
 
-    private List<RideLocation> locations;
+    @NotEmpty (message = "Field Locations is required!")
+    @NotNull
+    private List<RideLocationDTO> locations;
 
+    @NotEmpty (message = "Field Vehicle Type is required!")
+    @NotNull
     private Vehicle.Type vehicleType;
 
+    @NotEmpty (message = "Field Baby Transport is required!")
+    @NotNull
     private boolean babyTransport;
 
+    @NotEmpty(message = "Field Pet Transport is required!")
+    @NotNull
     private boolean petTransport;
 
 
-    public RideEstimatesDTO(List<RideLocation> locations, Vehicle.Type vehicleType, boolean babyTransport, boolean petTransport) {
+    public RideEstimatesDTO(List<RideLocationDTO> locations, Vehicle.Type vehicleType, boolean babyTransport, boolean petTransport) {
         this.locations = locations;
         this.vehicleType = vehicleType;
         this.babyTransport = babyTransport;
@@ -26,11 +36,11 @@ public class RideEstimatesDTO {
 
     public RideEstimatesDTO(){}
 
-    public List<RideLocation> getLocations() {
+    public List<RideLocationDTO> getLocations() {
         return locations;
     }
 
-    public void setLocations(List<RideLocation> locations) {
+    public void setLocations(List<RideLocationDTO> locations) {
         this.locations = locations;
     }
 

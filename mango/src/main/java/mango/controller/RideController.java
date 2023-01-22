@@ -12,6 +12,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -25,6 +26,7 @@ public class RideController {
     @Autowired
     RideService rideService;
 
+    @PreAuthorize("hasAuthority(\"ROLE_PASSENGER\")")
     @PostMapping
     public ResponseEntity createRide(@RequestBody CreateRideDTO ride){
         Ride newRide = new Ride(ride);
@@ -38,42 +40,46 @@ public class RideController {
         return ResponseEntity.status(HttpStatus.OK).body(responseRide);
     }
 
+    @PreAuthorize("hasAuthority(\"ROLE_ADMIN\")")
     @GetMapping("/{id}")
     public ResponseEntity findRide(@PathVariable Integer id) {
         Ride ride = rideService.findById(id);
         if(ride == null){
-            return new ResponseEntity("Ride does not exist!", HttpStatus.BAD_REQUEST);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ride does not exist!");
         }
         ResponseRideDTO responseRide = new ResponseRideDTO(ride);
         return ResponseEntity.status(HttpStatus.OK).body(responseRide);
     }
 
+    @PreAuthorize("hasAuthority(\"ROLE_ADMIN\")")
     @GetMapping("/driver/{driverId}/active")
     public ResponseEntity findActiveByDriver(@PathVariable Integer driverId) {
         Ride ride = rideService.findActiveByDriver(driverId);
         if(ride == null){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Active ride does not exist!");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Active ride does not exist!");
         }
         ResponseRideDTO responseRide = new ResponseRideDTO(ride);
         return ResponseEntity.status(HttpStatus.OK).body(responseRide);
     }
 
+    @PreAuthorize("hasAuthority(\"ROLE_ADMIN\")")
     @GetMapping("/passenger/{passengerId}/active")
     public ResponseEntity findByPassenger(@PathVariable Integer passengerId) {
         Ride ride = rideService.findActiveByPassenger(passengerId);
         if(ride == null){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Active ride does not exist!");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Active ride does not exist!");
         }
         RideDTOMapper mapper = new RideDTOMapper(new ModelMapper());
         ResponseRideDTO responseRide = mapper.fromRidetoResponseDTO(ride);
         return ResponseEntity.status(HttpStatus.OK).body(responseRide);
     }
 
+    @PreAuthorize("hasAuthority(\"ROLE_PASSENGER\")")
     @PutMapping("/{id}/withdraw")
     public ResponseEntity cancelByPassenger(@PathVariable Integer id) {
         Ride ride = rideService.findById(id);
         if(ride == null){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Ride does not exist!");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ride does not exist!");
         }
         if(ride.getStatus() != Ride.Status.pending && ride.getStatus() != Ride.Status.accepted){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Cannot cancel a ride that is not in status PENDING or STARTED!");
@@ -83,41 +89,59 @@ public class RideController {
         return ResponseEntity.status(HttpStatus.OK).body(responseRide);
     }
 
+    @PreAuthorize("hasAuthority(\"ROLE_DRIVER\")")
     @PutMapping("/{id}/accept")
     public ResponseEntity accept(@PathVariable Integer id) {
         Ride ride = rideService.findById(id);
         if(ride == null){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Ride does not exist!");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ride does not exist!");
         }
         if(ride.getStatus() != Ride.Status.pending){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Cannot cancel a ride that is not in status PENDING!");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Cannot accept a ride that is not in status PENDING!");
         }
         ride = rideService.accept(id);
         ResponseRideDTO responseRide = new ResponseRideDTO(ride);
         return ResponseEntity.status(HttpStatus.OK).body(responseRide);
     }
 
+    @PreAuthorize("hasAuthority(\"ROLE_DRIVER\")")
+    @PutMapping("{id}/start")
+    public ResponseEntity start(@PathVariable Integer id){
+        Ride ride = rideService.findById(id);
+        if (ride == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ride does not exist!");
+        }
+        if(ride.getStatus() != Ride.Status.accepted){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Cannot start a ride that is not in status ACCEPTED!");
+        }
+        ride = rideService.start(id);
+        ResponseRideDTO responseRide = new ResponseRideDTO(ride);
+        return ResponseEntity.status(HttpStatus.OK).body(responseRide);
+    }
+
+    @PreAuthorize("hasAuthority(\"ROLE_DRIVER\")")
     @PutMapping("/{id}/end")
     public ResponseEntity end(@PathVariable Integer id){
         Ride ride = rideService.findById(id);
         if(ride == null){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Ride does not exist!");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ride does not exist!");
         }
         if(ride.getStatus() != Ride.Status.accepted){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Cannot cancel a ride that is not in status ACCEPTED!");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Cannot end a ride that is not in status ACCEPTED!");
         }
         ride = rideService.end(id);
         ResponseRideDTO responseRide = new ResponseRideDTO(ride);
         return ResponseEntity.status(HttpStatus.OK).body(responseRide);
     }
 
+    @PreAuthorize("hasAuthority(\"ROLE_DRIVER\")")
     @PutMapping("/{id}/cancel")
     public ResponseEntity cancelByDriver(@PathVariable Integer id, @RequestBody RejectionDTO rejection){
         RejectionDTOMapper rejectionMapper = new RejectionDTOMapper(new ModelMapper());
         Rejection newRejection = rejectionMapper.fromDTOtoRejection(rejection);
         Ride ride = rideService.findById(id);
         if(ride == null){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Ride does not exist!");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ride does not exist!");
         }
         if(ride.getStatus() != Ride.Status.pending){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Cannot cancel a ride that is not in status PENDING!");
@@ -128,18 +152,20 @@ public class RideController {
         return ResponseEntity.status(HttpStatus.OK).body(responseRide);
     }
 
+    @PreAuthorize("hasAuthority(\"ROLE_PASSENGER\")")
     @PutMapping("/{id}/panic")
     public ResponseEntity panic(@PathVariable Integer id, @RequestBody PanicDTO panic){
         PanicDTOMapper mapper = new PanicDTOMapper(new ModelMapper());
         Panic newPanic = mapper.fromDTOtoPanic(panic);
         Ride ride = rideService.findById(id);
         if(ride == null){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Ride does not exist!");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ride does not exist!");
         }
         Panic responsePanic = rideService.panic(id, newPanic);
         return ResponseEntity.status(HttpStatus.OK).body(responsePanic);
     }
 
+    @PreAuthorize("hasAuthority(\"ROLE_PASSENGER\")")
     @PostMapping("/favorites")
     public ResponseEntity setFavoriteLocations(@RequestBody GetFavoriteLocationsDTO getFavoriteLocationsDTO){
         if(rideService.getTotalCount(5) >= 2){
@@ -150,12 +176,14 @@ public class RideController {
         return ResponseEntity.status(HttpStatus.OK).body(sendFavoriteLocationsDTO);
     }
 
+    @PreAuthorize("hasAuthority(\"ROLE_PASSENGER\")")
     @GetMapping("/favorites")
     public ResponseEntity getFavoriteLocations(){
         List<SendFavoriteLocationsDTO> sendFavoriteLocationsDTOList = rideService.getFavoriteLocations(5);
         return ResponseEntity.status(HttpStatus.OK).body(sendFavoriteLocationsDTOList);
     }
 
+    @PreAuthorize("hasAuthority(\"ROLE_PASSENGER\")")
     @DeleteMapping("/favorites/{id}")
     public ResponseEntity deleteFavoriteLocation(@PathVariable Integer id){
         if(rideService.deleteFavoriteLocations(id)){

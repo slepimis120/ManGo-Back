@@ -1,23 +1,31 @@
 package mango.dto;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import mango.model.Location;
 import mango.model.Vehicle;
 import mango.model.Vehicle.Type;
+import org.hibernate.validator.constraints.Length;
 
 public class VehicleDTO {
 
-    private Integer id;
-
-    private Integer driverId;
-
+    @NotNull
     private Vehicle.Type vehicleType;
 
+    @NotNull
+    @Length(max = 100)
     private String model;
 
+    @NotNull
+    @Length(max = 20)
     private String licenseNumber;
 
     private LocationDTO currentLocation;
 
+    @NotNull
+    @Min(value = 1)
+    @Max(value = 20)
     private Integer passengerSeats;
 
     private boolean babyTransport;
@@ -26,8 +34,6 @@ public class VehicleDTO {
 
 
     public VehicleDTO (Vehicle vehicle){
-        this.id = vehicle.getId();
-        this.driverId = vehicle.getDriver().getId();
         this.vehicleType = vehicle.getVehicleType();
         this.model = vehicle.getModel();
         this.licenseNumber = vehicle.getLicenseNumber();
@@ -38,22 +44,6 @@ public class VehicleDTO {
     }
 
     public VehicleDTO(){}
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getDriverId() {
-        return driverId;
-    }
-
-    public void setDriverId(Integer driverId) {
-        this.driverId = driverId;
-    }
 
     public Type getVehicleType() {
         return vehicleType;

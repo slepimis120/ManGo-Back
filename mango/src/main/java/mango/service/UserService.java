@@ -47,12 +47,6 @@ public class UserService implements IUserService{
 	}
 
 	@Override
-	public UserDTO insert(ExpandedUserDTO data) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public UserDTO update(Integer id, ExpandedUserDTO update) {
 		// TODO Auto-generated method stub
 		return null;
@@ -184,5 +178,9 @@ public class UserService implements IUserService{
 			return HttpStatus.NO_CONTENT;
 		}
 		else return HttpStatus.NOT_FOUND;
+	}
+
+	public boolean checkActivation(Integer userId){
+		return userRepository.getActivation(userId).isActivated();
 	}
 }

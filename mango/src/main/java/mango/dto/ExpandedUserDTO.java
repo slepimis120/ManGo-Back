@@ -1,13 +1,34 @@
 package mango.dto;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import org.hibernate.validator.constraints.Length;
+
 public class ExpandedUserDTO {
 
+	@NotNull
+	@Length(max = 100)
 	private String name;
+
+	@NotNull
+	@Length(max = 100)
 	private String surname;
+
 	private String profilePicture;
+
+	@Length(max = 100)
 	private String telephoneNumber;
+
+	@NotNull
+	@Length(max = 100)
 	private String email;
+
+	@NotNull
+	@Length(max = 100)
 	private String address;
+
+	@NotNull
+	@Pattern(regexp = "^(?=.*\\d)(?=.*[A-Z])(?!.*[^a-zA-Z0-9@#$^+=])(.{8,15})$")
 	private String password;
 	
 	public ExpandedUserDTO(String name, String surname, String profilePicture, String telephoneNumber, String email,

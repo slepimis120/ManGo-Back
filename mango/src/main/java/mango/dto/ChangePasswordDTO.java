@@ -1,7 +1,16 @@
 package mango.dto;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+
 public class ChangePasswordDTO {
+
+    @NotNull
+    @Pattern(regexp = "^(?=.*\\d)(?=.*[A-Z])(?!.*[^a-zA-Z0-9@#$^+=])(.{8,15})$")
     String newPassword;
+
+    @NotNull
+    @Pattern(regexp = "^(?=.*\\d)(?=.*[A-Z])(?!.*[^a-zA-Z0-9@#$^+=])(.{8,15})$")
     String oldPassword;
 
     public ChangePasswordDTO(String newPassword, String oldPassword) {

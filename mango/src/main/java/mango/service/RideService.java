@@ -60,6 +60,13 @@ public class RideService{
     public Ride accept(Integer rideId) {
         Ride ride = findById(rideId);
         ride.setStatus(Ride.Status.accepted);
+        save(ride);
+        return ride;
+    }
+
+    public Ride start(Integer rideId){
+        Ride ride = findById(rideId);
+        ride.setStatus(Ride.Status.started);
         Date date = new Date();
         ride.setStartTime(date);
         save(ride);
