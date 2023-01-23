@@ -34,6 +34,7 @@ public class WebSecurityConfiguration {
 				.csrf().disable().authorizeHttpRequests((requests) -> requests
 						.requestMatchers(new AntPathRequestMatcher("/user/login")).permitAll()
 						.requestMatchers(new AntPathRequestMatcher("/passenger", "POST")).permitAll()
+						.requestMatchers(new AntPathRequestMatcher("/vehicle", "GET")).permitAll()
 						.requestMatchers(new AntPathRequestMatcher("/passenger/activate/**")).permitAll()
 						.requestMatchers(new AntPathRequestMatcher("/h2-console/**")).permitAll()
 						.anyRequest().authenticated());

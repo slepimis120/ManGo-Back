@@ -20,7 +20,9 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*")
@@ -48,6 +50,15 @@ public class VehicleController {
 
         service.save(vehicle);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body("Coordinates successfully updated");
+    }
+
+    @GetMapping
+    public ResponseEntity getVehicles(){
+        List<VehicleDTO> list = new ArrayList<>();
+        for(Vehicle vehicle : service.findAll()){
+            list.add(new VehicleDTO(vehicle));
+        }
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(list);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
