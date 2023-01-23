@@ -18,7 +18,4 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Query(value = "SELECT * FROM USERS OFFSET ? ROWS FETCH NEXT ? ROWS ONLY", nativeQuery = true)
     List<User> getUsers(int offset, int size);
 
-    @Query(value = "SELECT * FROM USERS WHERE PASSENGERID = ?1", nativeQuery = true)
-    Activation getActivation(Integer id);
-
 }

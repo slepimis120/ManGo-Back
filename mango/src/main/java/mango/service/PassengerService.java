@@ -12,6 +12,7 @@ import mango.repository.PassengerRepository;
 import mango.repository.RideRepository;
 import mango.security.WebSecurityConfiguration;
 import mango.repository.UserRepository;
+import mango.service.email.EmailSenderService;
 import mango.service.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -39,6 +40,8 @@ public class PassengerService implements IUserService{
 	private PassengerRepository passengerRepository;
 	@Autowired
 	private UserRepository userRepository;
+	@Autowired
+	private EmailSenderService emailSenderService;
 
 
 
@@ -48,12 +51,15 @@ public class PassengerService implements IUserService{
 		}
 		Passenger passenger = new Passenger(data);
 		passenger = passengerRepository.save(passenger);
+		Activation activation = new Activation(passenger, new Date(), false);
+		activation = activationRepository.save(activation);
+		emailSenderService.sendSimpleEmail(passenger.getEmail(), activation.getId());
 		return passenger;
 	}
 	
 	@Override
 	public UserResponseDTO getArray(Integer page, Integer size) {
-		int offset = (page - 1) * size;
+		int offset = page * size;
 		ArrayList<UserDTO> returnList = new ArrayList<UserDTO>();
 		List<Passenger> users = passengerRepository.fetchPassengerOffset(offset, size);
 		for(int i = 0; i < users.size(); i++){
@@ -158,4 +164,5 @@ public class PassengerService implements IUserService{
 	public Activation getActivation(Integer id){
 		return activationRepository.getById(id);
 	}
+
 }

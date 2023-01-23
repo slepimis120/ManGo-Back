@@ -1,5 +1,6 @@
 package mango.dto;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import org.hibernate.validator.constraints.Length;
@@ -21,6 +22,7 @@ public class ExpandedUserDTO {
 
 	@NotNull
 	@Length(max = 100)
+	@Email
 	private String email;
 
 	@NotNull

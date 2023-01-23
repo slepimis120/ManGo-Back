@@ -14,7 +14,7 @@ VALUES ('PASSENGER','Marko', 'Markov', 'linkOdSlikee', '+381694422334', 'marko@g
        ('PASSENGER', 'Aleksandra', 'Balažević', 'slika', '+3937827612', 'aleksandrab@gmail.com', 'Bulevar despota Stefana 5А', '$2a$12$HJ5kBOLGf9CZrAeOWOq85.7jOUiCGBWXYbw99jGBaxed6U1EyOSdy', false),
        ('PASSENGER', 'Mina', 'Slanina', 'slikamineslanine', '+312731231', 'minaslanina@gmail.com', 'Heroja Pinkija 54', '$2a$12$nqnuJrjnccwhYkvWAErUhegH.wOUS1kvVhDWH9ghTVwKK6VJC1Us2', false),
        ('PASSENGER', 'Mila', 'Miloševski', 'mila', '+382719321', 'milamilosevski@yahoo.com', 'Mitrovačka 37', '$2a$12$HyqaJxFBRSFvFDNBjrwOqeHJiDvKl/./vZfY07Ob5Sp4o0f8UI.ui', false),
-       ('PASSENGER', 'Miloš', 'Obrenović', 'milos', '+383726123', 'milosobrenovic@hotmail.com', 'Šarplaninska 30', '$2a$12$PcWXgpagykNEhjS0JvXG2OM5v8GDrnoVKPLaIC0bhSYukq5.Ig.OC', false);
+       ('ADMIN', 'Miloš', 'Obrenović', 'milos', '+383726123', 'milosobrenovic@hotmail.com', 'Šarplaninska 30', '$2a$12$PcWXgpagykNEhjS0JvXG2OM5v8GDrnoVKPLaIC0bhSYukq5.Ig.OC', false);
 
 INSERT INTO ACTIVATION (PASSENGERID, SENDDATE, ISACTIVATED)
 VALUES (5, '2023-04-01T04:49:27Z', true),

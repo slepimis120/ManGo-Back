@@ -33,11 +33,9 @@ public class WebSecurityConfiguration {
 				.and()
 				.csrf().disable().authorizeHttpRequests((requests) -> requests
 						.requestMatchers(new AntPathRequestMatcher("/user/login")).permitAll()
+						.requestMatchers(new AntPathRequestMatcher("/passenger", "POST")).permitAll()
+						.requestMatchers(new AntPathRequestMatcher("/passenger/activate/**")).permitAll()
 						.requestMatchers(new AntPathRequestMatcher("/h2-console/**")).permitAll()
-						.requestMatchers(new AntPathRequestMatcher("/passenger/**")).hasAuthority("'PASSENGER'")
-						.requestMatchers(new AntPathRequestMatcher("/ride/**")).hasAnyAuthority("DRIVER", "PASSENGER")
-						.requestMatchers(new AntPathRequestMatcher("/user/**")).hasAnyAuthority("DRIVER", "PASSENGER")
-						.requestMatchers(new AntPathRequestMatcher("/review/**")).hasAnyAuthority("DRIVER", "PASSENGER")
 						.anyRequest().authenticated());
 		http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class); //JWT procesiramo pre autentikacije
 		http.headers().frameOptions().sameOrigin();

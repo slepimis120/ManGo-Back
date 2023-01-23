@@ -1,5 +1,6 @@
 package mango.controller;
 
+import jakarta.validation.Valid;
 import mango.dto.CalculatedRideEstimatesDTO;
 import mango.dto.LocationDTO;
 import mango.dto.RideEstimatesDTO;
@@ -11,14 +12,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @CrossOrigin(origins = {"http://localhost:4200", "http://localhost:8080"}, allowedHeaders = "*")
 @RestController
@@ -30,7 +31,7 @@ public class UnregisteredUserController {
 
     @PreAuthorize("permitAll()")
     @PostMapping(consumes={"application/json"})
-    public ResponseEntity rideEstimate(@RequestBody RideEstimatesDTO rideEstimates) {
+    public ResponseEntity rideEstimate(@RequestBody @Valid RideEstimatesDTO rideEstimates) {
         List<RideLocation> rideLocationList = new ArrayList<RideLocation>();
         for(RideLocationDTO locationDTO : rideEstimates.getLocations()){
             rideLocationList.add(new RideLocation(locationDTO));
@@ -39,4 +40,15 @@ public class UnregisteredUserController {
         return new ResponseEntity(response, HttpStatus.OK);
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Object> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
+        return new ResponseEntity<Object>(errors, HttpStatus.BAD_REQUEST);
+    }
 }

@@ -39,12 +39,45 @@ public class RideService{
     }
 
 
-    public Ride insert(Ride ride) {
+    public Ride insert(Ride ride) throws IOException{
         ride.setStatus(Ride.Status.pending);
         Date date = new Date();
         ride.setStartTime(date);
         for(RideLocation location: ride.getLocations()){
             location.setRide(ride);
+        }
+
+        List<Vehicle> vehicles = vehicleRepository.findSuitableVehicles(ride.isBabyTransport(), ride.getPassengers().size(), ride.isPetTransport(), ride.getVehicleType().toString());
+        Integer fastestVehicleId = -1;
+        Driver driver = null;
+        float distance = 0.0f;
+        float currentDistance = 0.0f;
+        for(Vehicle vehicle : vehicles){
+            Location location = locationRepository.findById(vehicle.getCurrentLocation().getId()).orElse(null);
+            if(location != null){
+                String url = "http://router.project-osrm.org/route/v1/driving/" + location.getLongitude() + "," + location.getLatitude() + ";" + ride.getLocations().get(0).getDeparture().getLongitude() + "," + ride.getLocations().get(0).getDeparture().getLatitude() + "?overview=false";
+                URL GETDISTANCEURL = new URL(url);
+                URLConnection website = GETDISTANCEURL.openConnection();
+                BufferedReader in = new BufferedReader(
+                        new InputStreamReader(
+                                website.getInputStream()));
+                String inputLine;
+
+                while ((inputLine = in.readLine()) != null)
+                    currentDistance = Float.parseFloat(inputLine.split("distance\":")[1].split("}")[0]);
+                in.close();
+            }
+            if(fastestVehicleId == -1 || currentDistance < distance){
+                fastestVehicleId = vehicle.getId();
+                distance = currentDistance;
+                driver = vehicle.getDriver();
+            }
+        }
+        ride.setDriver(driver);
+        ride.setTotalCost(Math.round(24*currentDistance));
+        ride.setEstimatedTimeInMinutes(Math.round(distance));
+        for(RideLocation rideLocation: ride.getLocations()){
+            rideLocation.setRide(ride);
         }
         save(ride);
         return ride;

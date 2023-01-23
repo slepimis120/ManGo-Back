@@ -1,5 +1,6 @@
 package mango.controller;
 
+import jakarta.validation.Valid;
 import mango.dto.LocationDTO;
 import mango.dto.VehicleDTO;
 import mango.mapper.LocationDTOMapper;
@@ -15,7 +16,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*")
 @RestController
@@ -27,7 +33,7 @@ public class VehicleController {
 
     @PreAuthorize("hasAuthority(\"ROLE_DRIVER\")")
     @PutMapping("/{id}/location")
-    public ResponseEntity updateLocation(@RequestBody LocationDTO locationDTO, @PathVariable Integer id) {
+    public ResponseEntity updateLocation(@RequestBody @Valid LocationDTO locationDTO, @PathVariable Integer id) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
         Vehicle vehicle = service.findOne(id);
@@ -42,5 +48,17 @@ public class VehicleController {
 
         service.save(vehicle);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body("Coordinates successfully updated");
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Object> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
+        return new ResponseEntity<Object>(errors, HttpStatus.BAD_REQUEST);
     }
 }

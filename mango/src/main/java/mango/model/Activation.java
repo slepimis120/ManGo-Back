@@ -27,6 +27,8 @@ public class Activation {
         this.isActivated = isActivated;
     }
 
+    public Activation(){};
+
     public Integer getId() {
         return id;
     }

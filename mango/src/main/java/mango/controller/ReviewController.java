@@ -1,5 +1,6 @@
 package mango.controller;
 
+import jakarta.validation.Valid;
 import mango.dto.GetReviewDTO;
 import mango.dto.ReviewDTO;
 import mango.dto.ReviewOverviewDTO;
@@ -12,9 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*")
 @RestController
@@ -38,7 +43,7 @@ public class ReviewController {
 
     @PreAuthorize("hasAuthority(\"ROLE_PASSENGER\")")
     @PostMapping("/{rideId}/vehicle/{id}")
-    public ResponseEntity sendVehicleReview(@RequestBody GetReviewDTO review, @PathVariable("id") Integer id, @PathVariable("rideId") Integer rideId) {
+    public ResponseEntity sendVehicleReview(@RequestBody @Valid GetReviewDTO review, @PathVariable("id") Integer id, @PathVariable("rideId") Integer rideId) {
         if(!rideService.ifRideExists(rideId)){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ride does not exist!");
         }else if(!passengerService.isPassengerInRide(rideId, id)){
@@ -65,7 +70,7 @@ public class ReviewController {
 
     @PreAuthorize("hasAuthority(\"ROLE_PASSENGER\")")
     @PostMapping("/{rideId}/driver/{id}")
-    public ResponseEntity sendDriverReview(@RequestBody GetReviewDTO review, @PathVariable("id") Integer id, @PathVariable("rideId") Integer rideId)
+    public ResponseEntity sendDriverReview(@RequestBody @Valid GetReviewDTO review, @PathVariable("id") Integer id, @PathVariable("rideId") Integer rideId)
         {
             if(!rideService.ifRideExists(rideId)){
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ride does not exist!");
@@ -97,5 +102,17 @@ public class ReviewController {
             List<ReviewOverviewDTO> response = reviewService.getOverview(rideId);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         }
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Object> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
+        return new ResponseEntity<Object>(errors, HttpStatus.BAD_REQUEST);
     }
 }

@@ -1,6 +1,7 @@
 package mango.controller;
 
 
+import jakarta.validation.Valid;
 import mango.dto.*;
 import mango.mapper.PanicDTOMapper;
 import mango.mapper.RejectionDTOMapper;
@@ -13,10 +14,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*")
 @RestController
@@ -28,7 +33,7 @@ public class RideController {
 
     @PreAuthorize("hasAuthority(\"ROLE_PASSENGER\")")
     @PostMapping
-    public ResponseEntity createRide(@RequestBody CreateRideDTO ride){
+    public ResponseEntity createRide(@RequestBody @Valid CreateRideDTO ride) throws IOException{
         Ride newRide = new Ride(ride);
         for(Passenger passenger: newRide.getPassengers()){
             if(rideService.findActiveByPassenger(passenger.getId()) != null){
@@ -136,7 +141,7 @@ public class RideController {
 
     @PreAuthorize("hasAuthority(\"ROLE_DRIVER\")")
     @PutMapping("/{id}/cancel")
-    public ResponseEntity cancelByDriver(@PathVariable Integer id, @RequestBody RejectionDTO rejection){
+    public ResponseEntity cancelByDriver(@PathVariable Integer id, @RequestBody @Valid RejectionDTO rejection){
         RejectionDTOMapper rejectionMapper = new RejectionDTOMapper(new ModelMapper());
         Rejection newRejection = rejectionMapper.fromDTOtoRejection(rejection);
         Ride ride = rideService.findById(id);
@@ -154,7 +159,7 @@ public class RideController {
 
     @PreAuthorize("hasAuthority(\"ROLE_PASSENGER\")")
     @PutMapping("/{id}/panic")
-    public ResponseEntity panic(@PathVariable Integer id, @RequestBody PanicDTO panic){
+    public ResponseEntity panic(@PathVariable Integer id, @RequestBody @Valid PanicDTO panic){
         PanicDTOMapper mapper = new PanicDTOMapper(new ModelMapper());
         Panic newPanic = mapper.fromDTOtoPanic(panic);
         Ride ride = rideService.findById(id);
@@ -167,7 +172,7 @@ public class RideController {
 
     @PreAuthorize("hasAuthority(\"ROLE_PASSENGER\")")
     @PostMapping("/favorites")
-    public ResponseEntity setFavoriteLocations(@RequestBody GetFavoriteLocationsDTO getFavoriteLocationsDTO){
+    public ResponseEntity setFavoriteLocations(@RequestBody @Valid GetFavoriteLocationsDTO getFavoriteLocationsDTO){
         if(rideService.getTotalCount(5) >= 2){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Number of favorite rides cannot exceed 10!");
         }
@@ -200,7 +205,7 @@ public class RideController {
 
 
     @PutMapping("/getAvailableDrivers")
-    public ResponseEntity getAvailableDriver(@RequestBody CreateRideDTO createRideDTO) throws IOException {
+    public ResponseEntity getAvailableDriver(@RequestBody @Valid CreateRideDTO createRideDTO) throws IOException {
         Ride ride = new Ride(createRideDTO);
         if(rideService.getVehicleCount(ride) == 0){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Selected type of vehicle doesn't exist");
@@ -217,5 +222,17 @@ public class RideController {
         }
         ResponseRideDTO responseRide = new ResponseRideDTO(ride);
         return ResponseEntity.status(HttpStatus.OK).body(responseRide);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Object> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
+        return new ResponseEntity<Object>(errors, HttpStatus.BAD_REQUEST);
     }
 }

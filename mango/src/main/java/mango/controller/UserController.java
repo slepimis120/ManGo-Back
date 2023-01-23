@@ -1,5 +1,6 @@
 package mango.controller;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import mango.dto.*;
 import mango.model.User;
@@ -15,9 +16,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import mango.service.UserService;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @CrossOrigin(origins = {"http://localhost:4200", "http://localhost:8080"}, allowedHeaders = "*")
 @RestController
@@ -33,7 +39,7 @@ public class UserController {
 
 	@PreAuthorize("hasAuthority(\"ROLE_PASSENGER\")")
 	@RequestMapping(value="/{id}/changePassword",method = RequestMethod.PUT)
-	public ResponseEntity changePassword(@PathVariable Integer id, @RequestBody ChangePasswordDTO password) {
+	public ResponseEntity changePassword(@PathVariable Integer id, @RequestBody @Valid ChangePasswordDTO password) {
 		HttpStatus response = service.changePassword(id, password.getNewPassword(), password.getVerification());
 		if (response == HttpStatus.NOT_FOUND)
 			return ResponseEntity.status(response).body("User does not exist!");
@@ -53,7 +59,7 @@ public class UserController {
 
 	@PreAuthorize("permitAll()")
 	@RequestMapping(value="/{id}/resetPassword",method = RequestMethod.PUT)
-	public ResponseEntity resetPassword(@PathVariable Integer id, @RequestBody ResetPasswordDTO password) {
+	public ResponseEntity resetPassword(@PathVariable Integer id, @RequestBody @Valid ResetPasswordDTO password) {
 		HttpStatus response = service.resetPassword(id, password.getNewPassword(), password.getCode());
 		if (response == HttpStatus.NOT_FOUND)
 			return ResponseEntity.status(response).body("User does not exist!");
@@ -87,7 +93,7 @@ public class UserController {
 
 	@PreAuthorize("hasAuthority(\"ROLE_ADMIN\")")
 	@PostMapping("/{id}/note")
-	public ResponseEntity insertNote(@PathVariable Integer id, @RequestBody @NotNull @Length(max = 500)JSONObject message) {
+	public ResponseEntity insertNote(@PathVariable Integer id, @RequestBody @Valid @NotNull @Length(max = 500)JSONObject message) {
         NoteDTO response =  service.insertNote(id, message.get("message").toString());
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
@@ -109,7 +115,7 @@ public class UserController {
 
 	@PreAuthorize("hasAuthority(\"ROLE_PASSENGER\")")
 	@PostMapping("/{id}/message")
-	public ResponseEntity sendMessage(@PathVariable Integer id, @RequestBody MessageDTO messageDTO) {
+	public ResponseEntity sendMessage(@PathVariable Integer id, @RequestBody @Valid MessageDTO messageDTO) {
         UserMessageDTO response =  service.sendMessage(1, id, messageDTO.getMessage(), messageDTO.getType(), messageDTO.getRideId());
 		if(response == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User does not exist!//Receiver does not exist!//Sender does not exist");
 		return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -124,7 +130,7 @@ public class UserController {
 
 	@PreAuthorize("permitAll()")
 	@PostMapping(value="/login")
-	public ResponseEntity logIn(@RequestBody UserLoginDTO request) {
+	public ResponseEntity logIn(@RequestBody @Valid UserLoginDTO request) {
 		UsernamePasswordAuthenticationToken authReq = new UsernamePasswordAuthenticationToken(request.getEmail(),
 				request.getPassword());
 		Authentication auth = authenticationManager.authenticate(authReq);
@@ -146,5 +152,17 @@ public class UserController {
 		jwt.setRefreshToken(refreshToken);
 
 		return ResponseEntity.status(HttpStatus.OK).body(jwt);
+	}
+
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public ResponseEntity<Object> handleValidationExceptions(MethodArgumentNotValidException ex) {
+		Map<String, String> errors = new HashMap<>();
+		ex.getBindingResult().getAllErrors().forEach((error) -> {
+			String fieldName = ((FieldError) error).getField();
+			String errorMessage = error.getDefaultMessage();
+			errors.put(fieldName, errorMessage);
+		});
+		return new ResponseEntity<Object>(errors, HttpStatus.BAD_REQUEST);
 	}
 }
