@@ -1,5 +1,6 @@
 package mango.repository;
 
+import mango.model.Activation;
 import mango.model.Ride;
 import mango.model.User;
 import mango.model.Vehicle;
@@ -16,4 +17,5 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     @Query(value = "SELECT * FROM USERS OFFSET ? ROWS FETCH NEXT ? ROWS ONLY", nativeQuery = true)
     List<User> getUsers(int offset, int size);
+
 }

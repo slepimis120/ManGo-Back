@@ -62,7 +62,6 @@ public class DriverService implements IUserService {
 		return null;
 	}
 
-	@Override
 	public UserDTO insert(ExpandedUserDTO data) {
 		if(emailExists(data.getEmail())) return null;
 		Driver driver = new Driver(data);
@@ -112,8 +111,7 @@ public class DriverService implements IUserService {
 		DriverDocument document = new DriverDocument(name, documentImage, driver);
 		documentsRepository.save(document);
 		DriverDocumentDTOMapper mapper = new DriverDocumentDTOMapper(new ModelMapper());
-		DriverDocumentDTO newDriverDocument = mapper.fromDriverDocumenttoDTO(document);
-		return newDriverDocument;
+		return mapper.fromDriverDocumenttoDTO(document);
 	}
 
 	public String deleteDocument(Integer id) {
@@ -182,9 +180,9 @@ public class DriverService implements IUserService {
 		return null;
 	}
 
-	public Vehicle postVehicle(Vehicle vehicle, Integer id){
-		vehicle.getDriver().setId(id);
-		vehicle.setId(vehicleService.findAll().size() + 1);
+	public Vehicle postVehicle(VehicleDTO vehicleDTO, Integer id){
+		Vehicle vehicle = new Vehicle(vehicleDTO);
+		vehicle.setDriver(driverRepository.findById(id).orElse(null));
 		vehicleService.save(vehicle);
 		return vehicle;
 	}

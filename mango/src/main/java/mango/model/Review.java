@@ -2,6 +2,7 @@ package mango.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import mango.dto.GetReviewDTO;
 
 @Entity
 public class Review {
@@ -38,6 +39,11 @@ public class Review {
     }
 
     public Review(){}
+
+    public Review(GetReviewDTO getReviewDTO){
+        this.comment = getReviewDTO.getComment();
+        this.rating = getReviewDTO.getRating();
+    }
 
     public Integer getId() {
         return id;

@@ -4,12 +4,15 @@ import mango.dto.ExpandedUserDTO;
 import mango.dto.RideCountDTO;
 import mango.dto.UserDTO;
 import mango.dto.UserResponseDTO;
+import mango.model.Activation;
 import mango.model.Passenger;
 import mango.model.Ride;
+import mango.repository.ActivationRepository;
 import mango.repository.PassengerRepository;
 import mango.repository.RideRepository;
 import mango.security.WebSecurityConfiguration;
 import mango.repository.UserRepository;
+import mango.service.email.EmailSenderService;
 import mango.service.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -27,28 +30,36 @@ public class PassengerService implements IUserService{
 	private RideRepository rideRepository;
 
 	@Autowired
+	private ActivationRepository activationRepository;
+
+
+	@Autowired
 	WebSecurityConfiguration webSecurityConfiguration;
 
 	@Autowired
 	private PassengerRepository passengerRepository;
 	@Autowired
 	private UserRepository userRepository;
+	@Autowired
+	private EmailSenderService emailSenderService;
 
 
 
-	@Override
-	public UserDTO insert(ExpandedUserDTO data) {
+	public Passenger insertPassenger(ExpandedUserDTO data) {
 		if(emailExists(data.getEmail())){
 			return null;
 		}
 		Passenger passenger = new Passenger(data);
 		passenger = passengerRepository.save(passenger);
-		return new UserDTO(passenger);
+		Activation activation = new Activation(passenger, new Date(), false);
+		activation = activationRepository.save(activation);
+		emailSenderService.sendSimpleEmail(passenger.getEmail(), activation.getId());
+		return passenger;
 	}
 	
 	@Override
 	public UserResponseDTO getArray(Integer page, Integer size) {
-		int offset = (page - 1) * size;
+		int offset = page * size;
 		ArrayList<UserDTO> returnList = new ArrayList<UserDTO>();
 		List<Passenger> users = passengerRepository.fetchPassengerOffset(offset, size);
 		for(int i = 0; i < users.size(); i++){
@@ -143,4 +154,15 @@ public class PassengerService implements IUserService{
 		}
 		return false;
 	}
+
+	public boolean activatePassenger(Activation activation){
+		activation.setActivated(true);
+		activationRepository.save(activation);
+		return true;
+	}
+
+	public Activation getActivation(Integer id){
+		return activationRepository.getById(id);
+	}
+
 }

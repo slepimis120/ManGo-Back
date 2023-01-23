@@ -23,6 +23,9 @@ public class Passenger extends User{
 	@ManyToMany(mappedBy = "passengers")
 	private List<FavoriteLocations> favoriteLocations;
 
+	@OneToOne(mappedBy = "passengerId", cascade = CascadeType.ALL)
+	private Activation activation;
+
 	public Passenger(Integer id, String firstName, String lastName, String profilePictureURL, String phoneNumber, String email,
 			String address, String password, boolean blocked) {
 		super(id, firstName, lastName, profilePictureURL, phoneNumber, email, address, password, blocked);

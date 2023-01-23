@@ -1,5 +1,6 @@
 package mango.repository;
 
+import mango.model.Activation;
 import mango.model.Driver;
 import mango.model.Passenger;
 import mango.model.User;
@@ -16,5 +17,6 @@ public interface PassengerRepository extends JpaRepository<Passenger, Integer> {
     @Query(value="SELECT * FROM USERS WHERE TYPE = 'PASSENGER' OFFSET ?1 ROWS FETCH NEXT ?2 ROWS ONLY", nativeQuery = true)
     List<Passenger> fetchPassengerOffset(int o, int size);
 
-
+    @Query(value="SELECT * FROM ACTIVATION A WHERE A.ID = ?1", nativeQuery = true)
+    Activation getActivation(int id);
 }

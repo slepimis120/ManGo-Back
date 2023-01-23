@@ -13,8 +13,6 @@ public interface IUserService {
 	public UserResponseDTO getArray(Integer page, Integer size);
 	
 	public UserDTO find(Integer id);
-	
-	public UserDTO insert(ExpandedUserDTO data);
 
 	public UserDTO update(Integer id, ExpandedUserDTO update);
 

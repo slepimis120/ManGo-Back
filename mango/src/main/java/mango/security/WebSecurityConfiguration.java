@@ -18,29 +18,28 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import jakarta.servlet.Filter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfiguration {
 	@Autowired
 	private JwtRequestFilter jwtRequestFilter;
-
-	@Bean
-	public WebSecurityCustomizer webSecurityCustomizer() {
-		return (web) -> web.ignoring().requestMatchers(HttpMethod.POST, "/user/login");
-	}
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
 		http.cors().and();
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 				.and()
-				.csrf().disable().authorizeHttpRequests()   // csrf -> disabled, posto JWT obradjuje zastitu od CSRF napada
-				.requestMatchers("/passenger").permitAll()
-				.anyRequest().permitAll();// sve ostalo mora da bude autentifikovano
-				 // ne koristimo HttpSession i kukije
+				.csrf().disable().authorizeHttpRequests((requests) -> requests
+						.requestMatchers(new AntPathRequestMatcher("/user/login")).permitAll()
+						.requestMatchers(new AntPathRequestMatcher("/passenger", "POST")).permitAll()
+						.requestMatchers(new AntPathRequestMatcher("/vehicle", "GET")).permitAll()
+						.requestMatchers(new AntPathRequestMatcher("/passenger/activate/**")).permitAll()
+						.requestMatchers(new AntPathRequestMatcher("/h2-console/**")).permitAll()
+						.anyRequest().authenticated());
 		http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class); //JWT procesiramo pre autentikacije
+		http.headers().frameOptions().sameOrigin();
 		return http.build();
 	}
 

@@ -1,29 +1,28 @@
 package mango.dto;
 
+import jakarta.validation.constraints.NotNull;
+import org.hibernate.validator.constraints.Length;
+
 public class MessageDTO {
 
-    private Integer receiverId;
+    @NotNull
+    @Length(max = 500)
     private String message;
+
+    @NotNull
     private String type;
+
+    @NotNull
     private Integer rideId;
 
 
-    public MessageDTO(Integer receiverId, String message, String type, Integer rideId) {
-        this.receiverId = receiverId;
+    public MessageDTO(String message, String type, Integer rideId) {
         this.message = message;
         this.type = type;
         this.rideId = rideId;
     }
 
     public MessageDTO(){}
-
-    public Integer getReceiverId() {
-        return receiverId;
-    }
-
-    public void setReceiverId(Integer receiverId) {
-        this.receiverId = receiverId;
-    }
 
     public String getMessage() {
         return message;

@@ -54,6 +54,9 @@ public class Ride {
     @Enumerated(EnumType.STRING)
     private Status status;
 
+    @Column(name = "SCHEDULEDTIME", nullable = true)
+    private Date scheduledTime;
+
     @JsonManagedReference
     @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "ride", cascade = CascadeType.ALL)
@@ -74,8 +77,24 @@ public class Ride {
     @OneToMany(mappedBy = "ride")
     private List<Review> reviews;
 
-    public enum Status{pending, accepted, rejected, active, finished, cancelled}
+    public enum Status{pending, accepted, rejected, active, finished, cancelled, started}
 
+
+    public Ride(Driver driver, List<RideLocation> locations, List<Passenger> passengers, Vehicle.Type vehicleType, boolean babyTransport, boolean petTransport, Date scheduledTime){
+        this.id = 0;
+        this.driver = driver;
+        this.locations = locations;
+        this.passengers = passengers;
+        this.vehicleType = vehicleType;
+        this.babyTransport = babyTransport;
+        this.petTransport = petTransport;
+        this.startTime = null;
+        this.endTime = null;
+        this.totalCost = null;
+        this.estimatedTimeInMinutes = null;
+        this.status = Status.pending;
+        this.scheduledTime = scheduledTime;
+    }
 
     public Ride(Driver driver, List<RideLocation> locations, List<Passenger> passengers, Vehicle.Type vehicleType, boolean babyTransport, boolean petTransport){
         this.id = 0;
@@ -111,6 +130,7 @@ public class Ride {
         this.totalCost = null;
         this.estimatedTimeInMinutes = null;
         this.status = Status.pending;
+        this.scheduledTime = createRideDTO.getScheduledTime();
     }
 
 
@@ -216,5 +236,13 @@ public class Ride {
 
     public void setRejection(Rejection rejection) {
         this.rejection = rejection;
+    }
+
+    public Date getScheduledTime() {
+        return scheduledTime;
+    }
+
+    public void setScheduledTime(Date scheduledTime) {
+        this.scheduledTime = scheduledTime;
     }
 }

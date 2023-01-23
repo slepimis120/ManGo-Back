@@ -1,9 +1,13 @@
 package mango.dto;
 
+import jakarta.validation.constraints.NotNull;
+
 public class UserLoginDTO {
 
+    @NotNull
     private String email;
 
+    @NotNull
     private String password;
 
     public UserLoginDTO(String email, String password) {

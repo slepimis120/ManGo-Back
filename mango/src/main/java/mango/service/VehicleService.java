@@ -23,7 +23,14 @@ public class VehicleService {
     }
 
     public List<Vehicle> findAll() {
-        return vehicleRepository.findAll();
+        List<Vehicle> list = vehicleRepository.findAll();
+        for(Vehicle vehicle : list){
+            Location location = locationRepository.findById(vehicle.getCurrentLocation().getId()).orElse(null);
+            vehicle.getCurrentLocation().setLatitude(location.getLatitude());
+            vehicle.getCurrentLocation().setLongitude(location.getLongitude());
+            vehicle.getCurrentLocation().setAddress(location.getAddress());
+        }
+        return list;
     }
 
     public Vehicle save(Vehicle vehicle) {

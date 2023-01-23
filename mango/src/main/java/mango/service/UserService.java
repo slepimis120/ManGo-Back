@@ -7,10 +7,7 @@ import java.util.*;
 
 import mango.dto.*;
 import mango.model.*;
-import mango.repository.MessagesRepository;
-import mango.repository.NotesRepository;
-import mango.repository.RideRepository;
-import mango.repository.UserRepository;
+import mango.repository.*;
 import mango.service.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,6 +24,10 @@ public class UserService implements IUserService{
 	private NotesRepository notesRepository;
 	@Autowired
 	private MessagesRepository messagesRepository;
+
+	@Autowired
+	private ActivationRepository activationRepository;
+
 	@Override
 	public UserResponseDTO getArray(Integer page, Integer size) {
 		int offset = (page - 1) * size;
@@ -42,12 +43,6 @@ public class UserService implements IUserService{
 	@Override
 	
 	public UserDTO find(Integer id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public UserDTO insert(ExpandedUserDTO data) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -184,5 +179,9 @@ public class UserService implements IUserService{
 			return HttpStatus.NO_CONTENT;
 		}
 		else return HttpStatus.NOT_FOUND;
+	}
+
+	public boolean checkActivation(Integer userId){
+		return activationRepository.getActivation(userId).isActivated();
 	}
 }

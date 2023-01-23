@@ -1,5 +1,7 @@
 package mango.controller;
 
+import jakarta.validation.Valid;
+import mango.dto.GetReviewDTO;
 import mango.dto.ReviewDTO;
 import mango.dto.ReviewOverviewDTO;
 import mango.dto.ReviewResponseDTO;
@@ -10,9 +12,14 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*")
 @RestController
@@ -34,21 +41,22 @@ public class ReviewController {
     @Autowired
     PassengerService passengerService;
 
+    @PreAuthorize("hasAuthority(\"ROLE_PASSENGER\")")
     @PostMapping("/{rideId}/vehicle/{id}")
-    public ResponseEntity sendVehicleReview(@RequestBody ReviewDTO review, @PathVariable("id") Integer id, @PathVariable("rideId") Integer rideId) {
+    public ResponseEntity sendVehicleReview(@RequestBody @Valid GetReviewDTO review, @PathVariable("id") Integer id, @PathVariable("rideId") Integer rideId) {
         if(!rideService.ifRideExists(rideId)){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ride does not exist!");
         }else if(!passengerService.isPassengerInRide(rideId, id)){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Passenger does not exist or isn't in mentioned ride!");
         }{
-            ReviewDTOMapper mapper = new ReviewDTOMapper(new ModelMapper());
-            Review newReview = mapper.fromDTOtoReview(review);
+            Review newReview = new Review(review);
             newReview.setReviewType(Review.Type.VEHICLE);
             Review response = reviewService.sendReview(id, rideId, newReview);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         }
     }
 
+    @PreAuthorize("hasAuthority(\"ROLE_PASSENGER\")")
     @GetMapping("/vehicle/{id}")
     public ResponseEntity getVehicleReviews(@PathVariable Integer id) {
         if(!vehicleService.ifVehicleExists(id)){
@@ -60,21 +68,21 @@ public class ReviewController {
     }
 
 
+    @PreAuthorize("hasAuthority(\"ROLE_PASSENGER\")")
     @PostMapping("/{rideId}/driver/{id}")
-
-    public ResponseEntity sendDriverReview(@RequestBody ReviewDTO review, @PathVariable("id") Integer id, @PathVariable("rideId") Integer rideId)
+    public ResponseEntity sendDriverReview(@RequestBody @Valid GetReviewDTO review, @PathVariable("id") Integer id, @PathVariable("rideId") Integer rideId)
         {
             if(!rideService.ifRideExists(rideId)){
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ride does not exist!");
             }else{
-                ReviewDTOMapper mapper = new ReviewDTOMapper(new ModelMapper());
-                Review newReview = mapper.fromDTOtoReview(review);
+                Review newReview = new Review(review);
                 newReview.setReviewType(Review.Type.DRIVER);
                 Review response = reviewService.sendReview(id, rideId, newReview);
                 return ResponseEntity.status(HttpStatus.OK).body(response);
         }
     }
 
+    @PreAuthorize("hasAuthority(\"ROLE_PASSENGER\")")
     @GetMapping("/driver/{id}")
     public ResponseEntity getDriverReviews(@PathVariable Integer id) {
         if(!driverService.ifDriverExists(id)){
@@ -85,6 +93,7 @@ public class ReviewController {
         }
     }
 
+    @PreAuthorize("hasAuthority(\"ROLE_PASSENGER\")")
     @GetMapping("/{rideId}")
     public ResponseEntity getOverview(@PathVariable Integer rideId) {
         if(!rideService.ifRideExists(rideId)){
@@ -93,5 +102,17 @@ public class ReviewController {
             List<ReviewOverviewDTO> response = reviewService.getOverview(rideId);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         }
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Object> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
+        return new ResponseEntity<Object>(errors, HttpStatus.BAD_REQUEST);
     }
 }

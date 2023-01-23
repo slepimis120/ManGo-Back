@@ -1,19 +1,30 @@
 package mango.dto;
 
+import jakarta.validation.constraints.NotNull;
+import org.hibernate.validator.constraints.Length;
+
 import java.util.List;
 
 public class GetFavoriteLocationsDTO {
 
+    @NotNull
+    @Length(max = 100)
     private String favoriteName;
 
+    @NotNull
     private List<RideLocationDTO> locations;
 
+    @NotNull
     private List<RidePassengerDTO> passengers;
 
+    @NotNull
+    @Length(max = 50)
     private String vehicleType;
 
+    @NotNull
     private boolean babyTransport;
 
+    @NotNull
     private boolean petTransport;
 
     public GetFavoriteLocationsDTO(String favoriteName, List<RideLocationDTO> locations, List<RidePassengerDTO> passengers, String vehicleType, boolean babyTransport, boolean petTransport) {
