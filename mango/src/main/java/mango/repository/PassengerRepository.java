@@ -19,4 +19,7 @@ public interface PassengerRepository extends JpaRepository<Passenger, Integer> {
 
     @Query(value="SELECT * FROM ACTIVATION A WHERE A.ID = ?1", nativeQuery = true)
     Activation getActivation(int id);
+
+    @Query(value = "SELECT * FROM USERS WHERE TYPE = 'PASSENGER' AND EMAIL = ?1", nativeQuery = true)
+    Passenger findByEmail(String email);
 }

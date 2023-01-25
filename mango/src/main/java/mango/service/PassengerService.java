@@ -1,9 +1,6 @@
 package mango.service;
 
-import mango.dto.ExpandedUserDTO;
-import mango.dto.RideCountDTO;
-import mango.dto.UserDTO;
-import mango.dto.UserResponseDTO;
+import mango.dto.*;
 import mango.model.Activation;
 import mango.model.Passenger;
 import mango.model.Ride;
@@ -97,6 +94,17 @@ public class PassengerService implements IUserService{
 		return null;
 	}
 
+	public UserDTO changePassword(Integer id, ChangePasswordDTO changePasswordDTO){
+		Passenger passenger = passengerRepository.findById(id).orElse(null);
+		if(passenger != null){
+			passenger.setPassword(changePasswordDTO.getNewPassword());
+			passengerRepository.save(passenger);
+			return new UserDTO(passenger);
+		}
+		return null;
+
+	}
+
 	public RideCountDTO passengerRides(Integer id, Integer page, Integer size, String sort, String from, String to){
 		if(passengerRepository.findById(id).orElse(null) == null){
 			return null;
@@ -165,4 +173,11 @@ public class PassengerService implements IUserService{
 		return activationRepository.getById(id);
 	}
 
+	public Passenger getByEmail(String email){
+		return passengerRepository.findByEmail(email);
+	}
+
+	public Passenger getById(Integer id){
+		return passengerRepository.findById(id).orElse(null);
+	}
 }

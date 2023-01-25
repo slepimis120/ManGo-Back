@@ -2,15 +2,13 @@ package mango.controller;
 
 import jakarta.annotation.security.PermitAll;
 import jakarta.validation.Valid;
-import mango.dto.ExpandedUserDTO;
-import mango.dto.RideCountDTO;
-import mango.dto.UserDTO;
-import mango.dto.UserResponseDTO;
+import mango.dto.*;
 import mango.model.Activation;
 import mango.model.Passenger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -24,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 @CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*")
 @RestController
@@ -85,11 +84,28 @@ public class PassengerController {
 	@PreAuthorize("hasAuthority(\"ROLE_PASSENGER\")")
 	@RequestMapping(value="/{id}",method = RequestMethod.PUT)
 	public ResponseEntity update(@PathVariable Integer id, @RequestBody @Valid ExpandedUserDTO update) {
-		UserDTO response = service.update(id, update);
-		if(response == null){
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Passenger does not exist!");
+		if(BCrypt.checkpw(update.getPassword(), service.getById(id).getPassword())){
+			UserDTO response = service.update(id, update);
+			if(response == null){
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Passenger does not exist!");
+			}
+			return ResponseEntity.status(HttpStatus.OK).body(response);
 		}
-		return ResponseEntity.status(HttpStatus.OK).body(response);
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wrong verification password!");
+	}
+
+	@PreAuthorize("hasAuthority(\"ROLE_PASSENGER\")")
+	@RequestMapping(value="/passwordChange/{id}",method = RequestMethod.PUT)
+	public ResponseEntity changePassword(@PathVariable Integer id, @RequestBody @Valid ChangePasswordDTO changePasswordDTO) {
+		if(BCrypt.checkpw(changePasswordDTO.getVerification(), service.getById(id).getPassword())){
+			changePasswordDTO.setNewPassword(passwordEncoder.encode(changePasswordDTO.getNewPassword()));
+			UserDTO response = service.changePassword(id, changePasswordDTO);
+			if(response == null){
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Passenger does not exist!");
+			}
+			return ResponseEntity.status(HttpStatus.OK).body(response);
+		}
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wrong verification password!");
 	}
 
 	@PreAuthorize("hasAuthority(\"ROLE_PASSENGER\")")
