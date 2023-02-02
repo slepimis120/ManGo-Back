@@ -118,7 +118,6 @@ public class PassengerController {
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
-
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<Object> handleValidationExceptions(MethodArgumentNotValidException ex) {

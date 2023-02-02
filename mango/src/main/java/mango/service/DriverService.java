@@ -228,6 +228,30 @@ public class DriverService implements IUserService {
 		return count;
 	}
 
+	public StatisticsDTO getStatistics(Integer id, StatisticsDatesDTO statisticsDatesDTO) throws ParseException {
+		List<Ride> rideList = rideRepository.findAll();
+		Integer rejectCount = 0;
+		Integer acceptCount = 0;
+		Integer workHours = 0;
+		Integer earnings = 0;
+		for(Ride ride : rideList){
+			Date date1=new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(ride.getStartTime().toString());
+			if(ride.getDriver() != null && Objects.equals(ride.getDriver().getId(), id)){
+				if(statisticsDatesDTO.getStartDate().compareTo(date1) < 0 && statisticsDatesDTO.getEndDate().compareTo(date1) > 0){
+					if(Objects.equals(ride.getStatus().toString(), "rejected")){
+						rejectCount++;
+					}else if(Objects.equals(ride.getStatus().toString(), "finished")){
+						acceptCount++;
+						earnings = earnings + ride.getTotalCost();
+					}
+				}
+			}
+		}
+		for(WorkHour workHour : workHourRepository.findAll()){
+			
+		}
+		return null;
+	}
 
 	public boolean ifDriverExists(Integer id){
 		return driverRepository.findById(id).orElse(null) != null;

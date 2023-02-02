@@ -1,5 +1,6 @@
 package mango.controller;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -152,6 +153,13 @@ public class DriverController {
 	public ResponseEntity getRides(@PathVariable Integer id, @RequestParam Integer page, Integer size, String sort, String from, String to){
 		RideCountDTO response = service.getRides(id, page, size, sort,from,to);
 		return ResponseEntity.status(HttpStatus.OK).body(response);
+	}
+
+	@PreAuthorize("hasAuthority(\"ROLE_DRIVER\")")
+	@GetMapping("/stats/{id}")
+	public ResponseEntity getStats(@PathVariable Integer id, @RequestBody StatisticsDatesDTO statisticsDatesDTO) throws ParseException {
+		service.getStatistics(id, statisticsDatesDTO);
+		return ResponseEntity.status(HttpStatus.OK).body(null);
 	}
 
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
