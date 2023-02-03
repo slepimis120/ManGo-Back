@@ -13,9 +13,11 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Controller;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +35,8 @@ public class VehicleController {
     @Autowired
     VehicleService service;
 
+    private SimpMessagingTemplate simpMessagingTemplate;
+
     @PreAuthorize("hasAuthority(\"ROLE_DRIVER\")")
     @PutMapping("/{id}/location")
     public ResponseEntity updateLocation(@RequestBody @Valid LocationDTO locationDTO, @PathVariable Integer id) {
@@ -49,6 +53,7 @@ public class VehicleController {
         vehicle.setCurrentLocation(location);
 
         service.save(vehicle);
+        this.simpMessagingTemplate.convertAndSend("/map-updates/update-vehicle-position", new VehicleDTO(vehicle));
         return ResponseEntity.status(HttpStatus.ACCEPTED).body("Coordinates successfully updated");
     }
 

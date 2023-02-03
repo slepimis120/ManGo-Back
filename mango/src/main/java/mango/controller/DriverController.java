@@ -156,10 +156,16 @@ public class DriverController {
 	}
 
 	@PreAuthorize("hasAuthority(\"ROLE_DRIVER\")")
-	@GetMapping("/stats/{id}")
+	@PostMapping("/stats/{id}")
 	public ResponseEntity getStats(@PathVariable Integer id, @RequestBody StatisticsDatesDTO statisticsDatesDTO) throws ParseException {
-		service.getStatistics(id, statisticsDatesDTO);
-		return ResponseEntity.status(HttpStatus.OK).body(null);
+		return ResponseEntity.status(HttpStatus.OK).body(service.getStatistics(id, statisticsDatesDTO));
+	}
+
+
+	@PreAuthorize("hasAuthority(\"ROLE_DRIVER\")")
+	@PostMapping("/report/{id}")
+	public ResponseEntity getReport(@PathVariable Integer id, @RequestBody StatisticsDatesDTO statisticsDatesDTO){
+		return ResponseEntity.status(HttpStatus.OK).body(service.getReport(id, statisticsDatesDTO));
 	}
 
 	@ResponseStatus(HttpStatus.BAD_REQUEST)

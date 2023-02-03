@@ -238,6 +238,7 @@ public class DriverService implements IUserService {
 			Date date1=new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(ride.getStartTime().toString());
 			if(ride.getDriver() != null && Objects.equals(ride.getDriver().getId(), id)){
 				if(statisticsDatesDTO.getStartDate().compareTo(date1) < 0 && statisticsDatesDTO.getEndDate().compareTo(date1) > 0){
+					System.out.println(ride.getStatus().toString());
 					if(Objects.equals(ride.getStatus().toString(), "rejected")){
 						rejectCount++;
 					}else if(Objects.equals(ride.getStatus().toString(), "finished")){
@@ -247,10 +248,29 @@ public class DriverService implements IUserService {
 				}
 			}
 		}
-		for(WorkHour workHour : workHourRepository.findAll()){
-			
+		for(WorkHour workHour : workHourRepository.findAll()) {
+			Date startDate = workHour.getStart();
+			Date endDate = workHour.getEnd();
+			if (startDate.compareTo(statisticsDatesDTO.getEndDate()) < 0 && startDate.compareTo(statisticsDatesDTO.getStartDate()) > 0) {
+				if (endDate.compareTo(statisticsDatesDTO.getEndDate()) < 0) {
+					workHours = workHours + (int) (startDate.getTime() - endDate.getTime() / 60000);
+				} else {
+					workHours = workHours + (int) (startDate.getTime() - statisticsDatesDTO.getEndDate().getTime() / 60000);
+				}
+			} else if (endDate.compareTo(statisticsDatesDTO.getEndDate()) < 0 && endDate.compareTo(statisticsDatesDTO.getStartDate()) > 0) {
+				if (startDate.compareTo(statisticsDatesDTO.getStartDate()) < 0) {
+					workHours = workHours + (int) (statisticsDatesDTO.getStartDate().getTime() - endDate.getTime() / 60000);
+				} else {
+					workHours = workHours + (int) (startDate.getTime() - endDate.getTime() / 60000);
+				}
+			}
 		}
-		return null;
+		workHours = workHours / 36000000;
+		return new StatisticsDTO(rejectCount, acceptCount, workHours, earnings);
+	}
+
+	public ReportDTO getReport(Integer id, StatisticsDatesDTO statisticsDatesDTO){
+
 	}
 
 	public boolean ifDriverExists(Integer id){
