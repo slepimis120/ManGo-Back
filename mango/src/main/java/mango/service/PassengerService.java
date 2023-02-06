@@ -2,13 +2,11 @@ package mango.service;
 
 import mango.dto.*;
 import mango.model.Activation;
+import mango.model.Driver;
 import mango.model.Passenger;
 import mango.model.Ride;
-import mango.repository.ActivationRepository;
-import mango.repository.PassengerRepository;
-import mango.repository.RideRepository;
+import mango.repository.*;
 import mango.security.WebSecurityConfiguration;
-import mango.repository.UserRepository;
 import mango.service.email.EmailSenderService;
 import mango.service.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +38,8 @@ public class PassengerService implements IUserService{
 	@Autowired
 	private EmailSenderService emailSenderService;
 
+	@Autowired
+	private DriverRepository driverRepository;
 
 
 	public Passenger insertPassenger(ExpandedUserDTO data) {
@@ -71,6 +71,11 @@ public class PassengerService implements IUserService{
 		Passenger passenger = passengerRepository.findById(id).orElse(null);
 		if (passenger != null) {
 			UserDTO userDTO = new UserDTO(passenger);
+			return userDTO;
+		}
+		Driver driver = driverRepository.findById(id).orElse(null);
+		if (driver != null) {
+			UserDTO userDTO = new UserDTO(driver);
 			return userDTO;
 		}
 		return null;
