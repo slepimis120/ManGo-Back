@@ -198,6 +198,8 @@ public class RideService{
     }
 
     public void getSuitableDrivers(Ride ride) throws IOException {
+
+        //gets all the vehicles that fit the description
         List<Vehicle> vehicles = vehicleRepository.findSuitableVehicles(ride.isBabyTransport(), ride.getPassengers().size(), ride.isPetTransport(), ride.getVehicleType().toString());
         Integer fastestVehicleId = -1;
         Driver driver = null;
@@ -231,6 +233,10 @@ public class RideService{
             rideLocation.setRide(ride);
         }
         save(ride);
+    }
+
+    public void findSuitableDriver(Ride ride) throws IOException{
+
     }
 
     public Integer getVehicleCount(Ride ride){

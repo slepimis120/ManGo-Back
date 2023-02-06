@@ -1,11 +1,9 @@
 package mango.controller;
 
 import jakarta.validation.Valid;
-import mango.dto.CalculatedRideEstimatesDTO;
-import mango.dto.LocationDTO;
-import mango.dto.RideEstimatesDTO;
-import mango.dto.RideLocationDTO;
+import mango.dto.*;
 import mango.model.Location;
+import mango.model.Ride;
 import mango.model.RideLocation;
 import mango.service.UnregisteredUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +21,7 @@ import java.util.Map;
 
 @CrossOrigin(origins = {"http://localhost:4200", "http://localhost:8080"}, allowedHeaders = "*")
 @RestController
-@RequestMapping("/unregisteredUser/")
+@RequestMapping("/unregisteredUser")
 public class UnregisteredUserController {
 
     @Autowired
@@ -40,6 +38,12 @@ public class UnregisteredUserController {
         return new ResponseEntity(response, HttpStatus.OK);
     }
 
+    @PreAuthorize("permitAll()")
+    @RequestMapping(value="/calculatePrice",method = RequestMethod.PUT)
+    public ResponseEntity calculatePrice(@RequestBody CalculatePriceDataDTO data) {
+        CalculatedPriceDTO response = this.service.calculatePrice(data.getDistance(), data.getVehicleType());
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleValidationExceptions(MethodArgumentNotValidException ex) {

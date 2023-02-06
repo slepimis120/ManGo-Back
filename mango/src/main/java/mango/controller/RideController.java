@@ -203,8 +203,8 @@ public class RideController {
 
 
 
-
-    @PutMapping("/getAvailableDrivers")
+    @PreAuthorize("hasAuthority(\"ROLE_PASSENGER\")")
+    @RequestMapping(value="/getAvailableDrivers",method = RequestMethod.PUT)
     public ResponseEntity getAvailableDriver(@RequestBody @Valid CreateRideDTO createRideDTO) throws IOException {
         Ride ride = new Ride(createRideDTO);
         if(rideService.getVehicleCount(ride) == 0){

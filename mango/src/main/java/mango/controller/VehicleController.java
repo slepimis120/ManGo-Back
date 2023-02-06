@@ -61,6 +61,8 @@ public class VehicleController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(list);
     }
 
+
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleValidationExceptions(MethodArgumentNotValidException ex) {
