@@ -1,1 +1,4 @@
 /.metadata/
+.idea
+src/main/resources/data/db.mv.db
+src/main/resources/data/db.trace.db

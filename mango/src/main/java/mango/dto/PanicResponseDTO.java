@@ -1,19 +1,21 @@
-package mango.model;
+package mango.dto;
+
+import mango.model.Panic;
 
 import java.util.Collection;
 
-public class PanicResponse {
+public class PanicResponseDTO {
     private Collection<Panic> results;
 
     private Integer totalCount;
 
 
-    public PanicResponse(Collection<Panic> results, Integer totalCount) {
+    public PanicResponseDTO(Collection<Panic> results, Integer totalCount) {
         this.results = results;
         this.totalCount = totalCount;
     }
 
-    public PanicResponse(){}
+    public PanicResponseDTO(){}
 
     public Collection<Panic> getResults() {
         return results;
@@ -30,4 +32,5 @@ public class PanicResponse {
     public void setTotalCount(Integer totalCount) {
         this.totalCount = totalCount;
     }
+
 }

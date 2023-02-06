@@ -1,44 +1,77 @@
 package mango.controller;
 
+import jakarta.validation.Valid;
+import mango.dto.LocationDTO;
+import mango.dto.VehicleDTO;
+import mango.mapper.LocationDTOMapper;
 import mango.model.Location;
 import mango.model.Vehicle;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import mango.service.interfaces.IVehicleService;
+import mango.service.VehicleService;
 
+
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*")
 @RestController
-@RequestMapping("/api/vehicle")
+@RequestMapping("/vehicle")
 public class VehicleController {
 
     @Autowired
-    IVehicleService service;
+    VehicleService service;
 
-    @GetMapping("/{id}")
-    public Vehicle findVehicle(@PathVariable Integer id) {
-        return service.find(id);
-    }
-
-    @PostMapping
-    public Vehicle insertVehicle(@RequestBody Vehicle vehicle){return service.insert(vehicle);}
-
-    @PutMapping
-    public Vehicle update(@RequestBody Vehicle vehicle) {
-        return service.update(vehicle);
-    }
-
+    @PreAuthorize("hasAuthority(\"ROLE_DRIVER\")")
     @PutMapping("/{id}/location")
-    public void updateLocation(@RequestBody Location location, @PathVariable Integer id) {
-        service.updateLocation(location, id);
+    public ResponseEntity updateLocation(@RequestBody @Valid LocationDTO locationDTO, @PathVariable Integer id) {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+                .getPrincipal();
+        Vehicle vehicle = service.findOne(id);
+        if (vehicle == null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Vehicle does not exist!");
+        }
+
+        LocationDTOMapper mapper = new LocationDTOMapper(new ModelMapper());
+        Location location = mapper.fromDTOtoLocation(locationDTO);
+        service.insertNewLocation(location);
+        vehicle.setCurrentLocation(location);
+
+        service.save(vehicle);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body("Coordinates successfully updated");
     }
 
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable Integer id) {
-        service.delete(id);
+    @GetMapping
+    public ResponseEntity getVehicles(){
+        List<VehicleDTO> list = new ArrayList<>();
+        for(Vehicle vehicle : service.findAll()){
+            list.add(new VehicleDTO(vehicle));
+        }
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(list);
     }
 
-    @DeleteMapping
-    public void deleteAll() {
-        service.deleteAll();
-    }
 
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Object> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
+        return new ResponseEntity<Object>(errors, HttpStatus.BAD_REQUEST);
+    }
 }

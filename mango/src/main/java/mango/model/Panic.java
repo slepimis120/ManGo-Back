@@ -1,17 +1,31 @@
 package mango.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
+
 import java.util.Date;
 
+@Entity
 public class Panic {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @ManyToOne
+    @JsonManagedReference
+    @JoinColumn(name = "USERID",  referencedColumnName = "id")
     private User user;
 
+    @ManyToOne
+    @JsonManagedReference
+    @JoinColumn(name = "RIDE",  referencedColumnName = "id")
     private Ride ride;
 
+    @Column(name = "TIME", nullable = false)
     private Date time;
 
+    @Column(name = "REASON", nullable = false)
     private String reason;
 
     public Panic(Integer id, User user, Ride ride, Date time, String reason) {

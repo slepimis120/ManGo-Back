@@ -1,42 +1,52 @@
 package mango.model;
 
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+
+import jakarta.persistence.Entity;
+import lombok.ToString;
+import mango.dto.ExpandedUserDTO;
+
+@Entity
+@DiscriminatorValue("DRIVER")
 public class Driver extends User{
-	private String driversLicence;
-	private boolean isActive;
-	
-	//TODO: add Ride history and Vehicle
-	
-	
-	public Driver(String firstName, String lastName, String profilePictureURL, String phoneNumber, String email,
-			String address, String password, boolean blocked, String driversLicence, boolean isActive) {
-		super(firstName, lastName, profilePictureURL, phoneNumber, email, address, password, blocked);
 
-		this.driversLicence = driversLicence;
-		this.isActive = isActive;
+	@OneToOne(mappedBy = "driver")
+	@ToString.Exclude
+	private Vehicle vehicle;
+
+	@OneToOne(mappedBy = "driverId")
+	@ToString.Exclude
+	private DriverDocument driverDocument;
+
+	@JsonBackReference
+	@OneToMany(mappedBy = "driver")
+	@ToString.Exclude
+	private List<Ride> rides;
+
+	@OneToMany(mappedBy = "driver")
+	@ToString.Exclude
+	private List<WorkHour> workHours;
+
+	public Driver(Integer id, String firstName, String lastName, String profilePictureURL, String phoneNumber, String email,
+			String address, String password, boolean blocked) {
+		super(id, firstName, lastName, profilePictureURL, phoneNumber, email, address, password, blocked);
 	}
 
-	public Driver(){
-		super();
-	}
-	public String getDriversLicence() {
-		return driversLicence;
-	}
-
-
-	public void setDriversLicence(String driversLicence) {
-		this.driversLicence = driversLicence;
-	}
-
-
-	public boolean isActive() {
-		return isActive;
-	}
-
-
-	public void setActive(boolean isActive) {
-		this.isActive = isActive;
+	public Driver(User user){
+		super(user.getId(), user.getName(), user.getSurname(), user.getProfilePicture(), user.getTelephoneNumber(), user.getEmail(), user.getAddress(), user.getPassword(), user.isBlocked());
 	}
 	
+	public Driver(ExpandedUserDTO data) {
+		super(data);
+	}
+
+	public Driver(){}
 	
 	
 	

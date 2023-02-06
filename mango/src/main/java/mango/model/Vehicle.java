@@ -1,28 +1,54 @@
 package mango.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import jakarta.persistence.*;
+import mango.dto.VehicleDTO;
+
+@Entity
+@Data
 public class Vehicle {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private Integer driverId;
+    @OneToOne
+    @JoinColumn(name = "DRIVERID", referencedColumnName = "id")
+    private Driver driver;
 
-    private VehicleType vehicleType;
+    @Column(name = "VEHICLETYPE", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Type vehicleType;
 
+    @Column(name = "MODEL", nullable = false)
     private String model;
 
+    @Column(name = "LICENSENUMBER", nullable = false)
     private String licenseNumber;
 
+    @OneToOne
+    @JoinColumn(name = "CURRENTLOCATION", referencedColumnName = "id")
     private Location currentLocation;
 
+    @Column(name = "PASSENGERSEATS", nullable = false)
     private Integer passengerSeats;
 
+    @Column(name = "BABYTRANSPORT", nullable = false)
     private boolean babyTransport;
 
+    @Column(name = "PETTRANSPORT", nullable = false)
     private boolean petTransport;
 
+    public enum Type{
+        STANDARD, LUXURY, VAN
+    }
 
-    public Vehicle (Integer driverId, VehicleType vehicleType, String model, String licenseNumber, Location currentLocation, Integer passengerSeats, boolean babyTransport, boolean petTransport){
-        this.driverId = driverId;
+    public Vehicle(Integer id, Driver driver, Type vehicleType, String model, String licenseNumber, Location currentLocation, Integer passengerSeats, boolean babyTransport, boolean petTransport) {
+        this.id = id;
+        this.driver = driver;
         this.vehicleType = vehicleType;
         this.model = model;
         this.licenseNumber = licenseNumber;
@@ -32,11 +58,40 @@ public class Vehicle {
         this.petTransport = petTransport;
     }
 
-    public VehicleType getVehicleType() {
+    public Vehicle() {
+    }
+
+    public Vehicle(VehicleDTO vehicleDTO){
+        this.vehicleType = vehicleDTO.getVehicleType();
+        this.model = vehicleDTO.getModel();
+        this.licenseNumber = vehicleDTO.getLicenseNumber();
+        this.currentLocation = new Location(vehicleDTO.getCurrentLocation());
+        this.passengerSeats = vehicleDTO.getPassengerSeats();
+        this.babyTransport = vehicleDTO.isBabyTransport();
+        this.petTransport = vehicleDTO.isPetTransport();
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Driver getDriver() {
+        return driver;
+    }
+
+    public void setDriver(Driver driver) {
+        this.driver = driver;
+    }
+
+    public Type getVehicleType() {
         return vehicleType;
     }
 
-    public void setVehicleType(VehicleType vehicleType) {
+    public void setVehicleType(Type vehicleType) {
         this.vehicleType = vehicleType;
     }
 
@@ -86,21 +141,5 @@ public class Vehicle {
 
     public void setPetTransport(boolean petTransport) {
         this.petTransport = petTransport;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getDriverId() {
-        return driverId;
-    }
-
-    public void setDriverId(Integer driverId) {
-        this.driverId = driverId;
     }
 }

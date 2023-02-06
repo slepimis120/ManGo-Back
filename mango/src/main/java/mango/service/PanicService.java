@@ -1,21 +1,19 @@
 package mango.service;
 
+import mango.dto.PanicResponseDTO;
 import mango.model.Panic;
-import mango.model.PanicResponse;
-import mango.model.Ride;
-import mango.model.User;
+import mango.repository.PanicRepository;
 import mango.service.interfaces.IPanicService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.*;
-import java.util.concurrent.Executors;
 
 @Service
-public class PanicService implements IPanicService {
-    private Map<Integer, Panic> allPanic = new HashMap<Integer, Panic>();
+public class PanicService{
+
+    @Autowired
+    private PanicRepository panicRepository;
     DriverService driverService;
 
     @Autowired
@@ -24,16 +22,18 @@ public class PanicService implements IPanicService {
     }
 
 
-    @Override
-    public PanicResponse getAll() {
-        PanicResponse response = new PanicResponse();
-        response.setTotalCount(allPanic.size());
-        List<Panic> list = new ArrayList<Panic>(allPanic.values());
-        response.setResults(list);
+    public PanicResponseDTO getAllResponse() {
+        PanicResponseDTO response = new PanicResponseDTO();
+        response.setTotalCount(this.getAll().size());
+        response.setResults(this.getAll());
         return response;
     }
 
-    public Map<Integer, Panic> getAllPanic(){
-        return allPanic;
+    public List<Panic> getAll(){
+        return panicRepository.findAll();
+    }
+
+    public void insertNewPanic(Panic panic){
+        panicRepository.save(panic);
     }
 }

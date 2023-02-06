@@ -1,30 +1,103 @@
 package mango.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
+import mango.dto.*;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+@Entity
 public class Ride {
 
-    private int rideId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    @Column(name = "STARTTIME", nullable = false)
     private Date startTime;
+
+    @Column(name = "ENDTIME", nullable = true)
     private Date endTime;
+
+    @Column(name = "TOTALCOST", nullable = true)
     private Integer totalCost;
+
+    @JsonManagedReference
+    @ManyToOne
+    @JoinColumn(name = "DRIVER",  referencedColumnName = "id")
     private Driver driver;
-    private ArrayList<Passenger> passengers;
+
+    @JsonManagedReference
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @ManyToMany
+    private List<Passenger> passengers;
+
+    @Column(name = "ESTIMATEDTIMEINMINUTES", nullable = true)
     private Integer estimatedTimeInMinutes;
-    private String vehicleType;
+
+    @Column(name = "VEHICLETYPE", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Vehicle.Type vehicleType;
+
+    @Column(name = "BABYTRANSPORT", nullable = false)
     private boolean babyTransport;
+
+    @Column(name = "PETTRANSPORT", nullable = false)
     private boolean petTransport;
-    private ArrayList<RideLocation> locations;
+
+    @Column(name = "STATUS", nullable = false)
+    @Enumerated(EnumType.STRING)
     private Status status;
 
+    @Column(name = "SCHEDULEDTIME", nullable = true)
+    private Date scheduledTime;
+
+    @JsonManagedReference
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy = "ride", cascade = CascadeType.ALL)
+    private List<RideLocation> locations = new ArrayList<RideLocation>();
+
+    @OneToOne(mappedBy = "ride", cascade = CascadeType.ALL)
     private Rejection rejection;
 
+    @JsonBackReference
+    @OneToMany(mappedBy = "ride")
+    private List<Panic> panic;
+
+    @JsonBackReference
+    @OneToMany(mappedBy = "ride")
+    private List<UserMessage> userMessages;
+
+    @JsonBackReference
+    @OneToMany(mappedBy = "ride")
+    private List<Review> reviews;
+
+    public enum Status{pending, accepted, rejected, active, finished, cancelled, started}
 
 
+    public Ride(Driver driver, List<RideLocation> locations, List<Passenger> passengers, Vehicle.Type vehicleType, boolean babyTransport, boolean petTransport, Date scheduledTime){
+        this.id = 0;
+        this.driver = driver;
+        this.locations = locations;
+        this.passengers = passengers;
+        this.vehicleType = vehicleType;
+        this.babyTransport = babyTransport;
+        this.petTransport = petTransport;
+        this.startTime = null;
+        this.endTime = null;
+        this.totalCost = null;
+        this.estimatedTimeInMinutes = null;
+        this.status = Status.pending;
+        this.scheduledTime = scheduledTime;
+    }
 
-    public Ride(Driver driver, ArrayList<RideLocation> locations, ArrayList<Passenger> passengers, String vehicleType, boolean babyTransport, boolean petTransport){
-        this.rideId = 0;
+    public Ride(Driver driver, List<RideLocation> locations, List<Passenger> passengers, Vehicle.Type vehicleType, boolean babyTransport, boolean petTransport){
+        this.id = 0;
         this.driver = driver;
         this.locations = locations;
         this.passengers = passengers;
@@ -38,27 +111,50 @@ public class Ride {
         this.status = Status.pending;
     }
 
-    public ArrayList<RideLocation> getLocations() {
+    public Ride(){}
+
+    public Ride(CreateRideDTO createRideDTO){
+        this.driver = null;
+        for(RideLocationDTO rideLocationDTO : createRideDTO.getLocations()){
+            this.locations.add(new RideLocation(rideLocationDTO));
+        }
+        this.passengers = new ArrayList<>();
+        for(RidePassengerDTO passengerDTO : createRideDTO.getPassengers()){
+            this.passengers.add(new Passenger(passengerDTO));
+        }
+        this.vehicleType = Vehicle.Type.valueOf(createRideDTO.getVehicleType().toUpperCase());
+        this.babyTransport = createRideDTO.isBabyTransport();
+        this.petTransport = createRideDTO.isPetTransport();
+        this.startTime = new Date();
+        this.endTime = null;
+        this.totalCost = null;
+        this.estimatedTimeInMinutes = null;
+        this.status = Status.pending;
+        this.scheduledTime = createRideDTO.getScheduledTime();
+    }
+
+
+    public List<RideLocation> getLocations() {
         return locations;
     }
 
-    public void setLocations(ArrayList<RideLocation> locations) {
+    public void setLocations(List<RideLocation> locations) {
         this.locations = locations;
     }
 
-    public ArrayList<Passenger> getPassengers() {
+    public List<Passenger> getPassengers() {
         return passengers;
     }
 
-    public void setPassengers(ArrayList<Passenger> passengers) {
+    public void setPassengers(List<Passenger> passengers) {
         this.passengers = passengers;
     }
 
-    public String getVehicleType() {
+    public Vehicle.Type getVehicleType() {
         return vehicleType;
     }
 
-    public void setVehicleType(String vehicleType) {
+    public void setVehicleType(Vehicle.Type vehicleType) {
         this.vehicleType = vehicleType;
     }
 
@@ -110,12 +206,12 @@ public class Ride {
         this.estimatedTimeInMinutes = estimatedTimeInMinutes;
     }
 
-    public Integer getRideId() {
-        return rideId;
+    public Integer getId() {
+        return id;
     }
 
-    public void setRideId(int rideId) {
-        this.rideId = rideId;
+    public void setId(int rideId) {
+        this.id = rideId;
     }
 
     public Status getStatus() {
@@ -140,5 +236,13 @@ public class Ride {
 
     public void setRejection(Rejection rejection) {
         this.rejection = rejection;
+    }
+
+    public Date getScheduledTime() {
+        return scheduledTime;
+    }
+
+    public void setScheduledTime(Date scheduledTime) {
+        this.scheduledTime = scheduledTime;
     }
 }

@@ -1,59 +1,51 @@
 package mango.service;
 
 import mango.model.Location;
-import mango.model.Ride;
 import mango.model.Vehicle;
-import mango.service.interfaces.IRideService;
-import mango.service.interfaces.IVehicleService;
+import mango.repository.LocationRepository;
+import mango.repository.VehicleRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 @Service
-public class VehicleService implements IVehicleService {
+public class VehicleService {
 
-    private Map<Integer, Vehicle> allVehicles = new HashMap<Integer, Vehicle>();
+    @Autowired
+    private VehicleRepository vehicleRepository;
 
-    @Override
-    public Vehicle find(Integer vehicleId) {
-        for (Map.Entry<Integer,Vehicle> entry : allVehicles.entrySet()) {
-            if (entry.getValue().getId().equals(vehicleId)) {
-                return entry.getValue();
-            }
+    @Autowired
+    private LocationRepository locationRepository;
+
+    public Vehicle findOne(Integer id) {
+        return vehicleRepository.findById(id).orElse(null);
+    }
+
+    public List<Vehicle> findAll() {
+        List<Vehicle> list = vehicleRepository.findAll();
+        for(Vehicle vehicle : list){
+            Location location = locationRepository.findById(vehicle.getCurrentLocation().getId()).orElse(null);
+            vehicle.getCurrentLocation().setLatitude(location.getLatitude());
+            vehicle.getCurrentLocation().setLongitude(location.getLongitude());
+            vehicle.getCurrentLocation().setAddress(location.getAddress());
         }
-        return null;
+        return list;
     }
 
-    @Override
-    public Vehicle insert(Vehicle vehicle) {
-        int size = allVehicles.size();
-        vehicle.setId(size + 1);
-        allVehicles.put(vehicle.getId(), vehicle);
-        return vehicle;
+    public Vehicle save(Vehicle vehicle) {
+        return vehicleRepository.save(vehicle);
     }
 
-    @Override
-    public Vehicle update(Vehicle vehicle) {
-        return null;
+    public void insertNewLocation(Location location){
+        locationRepository.save(location);
     }
 
-    @Override
-    public void updateLocation(Location location, Integer id) {
-        for (Map.Entry<Integer,Vehicle> entry : allVehicles.entrySet()) {
-            if (entry.getValue().getId().equals(id)) {
-                entry.getValue().setCurrentLocation(location);
-            }
-        }
+    public boolean ifVehicleExists(Integer id){
+        return vehicleRepository.findById(id).orElse(null) != null;
     }
 
-    @Override
-    public void delete(Integer id) {
-
-    }
-
-    @Override
-    public void deleteAll() {
-
+    public Vehicle getVehicleByDriverId(Integer id){
+        return vehicleRepository.getVehicleByDriverId(id);
     }
 }

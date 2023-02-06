@@ -1,11 +1,8 @@
 package mango.service.interfaces;
 
-import mango.model.PanicResponse;
-import mango.model.Ride;
-
-import java.util.Collection;
+import mango.dto.PanicResponseDTO;
 
 public interface IPanicService {
-    public PanicResponse getAll();
+    public PanicResponseDTO getAll();
 
 }
