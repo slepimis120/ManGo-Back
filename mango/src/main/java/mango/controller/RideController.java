@@ -1,6 +1,7 @@
 package mango.controller;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
 import mango.dto.*;
 import mango.mapper.PanicDTOMapper;
@@ -13,12 +14,16 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +35,9 @@ public class RideController {
 
     @Autowired
     RideService rideService;
+
+    @Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
 
     @PreAuthorize("hasAuthority(\"ROLE_PASSENGER\")")
     @PostMapping
@@ -204,13 +212,17 @@ public class RideController {
 
 
 
-    @PutMapping("/getAvailableDrivers")
-    public ResponseEntity getAvailableDriver(@RequestBody @Valid CreateRideDTO createRideDTO) throws IOException {
+    @MessageMapping("/getAvailableDrivers")
+    public ResponseEntity getAvailableDriver(@RequestBody @Valid Map<String, String> message) throws IOException, ParseException {
+        ObjectMapper mapper = new ObjectMapper();
+        CreateRideDTO createRideDTO = new CreateRideDTO(message.get("locations"), message.get("passengers"), message.get("vehicleType"), Boolean.parseBoolean(message.get("babyTransport")), Boolean.parseBoolean(message.get("petTransport")), new SimpleDateFormat("dd/MM/yyyy").parse(message.get("scheduledTime")));
         Ride ride = new Ride(createRideDTO);
         if(rideService.getVehicleCount(ride) == 0){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Selected type of vehicle doesn't exist");
         }
-        rideService.getSuitableDrivers(ride);
+
+        Driver driver = rideService.getSuitableDrivers(ride);
+        this.simpMessagingTemplate.convertAndSend("/socket-publisher/" + driver.getId(), "hohoporuka");
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 

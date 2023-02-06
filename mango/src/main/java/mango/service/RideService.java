@@ -195,7 +195,7 @@ public class RideService{
         return favoriteLocationRepository.save(favoriteLocations);
     }
 
-    public void getSuitableDrivers(Ride ride) throws IOException {
+    public Driver getSuitableDrivers(Ride ride) throws IOException {
         List<Vehicle> vehicles = vehicleRepository.findSuitableVehicles(ride.isBabyTransport(), ride.getPassengers().size(), ride.isPetTransport(), ride.getVehicleType().toString());
         Integer fastestVehicleId = -1;
         Driver driver = null;
@@ -229,6 +229,7 @@ public class RideService{
             rideLocation.setRide(ride);
         }
         save(ride);
+        return driver;
     }
 
     public Integer getVehicleCount(Ride ride){
