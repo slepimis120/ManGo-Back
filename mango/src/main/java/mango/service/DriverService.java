@@ -10,6 +10,12 @@ import mango.repository.WorkHourRepository;
 import mango.repository.UserRepository;
 import mango.service.interfaces.IUserService;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -269,8 +275,78 @@ public class DriverService implements IUserService {
 		return new StatisticsDTO(rejectCount, acceptCount, workHours, earnings);
 	}
 
-	public ReportDTO getReport(Integer id, StatisticsDatesDTO statisticsDatesDTO){
+	public ReportDTO getReport(Integer id, StatisticsDatesDTO statisticsDatesDTO) throws ParseException, IOException {
+		List<Ride> rideList = rideRepository.findAll();
+		ReportDTO reportDTO = new ReportDTO();
+		List<ReportCounterDTO> kilometresCount = new ArrayList<ReportCounterDTO>();
+		List<ReportCounterDTO> ridesCount = new ArrayList<ReportCounterDTO>();
+		for(Ride ride : rideList){
+			Date date1=new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(ride.getStartTime().toString());
+			if(date1.before(statisticsDatesDTO.getEndDate()) && date1.after(statisticsDatesDTO.getStartDate()) && ride.getDriver() != null && Objects.equals(ride.getDriver().getId(), id)){
+				if(ridesCount.size() == 0){
+					ReportCounterDTO newReport = new ReportCounterDTO(date1, 1f);
+					ridesCount.add(newReport);
+				}else{
+					for(ReportCounterDTO reportCounterDTO : ridesCount){
+						System.out.println(reportCounterDTO.getDate());
+						SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
+						if (fmt.format(date1).equals(fmt.format(reportCounterDTO.getDate()))){
+							System.out.println("A");
+							reportCounterDTO.setCount(reportCounterDTO.getCount() + 1);
+						}else{
+							System.out.println("b");
+							ReportCounterDTO newReport = new ReportCounterDTO(date1, 1f);
+							ridesCount.add(newReport);
+						}
+					}
+				}
+				if(kilometresCount.size() == 0){
+					Float totalKmold = 0f;
+					String url = "http://router.project-osrm.org/route/v1/driving/" + ride.getLocations().get(0).getDeparture().getLongitude() + "," + ride.getLocations().get(0).getDeparture().getLatitude()  + ";" + ride.getLocations().get(0).getDestination().getLongitude() + "," + ride.getLocations().get(0).getDestination().getLatitude() + "?overview=false";
+					URL GETDISTANCEURL = new URL(url);
+					URLConnection website = GETDISTANCEURL.openConnection();
+					BufferedReader in = new BufferedReader(
+							new InputStreamReader(
+									website.getInputStream()));
+					String inputLine;
 
+					while ((inputLine = in.readLine()) != null)
+						totalKmold = Float.parseFloat(inputLine.split("distance\":")[1].split("}")[0]) / 100;
+					in.close();
+
+					ReportCounterDTO newReport = new ReportCounterDTO(date1, totalKmold);
+					kilometresCount.add(newReport);
+				}else{
+					for(ReportCounterDTO reportCounterDTO : kilometresCount){
+						SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
+						Float totalKm = 0f;
+
+						String url = "http://router.project-osrm.org/route/v1/driving/" + ride.getLocations().get(0).getDeparture().getLongitude() + "," + ride.getLocations().get(0).getDeparture().getLatitude()  + ";" + ride.getLocations().get(0).getDestination().getLongitude() + "," + ride.getLocations().get(0).getDestination().getLatitude() + "?overview=false";
+						URL GETDISTANCEURL = new URL(url);
+						URLConnection website = GETDISTANCEURL.openConnection();
+						BufferedReader in = new BufferedReader(
+								new InputStreamReader(
+										website.getInputStream()));
+						String inputLine;
+
+						while ((inputLine = in.readLine()) != null)
+							totalKm = Float.parseFloat(inputLine.split("distance\":")[1].split("}")[0]);
+						in.close();
+
+
+						if (fmt.format(date1).equals(fmt.format(reportCounterDTO.getDate()))){
+							reportCounterDTO.setCount(reportCounterDTO.getCount() + totalKm);
+						}else{
+							ReportCounterDTO newReport = new ReportCounterDTO(date1, totalKm);
+							kilometresCount.add(newReport);
+						}
+					}
+				}
+			}
+		}
+		reportDTO.setTotalKilometres(kilometresCount);
+		reportDTO.setTotalRides(ridesCount);
+		return reportDTO;
 	}
 
 	public boolean ifDriverExists(Integer id){

@@ -5,10 +5,9 @@ import java.util.Date;
 public class ReportCounterDTO {
 
     Date date;
+    Float count;
 
-    Integer count;
-
-    public ReportCounterDTO(Date date, Integer count) {
+    public ReportCounterDTO(Date date, Float count) {
         this.date = date;
         this.count = count;
     }
@@ -21,11 +20,11 @@ public class ReportCounterDTO {
         this.date = date;
     }
 
-    public Integer getCount() {
+    public Float getCount() {
         return count;
     }
 
-    public void setCount(Integer count) {
+    public void setCount(Float count) {
         this.count = count;
     }
 }

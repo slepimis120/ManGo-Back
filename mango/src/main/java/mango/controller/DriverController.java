@@ -1,5 +1,7 @@
 package mango.controller;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -28,9 +31,13 @@ public class DriverController {
 	@Autowired
 	DriverService service;
 
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+
 	@PreAuthorize("hasAuthority(\"ROLE_ADMIN\")")
 	@PostMapping
 	public ResponseEntity insert(@RequestBody @Valid ExpandedUserDTO data) {
+		data.setPassword(passwordEncoder.encode(data.getPassword()));
         UserDTO response =  service.insert(data);
 		if(response == null){
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User with that email already exists exists!");
@@ -164,7 +171,7 @@ public class DriverController {
 
 	@PreAuthorize("hasAuthority(\"ROLE_DRIVER\")")
 	@PostMapping("/report/{id}")
-	public ResponseEntity getReport(@PathVariable Integer id, @RequestBody StatisticsDatesDTO statisticsDatesDTO){
+	public ResponseEntity getReport(@PathVariable Integer id, @RequestBody StatisticsDatesDTO statisticsDatesDTO) throws ParseException, IOException {
 		return ResponseEntity.status(HttpStatus.OK).body(service.getReport(id, statisticsDatesDTO));
 	}
 
