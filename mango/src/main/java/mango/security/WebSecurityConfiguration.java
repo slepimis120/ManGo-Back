@@ -40,6 +40,7 @@ public class WebSecurityConfiguration {
 						.anyRequest().authenticated());
 		http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class); //JWT procesiramo pre autentikacije
 		http.headers().frameOptions().sameOrigin();
+
 		return http.build();
 	}
 

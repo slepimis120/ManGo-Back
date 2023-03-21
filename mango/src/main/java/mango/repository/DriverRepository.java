@@ -1,9 +1,6 @@
 package mango.repository;
 
 import mango.model.Driver;
-import mango.model.Review;
-import mango.model.Ride;
-import mango.model.Vehicle;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -16,4 +13,7 @@ public interface DriverRepository extends JpaRepository<Driver, Integer> {
 
     @Query(value = "SELECT * FROM USERS WHERE TYPE = 'DRIVER' OFFSET ? ROWS FETCH NEXT ? ROWS ONLY", nativeQuery = true)
     List<Driver> fetchDriversOffset(int offset, int size);
+
+    @Query(value = "SELECT r.RATING FROM REVIEW r WHERE REVIEWTYPE = 'DRIVER' AND RIDEID IN (SELECT ID FROM RIDE WHERE DRIVER = ?)", nativeQuery = true)
+    List<Integer> getAvgRating(Integer id);
 }

@@ -1,5 +1,6 @@
 package mango.service;
 
+import mango.dto.AvailableDriverDTO;
 import mango.dto.GetFavoriteLocationsDTO;
 import mango.dto.SendFavoriteLocationsDTO;
 import mango.model.*;
@@ -27,10 +28,12 @@ public class RideService{
     private FavoriteLocationRepository favoriteLocationRepository;
     @Autowired
     private VehicleRepository vehicleRepository;
-
     @Autowired
     private LocationRepository locationRepository;
-    private final PassengerRepository passengerRepository;
+    @Autowired
+    private PassengerRepository passengerRepository;
+    @Autowired
+    private DriverRepository driverRepository;
 
     public RideService(PassengerRepository passengerRepository) throws MalformedURLException {
         this.passengerRepository = passengerRepository;
@@ -195,7 +198,7 @@ public class RideService{
         return favoriteLocationRepository.save(favoriteLocations);
     }
 
-    public void getSuitableDrivers(Ride ride) throws IOException {
+    public AvailableDriverDTO getSuitableDrivers(Ride ride) throws IOException {
         List<Vehicle> vehicles = vehicleRepository.findSuitableVehicles(ride.isBabyTransport(), ride.getPassengers().size(), ride.isPetTransport(), ride.getVehicleType().toString());
         Integer fastestVehicleId = -1;
         Driver driver = null;
@@ -229,6 +232,18 @@ public class RideService{
             rideLocation.setRide(ride);
         }
         save(ride);
+        AvailableDriverDTO availableDriverDTO = new AvailableDriverDTO(driver.getId(), driver.getName() + " " + driver.getSurname(), getAvgRating(driver.getId()), driver.getProfilePicture() , vehicleRepository.getVehicleByDriverId(driver.getId()).getModel());
+        return availableDriverDTO;
+    }
+
+    public Float getAvgRating(Integer id){
+        List<Integer> ratingList = driverRepository.getAvgRating(id);
+        Integer avg = 0;
+        for (int i = 0; i < ratingList.size(); i++){
+            avg = avg + ratingList.indexOf(i);
+        }
+        Float average = ((float)avg)/ratingList.size();
+        return average;
     }
 
     public Integer getVehicleCount(Ride ride){

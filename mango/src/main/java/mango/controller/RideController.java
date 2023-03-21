@@ -210,8 +210,8 @@ public class RideController {
         if(rideService.getVehicleCount(ride) == 0){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Selected type of vehicle doesn't exist");
         }
-        rideService.getSuitableDrivers(ride);
-        return ResponseEntity.status(HttpStatus.OK).body(null);
+        AvailableDriverDTO driver = rideService.getSuitableDrivers(ride);
+        return ResponseEntity.status(HttpStatus.OK).body(driver);
     }
 
     @GetMapping("/driver/{driverId}/isAssigned")
