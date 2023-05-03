@@ -196,7 +196,6 @@ public class RideController {
         }else{
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Favorite location does not exist!");
         }
-
     }
 
 
@@ -214,15 +213,18 @@ public class RideController {
         return ResponseEntity.status(HttpStatus.OK).body(driver);
     }
 
-    @GetMapping("/driver/{driverId}/isAssigned")
+    @PreAuthorize("hasAuthority(\"ROLE_DRIVER\")")
+    @GetMapping("/{driverId}/isAssigned")
     public ResponseEntity isDriverAssigned(@PathVariable Integer driverId) {
         Ride ride = rideService.isDriverAssigned(driverId);
+
         if(ride == null){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Pending ride does not exist!");
         }
         ResponseRideDTO responseRide = new ResponseRideDTO(ride);
         return ResponseEntity.status(HttpStatus.OK).body(responseRide);
     }
+
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
