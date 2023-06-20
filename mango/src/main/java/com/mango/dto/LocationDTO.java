@@ -25,6 +25,12 @@ public class LocationDTO {
         this.longitude = location.getLongitude();
     }
 
+    public LocationDTO(String address, Float latitude, Float longitude){
+        this.address = address;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
     public LocationDTO(){}
 
     public String getAddress() {

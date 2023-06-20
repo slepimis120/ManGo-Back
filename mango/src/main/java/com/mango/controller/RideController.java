@@ -7,10 +7,12 @@ import com.mango.mapper.RejectionDTOMapper;
 import com.mango.mapper.RideDTOMapper;
 import com.mango.model.*;
 import com.mango.service.RideService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import com.mango.dto.*;
 import com.mango.model.*;
 
+import org.hibernate.TypeMismatchException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,7 +35,13 @@ public class RideController {
     @Autowired
     RideService rideService;
 
-    @PreAuthorize("hasAuthority(\"ROLE_PASSENGER\")")
+    @ExceptionHandler(TypeMismatchException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity handleTypeMismatchException() {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid Data.");
+    }
+
+    @PreAuthorize("hasAuthority('ROLE_PASSENGER')")
     @PostMapping
     public ResponseEntity createRide(@RequestBody @Valid CreateRideDTO ride) throws IOException{
         Ride newRide = new Ride(ride);
@@ -47,18 +55,23 @@ public class RideController {
         return ResponseEntity.status(HttpStatus.OK).body(responseRide);
     }
 
-    @PreAuthorize("hasAuthority(\"ROLE_ADMIN\")")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping("/{id}")
-    public ResponseEntity findRide(@PathVariable Integer id) {
-        Ride ride = rideService.findById(id);
-        if(ride == null){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ride does not exist!");
+    public ResponseEntity findRide(@PathVariable String id) {
+        if (id.matches("[0-9]+")){
+            int idnew = Integer.parseInt(id);
+            Ride ride = rideService.findById(idnew);
+            if(ride == null){
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ride does not exist!");
+            }
+            ResponseRideDTO responseRide = new ResponseRideDTO(ride);
+            return ResponseEntity.status(HttpStatus.OK).body(responseRide);
+        }else{
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Bad ID format!");
         }
-        ResponseRideDTO responseRide = new ResponseRideDTO(ride);
-        return ResponseEntity.status(HttpStatus.OK).body(responseRide);
     }
 
-    @PreAuthorize("hasAuthority(\"ROLE_ADMIN\")")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping("/driver/{driverId}/active")
     public ResponseEntity findActiveByDriver(@PathVariable Integer driverId) {
         Ride ride = rideService.findActiveByDriver(driverId);
@@ -69,7 +82,7 @@ public class RideController {
         return ResponseEntity.status(HttpStatus.OK).body(responseRide);
     }
 
-    @PreAuthorize("hasAuthority(\"ROLE_ADMIN\")")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping("/passenger/{passengerId}/active")
     public ResponseEntity findByPassenger(@PathVariable Integer passengerId) {
         Ride ride = rideService.findActiveByPassenger(passengerId);
@@ -81,7 +94,7 @@ public class RideController {
         return ResponseEntity.status(HttpStatus.OK).body(responseRide);
     }
 
-    @PreAuthorize("hasAuthority(\"ROLE_PASSENGER\")")
+    @PreAuthorize("hasAuthority('ROLE_PASSENGER')")
     @PutMapping("/{id}/withdraw")
     public ResponseEntity cancelByPassenger(@PathVariable Integer id) {
         Ride ride = rideService.findById(id);
@@ -89,14 +102,14 @@ public class RideController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ride does not exist!");
         }
         if(ride.getStatus() != Ride.Status.pending && ride.getStatus() != Ride.Status.accepted){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Cannot cancel a ride that is not in status PENDING or STARTED!");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Cannot cancel a ride that is not in status PENDING or ACCEPTED!");
         }
         ride = rideService.cancelByPassenger(id);
         ResponseRideDTO responseRide = new ResponseRideDTO(ride);
         return ResponseEntity.status(HttpStatus.OK).body(responseRide);
     }
 
-    @PreAuthorize("hasAuthority(\"ROLE_DRIVER\")")
+    @PreAuthorize("hasAuthority('ROLE_DRIVER')")
     @PutMapping("/{id}/accept")
     public ResponseEntity accept(@PathVariable Integer id) {
         Ride ride = rideService.findById(id);
@@ -111,7 +124,7 @@ public class RideController {
         return ResponseEntity.status(HttpStatus.OK).body(responseRide);
     }
 
-    @PreAuthorize("hasAuthority(\"ROLE_DRIVER\")")
+    @PreAuthorize("hasAuthority('ROLE_DRIVER')")
     @PutMapping("{id}/start")
     public ResponseEntity start(@PathVariable Integer id){
         Ride ride = rideService.findById(id);
@@ -126,22 +139,22 @@ public class RideController {
         return ResponseEntity.status(HttpStatus.OK).body(responseRide);
     }
 
-    @PreAuthorize("hasAuthority(\"ROLE_DRIVER\")")
+    @PreAuthorize("hasAuthority('ROLE_DRIVER')")
     @PutMapping("/{id}/end")
     public ResponseEntity end(@PathVariable Integer id){
         Ride ride = rideService.findById(id);
         if(ride == null){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ride does not exist!");
         }
-        if(ride.getStatus() != Ride.Status.accepted){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Cannot end a ride that is not in status ACCEPTED!");
+        if(ride.getStatus() != Ride.Status.started){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Cannot end a ride that is not in status STARTED!");
         }
         ride = rideService.end(id);
         ResponseRideDTO responseRide = new ResponseRideDTO(ride);
         return ResponseEntity.status(HttpStatus.OK).body(responseRide);
     }
 
-    @PreAuthorize("hasAuthority(\"ROLE_DRIVER\")")
+    @PreAuthorize("hasAuthority('ROLE_DRIVER')")
     @PutMapping("/{id}/cancel")
     public ResponseEntity cancelByDriver(@PathVariable Integer id, @RequestBody @Valid RejectionDTO rejection){
         RejectionDTOMapper rejectionMapper = new RejectionDTOMapper(new ModelMapper());
@@ -159,7 +172,7 @@ public class RideController {
         return ResponseEntity.status(HttpStatus.OK).body(responseRide);
     }
 
-    @PreAuthorize("hasAuthority(\"ROLE_PASSENGER\")")
+    @PreAuthorize("hasAuthority('ROLE_PASSENGER')")
     @PutMapping("/{id}/panic")
     public ResponseEntity panic(@PathVariable Integer id, @RequestBody @Valid PanicDTO panic){
         PanicDTOMapper mapper = new PanicDTOMapper(new ModelMapper());
@@ -172,7 +185,7 @@ public class RideController {
         return ResponseEntity.status(HttpStatus.OK).body(responsePanic);
     }
 
-    @PreAuthorize("hasAuthority(\"ROLE_PASSENGER\")")
+    @PreAuthorize("hasAuthority('ROLE_PASSENGER')")
     @PostMapping("/favorites")
     public ResponseEntity setFavoriteLocations(@RequestBody @Valid GetFavoriteLocationsDTO getFavoriteLocationsDTO){
         if(rideService.getTotalCount(5) >= 2){
@@ -183,14 +196,14 @@ public class RideController {
         return ResponseEntity.status(HttpStatus.OK).body(sendFavoriteLocationsDTO);
     }
 
-    @PreAuthorize("hasAuthority(\"ROLE_PASSENGER\")")
+    @PreAuthorize("hasAuthority('ROLE_PASSENGER')")
     @GetMapping("/favorites")
     public ResponseEntity getFavoriteLocations(){
         List<SendFavoriteLocationsDTO> sendFavoriteLocationsDTOList = rideService.getFavoriteLocations(5);
         return ResponseEntity.status(HttpStatus.OK).body(sendFavoriteLocationsDTOList);
     }
 
-    @PreAuthorize("hasAuthority(\"ROLE_PASSENGER\")")
+    @PreAuthorize("hasAuthority('ROLE_PASSENGER')")
     @DeleteMapping("/favorites/{id}")
     public ResponseEntity deleteFavoriteLocation(@PathVariable Integer id){
         if(rideService.deleteFavoriteLocations(id)){

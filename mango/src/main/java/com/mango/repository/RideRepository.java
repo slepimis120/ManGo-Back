@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface RideRepository extends JpaRepository<Ride, Integer> {
 
-    @Query(value = "select r.* from Ride r, Ride_Passengers rs where (?1 = rs.passengers_id and r.id = rs.rides_id) and r.endTime IS NULL", nativeQuery = true)
+    @Query(value = "select r.* from Ride r, Ride_Passengers rs where (?1 = rs.passengers_id and r.id = rs.rides_id) and r.endtime IS NULL", nativeQuery = true)
     Ride findActiveByPassenger(Integer id);
 
     @Query(value = "select * from Ride where endTime IS NULL and driver IS NOT NULL and driver = ?1", nativeQuery = true)

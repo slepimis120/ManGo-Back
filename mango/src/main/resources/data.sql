@@ -2,7 +2,10 @@ INSERT INTO USERS (type, name, surname, profilepicture, telephonenumber, email, 
 VALUES ('DRIVER', 'Momir', 'Momirovski', 'slikalink', '+2318302845', 'momir@gmail.com', 'Žarka Zrenjanina 6', '$2a$12$uP203LOQlxC1ogH74JWdP.iGxobvImrEu2CSROTSiyoDnVmvnIRoy', false),
        ('DRIVER', 'Marina', 'Marinara', 'dhajsoda', '+32198312321', 'marinara@gmail.com', 'Žitni Trg 8', '$2a$12$cxicWxEAHet6C4X3uC/Jvuw11UZPzPpDZQZ.VdvNmMBt7VwNWLD2K', false),
        ('DRIVER', 'Adam', 'Driver', 'adamdriverslika', '+8372917233', 'adamdriver@gmail.com', 'Vršačka 5', '$2a$12$2R7Jfri8eWFanFVXGZQv0OXtcW6bj/A3ZSTUWdNWIbwi.7oSQL4GK', false),
-       ('DRIVER', 'Ansel', 'Elgort', 'anselslika', '+3827129312', 'jasambabydriver@gmail.com', 'Futoški put 8', '$2a$12$YUqVzEmMwW24KgHIdp6y9.GfW9oBOfC4qtgavmWYlMLlYEDoeIn5y', false);
+       ('DRIVER', 'Ansel', 'Elgort', 'anselslika', '+3827129312', 'jasambabydriver@gmail.com', 'Futoški put 8', '$2a$12$YUqVzEmMwW24KgHIdp6y9.GfW9oBOfC4qtgavmWYlMLlYEDoeIn5y', false),
+       ('DRIVER', 'More', 'Mornar', 'moreslika', '+328327134', 'moremornar@gmail.com', 'Miloševića 8', '$2a$12$7P25.vkdOT3ECu6Ioz8FTOr3zwoOzoCtiPmKqKYtEKaFx8tLqxXGm', false),
+       ('DRIVER', 'Miklos', 'Aaaa', 'mikloslika', '+31284712', 'miklosaaaa@gmail.com', 'Futoška 33', '$2a$12$a30WS71pz7peTIR.44A3meHfZ6uiemrBDdG2WDqmSm62jnVBQrQAW', false),
+       ('DRIVER', 'Masa', 'Misic', 'masaslika', '+38271345', 'masamisic@gmail.com', 'Mašina 8', '$2a$12$HHwnnb1ChC0yJWLbPgBPW.02bORQGSyNpGENlS6.EFAd0OxiQ8aky', false);
 
 
 
@@ -13,23 +16,27 @@ VALUES ('PASSENGER','Marko', 'Markov', 'linkOdSlikee', '+381694422334', 'marko@g
        ('PASSENGER', 'Nemanja', 'Šimšić', 'link', '+381695511006', 'slepimis120@gmail.com', 'Miše Dimitrijevića 45', '$2a$12$fLHIlMQzTavzZBv4rMlqT.RPh6lw0a/EUn0PjiwDnhY6dxXmQx80O', false),
        ('PASSENGER', 'Aleksandra', 'Balažević', 'slika', '+3937827612', 'aleksandrab@gmail.com', 'Bulevar despota Stefana 5А', '$2a$12$HJ5kBOLGf9CZrAeOWOq85.7jOUiCGBWXYbw99jGBaxed6U1EyOSdy', false),
        ('PASSENGER', 'Mina', 'Slanina', 'slikamineslanine', '+312731231', 'minaslanina@gmail.com', 'Heroja Pinkija 54', '$2a$12$nqnuJrjnccwhYkvWAErUhegH.wOUS1kvVhDWH9ghTVwKK6VJC1Us2', false),
-       ('PASSENGER', 'Mila', 'Miloševski', 'mila', '+382719321', 'milamilosevski@yahoo.com', 'Mitrovačka 37', '$2a$12$HyqaJxFBRSFvFDNBjrwOqeHJiDvKl/./vZfY07Ob5Sp4o0f8UI.ui', false),
+       ('PASSENGER', 'Mila', 'Miloševski', 'mila', '+382719321', 'milamilosevski@gmail.com', 'Mitrovačka 37', '$2a$12$yKi1Qepg2gV4HdGUbD1RputhFn85D4t4r6zDUa1Xg8wd/nvfPvpT2', false),
        ('ADMIN', 'Miloš', 'Obrenović', 'milos', '+383726123', 'milosobrenovic@hotmail.com', 'Šarplaninska 30', '$2a$12$PcWXgpagykNEhjS0JvXG2OM5v8GDrnoVKPLaIC0bhSYukq5.Ig.OC', false);
 
 INSERT INTO ACTIVATION (PASSENGERID, SENDDATE, ISACTIVATED)
-VALUES (5, '2023-04-01T04:49:27Z', true),
-       (6, '2023-04-01T04:49:27Z', true),
-       (7, '2023-04-01T04:49:27Z', true),
-       (8, '2023-04-01T04:49:27Z', true),
+VALUES (8, '2023-04-01T04:49:27Z', true),
        (9, '2023-04-01T04:49:27Z', true),
-       (10, '2023-04-01T04:49:27Z', true);
+       (10, '2023-04-01T04:49:27Z', true),
+       (11, '2023-04-01T04:49:27Z', true),
+       (12, '2023-04-01T04:49:27Z', true),
+       (13, '2023-04-01T04:49:27Z', true),
+       (14, '2023-04-01T04:49:27Z', true);
 
 
 INSERT INTO DRIVER_DOCUMENT (NAME, DOCUMENTIMAGE, DRIVERID)
 VALUES ('MOMIR', 'linkSlika', 1),
        ('MARINA', 'marinnaa', 2),
        ('ADAM', 'linkAdama', 3),
-       ('ANSEL', 'anseLink', 4);
+       ('ANSEL', 'anseLink', 4),
+       ('MORE', 'moreSlika', 5),
+       ('MIKLOS', 'mikloSlika', 6),
+       ('MASA', 'masaSlika', 7);
 
 
 
@@ -45,8 +52,12 @@ VALUES ('Janka Čmelika 23', 45.257030, 19.813430),
 
 INSERT INTO VEHICLE (DRIVERID, VEHICLETYPE, MODEL, LICENSENUMBER, CURRENTLOCATION, PASSENGERSEATS, BABYTRANSPORT, PETTRANSPORT)
 VALUES (1, 'STANDARD', 'Golf 2', 'NS021NS', 1, 5, false, false),
-       (2, 'VAN', 'Golf 22', 'ZR234OD', 2, 8, false, false);
-
+       (2, 'VAN', 'Golf 22', 'ZR234OD', 2, 8, false, false),
+       (3, 'LUXURY', 'Golf 32', 'NS234EO', 6, 4, false, false),
+       (4, 'STANDARD', 'Golf 132', 'BG245SD', 4, 4, true, true),
+       (5, 'STANDARD', 'Golfbrmbrm 132', 'LIMAN', 4, 4, true, true),
+       (6, 'STANDARD', 'Krkače', 'DETEL', 4, 2, true, true),
+       (7, 'STANDARD', 'Peške 13 Turbo', 'XXXX', 4, 4, true, true);
 
 
 INSERT INTO NOTE (MESSAGE, DATE, USERID)
@@ -59,7 +70,12 @@ INSERT INTO RIDE (STARTTIME, ENDTIME, TOTALCOST, DRIVER, ESTIMATEDTIMEINMINUTES,
 VALUES ('2023-01-14T04:50:15Z', null, 530, null, 15, 'STANDARD', false, false, 'pending'),
        ('2022-12-10T13:35:49Z', '2022-12-12T04:50:09Z', 350, 2, 30, 'VAN', false, false, 'finished'),
        ('2022-12-28T22:20:39Z', '2022-12-28T23:50:08Z', 680, 1, 90, 'STANDARD', false, false, 'finished'),
-       ('2010-05-07T08:11:11Z', '2010-05-07T04:50:05Z', 700, 2, 60, 'VAN', false, false, 'rejected');
+       ('2010-05-07T08:11:11Z', '2010-05-07T04:50:05Z', 700, 2, 60, 'VAN', false, false, 'rejected'),
+       ('2023-06-20T010:32:42Z', null, 580, 4, 60, 'LUXURY', false, false, 'pending'),
+       ('2023-06-20T010:32:42Z', null, 580, 1, 60, 'STANDARD', false, false, 'accepted'),
+       ('2023-06-20T010:32:42Z', null, 580, 2, 60, 'VAN', false, false, 'accepted'),
+       ('2023-06-20T010:32:42Z', null, 580, 3, 60, 'LUXURY', false, false, 'started'),
+       ('2023-06-20T010:32:42Z', null, 580, 5, 60, 'STANDARD', false, false, 'pending');
 
 
 
@@ -69,13 +85,18 @@ VALUES ('Ne ide mi se do Miše Dimitrijevića', '2010-05-07T04:50:05Z', 4);
 
 
 INSERT INTO RIDE_PASSENGERS (RIDES_ID, PASSENGERS_ID)
-VALUES(1, 5),
-      (2, 5),
-      (2, 6),
-      (3, 7),
-      (3, 8),
-      (4, 9),
-      (4, 10);
+VALUES(1, 9),
+      (2, 10),
+      (2, 10),
+      (3, 10),
+      (3, 11),
+      (4, 12),
+      (4, 14),
+      (5, 15),
+      (6, 10),
+      (7, 8),
+      (8, 9),
+      (9, 11);
 
 
 
@@ -83,20 +104,25 @@ INSERT INTO RIDE_LOCATION (DEPARTURE, DESTINATION, RIDEID)
 VALUES (1, 2, 1),
        (2, 1, 2),
        (3, 4, 3),
-       (5, 6, 4);
+       (5, 6, 4),
+       (1, 3, 5),
+       (4, 2, 6),
+       (4, 5, 7),
+       (3, 6, 8),
+       (2, 1, 9);
 
 
 
 INSERT INTO REVIEW (RIDEID, RATING, COMMENT, PASSENGERID, REVIEWTYPE)
-VALUES (2, 5, 'Sjajna voznja', 5, 'DRIVER'),
-       (2, 4, 'Pa okej auto šta ja znam', 5, 'VEHICLE'),
-       (2, 3, 'Dosadila vožnja', 6, 'DRIVER'),
-       (2, 4, 'Okej auto', 6, 'VEHICLE');
+VALUES (2, 5, 'Sjajna voznja', 8, 'DRIVER'),
+       (2, 4, 'Pa okej auto šta ja znam', 8, 'VEHICLE'),
+       (2, 3, 'Dosadila vožnja', 9, 'DRIVER'),
+       (2, 4, 'Okej auto', 9, 'VEHICLE');
 
 
 
 INSERT INTO USER_MESSAGE(TIMEOFSENDING, SENDERID, RECEIVERID, MESSAGE, TYPE, RIDEID)
-VALUES ('2023-01-14T04:50:15Z', 1, 9, 'Hej Hej', 'RIDE', 1);
+VALUES ('2023-01-14T04:50:15Z', 1, 12, 'Hej Hej', 'RIDE', 1);
 
 
 
@@ -108,8 +134,8 @@ VALUES(1, 1, '2023-01-14T04:50:15Z', 'Mnogo je dosadan vozac :/');
 
 INSERT INTO WORK_HOUR(STARTTIME, ENDTIME, DRIVERID)
 VALUES('2023-01-14T04:50:15Z', '2023-01-14T06:50:15Z', 1),
-    ('2023-01-15T05:50:15Z', '2023-01-15T13:50:15Z', 1),
-    ('2023-01-15T14:50:15Z', '2023-01-15T22:50:15Z', 2);
+      ('2023-01-15T05:50:15Z', '2023-01-15T13:50:15Z', 1),
+      ('2023-01-15T14:50:15Z', '2023-01-15T22:50:15Z', 2);
 
 
 
@@ -130,5 +156,5 @@ VALUES(1, 1),
 
 
 INSERT INTO FAVORITE_LOCATIONS_PASSENGERS(PASSENGERS_ID, FAVORITE_LOCATIONS_ID)
-VALUES(5, 1),
-      (5, 2);
+VALUES(8, 1),
+      (8, 2);

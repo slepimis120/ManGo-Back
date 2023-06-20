@@ -22,12 +22,12 @@ public class GetFavoriteLocationsDTO {
     private String vehicleType;
 
     @NotNull
-    private boolean babyTransport;
+    private Boolean babyTransport;
 
     @NotNull
-    private boolean petTransport;
+    private Boolean petTransport;
 
-    public GetFavoriteLocationsDTO(String favoriteName, List<RideLocationDTO> locations, List<RidePassengerDTO> passengers, String vehicleType, boolean babyTransport, boolean petTransport) {
+    public GetFavoriteLocationsDTO(String favoriteName, List<RideLocationDTO> locations, List<RidePassengerDTO> passengers, String vehicleType, Boolean babyTransport, Boolean petTransport) {
         this.favoriteName = favoriteName;
         this.locations = locations;
         this.passengers = passengers;
@@ -68,19 +68,19 @@ public class GetFavoriteLocationsDTO {
         this.vehicleType = vehicleType;
     }
 
-    public boolean isBabyTransport() {
+    public Boolean isBabyTransport() {
         return babyTransport;
     }
 
-    public void setBabyTransport(boolean babyTransport) {
+    public void setBabyTransport(Boolean babyTransport) {
         this.babyTransport = babyTransport;
     }
 
-    public boolean isPetTransport() {
+    public Boolean isPetTransport() {
         return petTransport;
     }
 
-    public void setPetTransport(boolean petTransport) {
+    public void setPetTransport(Boolean petTransport) {
         this.petTransport = petTransport;
     }
 
