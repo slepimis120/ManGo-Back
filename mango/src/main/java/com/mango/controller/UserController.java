@@ -134,16 +134,22 @@ public class UserController {
 	public ResponseEntity logIn(@RequestBody @Valid UserLoginDTO request) {
 		UsernamePasswordAuthenticationToken authReq = new UsernamePasswordAuthenticationToken(request.getEmail(),
 				request.getPassword());
-		Authentication auth = authenticationManager.authenticate(authReq);
+		try{
+			Authentication auth = authenticationManager.authenticate(authReq);
+			SecurityContext sc = SecurityContextHolder.getContext();
+			sc.setAuthentication(auth);
 
-		SecurityContext sc = SecurityContextHolder.getContext();
-		sc.setAuthentication(auth);
-
+		}catch (Exception e){
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wrong username or password!");
+		}
 		User user = service.getByEmail(request.getEmail());
 		if(user.getDecriminatorValue().toString().equals("PASSENGER")){
 			if(!service.checkActivation(user.getId())){
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Passenger profile isn't activated yet!");
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Passenger profile isn't activated yet! Check your email");
 			}
+		}
+		if(user.isBlocked()){
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User is blocked");
 		}
 		String token = tokenUtils.generateToken(request.getEmail(),user.getDecriminatorValue(),user.getId()); // prosledjujemo email, role i id korisnika
 		String refreshToken = tokenUtils.generateRefreshToken(request.getEmail(),user.getDecriminatorValue(),user.getId());

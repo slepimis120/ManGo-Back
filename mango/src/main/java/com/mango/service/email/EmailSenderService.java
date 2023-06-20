@@ -16,6 +16,6 @@ public class EmailSenderService {
         message.setTo(to);
         message.setText("Hey! Please confirm this is your email address by entering this link: http://localhost:8080/api/passenger/activate/" + activationID);
         message.setSubject("Activate your ManGo account!");
-        mailSender.send(message);
+        this.mailSender.send(message);
     }
 }
