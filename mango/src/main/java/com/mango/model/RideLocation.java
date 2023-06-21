@@ -41,6 +41,11 @@ public class RideLocation {
         this.ride = ride;
     }
 
+    public RideLocation(Location departure, Location destination) {
+        this.departure = departure;
+        this.destination = destination;
+    }
+
     public RideLocation(){}
 
     public int getId() {
