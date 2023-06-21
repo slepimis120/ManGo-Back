@@ -5,7 +5,7 @@ VALUES ('DRIVER', 'Momir', 'Momirovski', 'slikalink', '+2318302845', 'momir@gmai
        ('DRIVER', 'Ansel', 'Elgort', 'anselslika', '+3827129312', 'jasambabydriver@gmail.com', 'Futoški put 8', '$2a$12$YUqVzEmMwW24KgHIdp6y9.GfW9oBOfC4qtgavmWYlMLlYEDoeIn5y', false),
        ('DRIVER', 'More', 'Mornar', 'moreslika', '+328327134', 'moremornar@gmail.com', 'Miloševića 8', '$2a$12$7P25.vkdOT3ECu6Ioz8FTOr3zwoOzoCtiPmKqKYtEKaFx8tLqxXGm', false),
        ('DRIVER', 'Miklos', 'Aaaa', 'mikloslika', '+31284712', 'miklosaaaa@gmail.com', 'Futoška 33', '$2a$12$a30WS71pz7peTIR.44A3meHfZ6uiemrBDdG2WDqmSm62jnVBQrQAW', false),
-       ('DRIVER', 'Masa', 'Misic', 'masaslika', '+38271345', 'masamisic@gmail.com', 'Mašina 8', '$2a$12$HHwnnb1ChC0yJWLbPgBPW.02bORQGSyNpGENlS6.EFAd0OxiQ8aky', true);
+       ('DRIVER', 'Masa', 'Misic', 'masaslika', '+38271345', 'masamisic@gmail.com', 'Mašina 8', '$2a$12$HHwnnb1ChC0yJWLbPgBPW.02bORQGSyNpGENlS6.EFAd0OxiQ8aky', false);
 
 
 
@@ -16,8 +16,9 @@ VALUES ('PASSENGER','Marko', 'Markov', 'linkOdSlikee', '+381694422334', 'marko@g
        ('PASSENGER', 'Nemanja', 'Šimšić', 'link', '+381695511006', 'slepimis120@gmail.com', 'Miše Dimitrijevića 45', '$2a$12$7Ps.8BWgh.mRFyRuxyT8oupAcYmChndeylnn50AQ9kI66sqhLSV66', false),
        ('PASSENGER', 'Aleksandra', 'Balažević', 'slika', '+3937827612', 'aleksandrab@gmail.com', 'Bulevar despota Stefana 5А', '$2a$12$HJ5kBOLGf9CZrAeOWOq85.7jOUiCGBWXYbw99jGBaxed6U1EyOSdy', false),
        ('PASSENGER', 'Mina', 'Slanina', 'slikamineslanine', '+312731231', 'minaslanina@gmail.com', 'Heroja Pinkija 54', '$2a$12$nqnuJrjnccwhYkvWAErUhegH.wOUS1kvVhDWH9ghTVwKK6VJC1Us2', false),
-       ('PASSENGER', 'Mila', 'Miloševski', 'mila', '+382719321', 'milamilosevski@gmail.com', 'Mitrovačka 37', '$2a$12$yKi1Qepg2gV4HdGUbD1RputhFn85D4t4r6zDUa1Xg8wd/nvfPvpT2', true),
+       ('PASSENGER', 'Mila', 'Miloševski', 'mila', '+382719321', 'milamilosevski@gmail.com', 'Mitrovačka 37', '$2a$12$yKi1Qepg2gV4HdGUbD1RputhFn85D4t4r6zDUa1Xg8wd/nvfPvpT2', false),
        ('ADMIN', 'Miloš', 'Obrenović', 'milos', '+383726123', 'milosobrenovic@hotmail.com', 'Šarplaninska 30', '$2a$12$PcWXgpagykNEhjS0JvXG2OM5v8GDrnoVKPLaIC0bhSYukq5.Ig.OC', false);
+        ('PASSENGER', 'Saki', 'Kawasaki', 'saki', '+382719321', 'saki@saki.com', 'Despota Stefana 12', '$2a$12$OaGa9TCHwSmrr97nn20dwedZGvDf8vOrP8Xhvl8AwQEpDqUIaXkSK', true),
 
 INSERT INTO ACTIVATION (PASSENGERID, SENDDATE, ISACTIVATED)
 VALUES (8, '2023-04-01T04:49:27Z', true),
