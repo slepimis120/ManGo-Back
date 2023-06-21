@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface RideRepository extends JpaRepository<Ride, Integer> {
 
@@ -12,7 +13,7 @@ public interface RideRepository extends JpaRepository<Ride, Integer> {
     Ride findActiveByPassenger(Integer id);
 
     @Query(value = "select * from Ride where endTime IS NULL and driver IS NOT NULL and driver = ?1", nativeQuery = true)
-    Ride findActiveByDriver(Integer id);
+    Optional<Ride> findActiveByDriver(Integer id);
 
     @Query(value = "select * from Ride WHERE DRIVER = ?", nativeQuery = true)
     List<Ride> findRidesByDriver(Integer driverId);

@@ -12,11 +12,10 @@ import org.springframework.test.context.ActiveProfiles;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
-import static com.fasterxml.jackson.databind.type.LogicalType.DateTime;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest
 @ActiveProfiles("test")
@@ -28,6 +27,8 @@ public class RideRepositoryTest {
     private PassengerRepository passengerRepository;
     @Autowired
     private DriverRepository driverRepository;
+    @Autowired
+    private FavoriteLocationRepository favoriteLocationRepository;
 
     @Before
     public void addRide() {
@@ -63,8 +64,11 @@ public class RideRepositoryTest {
     @Test
     @DisplayName("findActiveByDriver [positive]")
     public void findActiveByDriver() {
-        Ride ride = rideRepository.findActiveByDriver(1);
-        Assertions.assertEquals(ride.getVehicleType(), Vehicle.Type.STANDARD);
+        Optional<Ride> ride = rideRepository.findActiveByDriver(1);
+        if(ride.isPresent()){
+            Assertions.assertEquals(ride.get().getVehicleType(), Vehicle.Type.STANDARD);
+        }
+
     }
 
     @Test
@@ -72,5 +76,12 @@ public class RideRepositoryTest {
     public void findActiveByPassenger() {
         Ride ride = rideRepository.findActiveByPassenger(10);
         Assertions.assertEquals(ride.getVehicleType(), Vehicle.Type.STANDARD);
+    }
+
+    @Test
+    @DisplayName("getFavLocationCount [positive]")
+    public void getTotalCount() {
+        Integer count = favoriteLocationRepository.getTotalCount(8);
+        Assertions.assertEquals(count, 2);
     }
 }

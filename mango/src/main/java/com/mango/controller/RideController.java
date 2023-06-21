@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*")
 @RestController
@@ -74,11 +75,11 @@ public class RideController {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping("/driver/{driverId}/active")
     public ResponseEntity findActiveByDriver(@PathVariable Integer driverId) {
-        Ride ride = rideService.findActiveByDriver(driverId);
+        Optional<Ride> ride = rideService.findActiveByDriver(driverId);
         if(ride == null){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Active ride does not exist!");
         }
-        ResponseRideDTO responseRide = new ResponseRideDTO(ride);
+        ResponseRideDTO responseRide = new ResponseRideDTO(ride.get());
         return ResponseEntity.status(HttpStatus.OK).body(responseRide);
     }
 

@@ -22,4 +22,10 @@ public class Rejection {
     @OneToOne
     @JoinColumn(name = "RIDEID",  referencedColumnName = "id")
     private Ride ride;
+
+    public Rejection(String reason, Date timeOfRejection){
+        this.reason = reason;
+        this.timeOfRejection = timeOfRejection;
+    }
+
 }

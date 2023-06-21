@@ -185,7 +185,7 @@ public class RideService{
         return rideRepository.findById(id).orElse(null);
     }
 
-    public Ride findActiveByDriver(Integer driverId){
+    public Optional<Ride> findActiveByDriver(Integer driverId){
         return rideRepository.findActiveByDriver(driverId);
     }
 
