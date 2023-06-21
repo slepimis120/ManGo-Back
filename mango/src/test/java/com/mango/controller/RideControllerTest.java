@@ -362,4 +362,387 @@ public class RideControllerTest {
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    //Cancel Existing Ride
+
+    @Test
+    public void testCancelRideNotAccepted() {
+        HttpEntity<Object> httpEntity = new HttpEntity<>(null, getHeader(JWT_PASSENGER_02));
+
+        ResponseEntity<String> responseEntity =
+                restTemplate.exchange(RIDE_URL + "/2/withdraw", HttpMethod.PUT,
+                        httpEntity, String.class);
+
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+    }
+
+    @Test
+    public void testCancelRideNotExisting() {
+        HttpEntity<Object> httpEntity = new HttpEntity<>(null, getHeader(JWT_PASSENGER_01));
+
+        ResponseEntity<String> responseEntity =
+                restTemplate.exchange(RIDE_URL + "/20/withdraw", HttpMethod.PUT,
+                        httpEntity, String.class);
+
+        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+    }
+
+    @Test
+    public void testCancelRide() {
+        HttpEntity<Object> httpEntity = new HttpEntity<>(null, getHeader(JWT_PASSENGER_03));
+
+        ResponseEntity<String> responseEntity =
+                restTemplate.exchange(RIDE_URL + "/6/withdraw", HttpMethod.PUT,
+                        httpEntity, String.class);
+
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    //Panic Procedure For the Ride
+
+    @Test
+    public void testPanicRideNotExist(){
+        PanicDTO panic = new PanicDTO("Kola smrde");
+
+        HttpEntity<PanicDTO> requestBody = new HttpEntity<>(panic, getHeader(JWT_PASSENGER_03));
+        ResponseEntity<String> response = restTemplate.exchange(
+                RIDE_URL + "/30/panic", HttpMethod.PUT, requestBody, new ParameterizedTypeReference<>() {
+                }
+        );
+        Assertions.assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    public void testPanicRideReasonOver500CharactersLong(){
+        PanicDTO panic = new PanicDTO("l0yRkXVLGPO4eBENa89eyB1WWmg0Yg6k48p4Ce6gWwLimP485aB4QjLvKxZSenlkVcEEBtbaUcQbWNysYBXDi5sar1UpUyvwdC7Z9qEBOHwwIFpzqg6v3sI3ZrwJWZ1UpSttRKbyqLryTNkaTdMppVYmatCIdibJjQdQA7PKGnfvHubuRtFkhxYy1f2GRl73LXtwjEueBhA8MjjW3KqziEy2QJ6YFPMSVKLDDUTyTp3PJxvTufyJelBWULBlGXl1njP3g0XT8JflU9KyyoWNJRjWisibhUybevByw9er9Gcb6KTZi1SIWH23xfcQB2K1R54oR3K4KtHsUUdPtGWv4Pt0gl8D5ZDy8joHKmO1UbKsm3mJ1gCFRm20Ah1jeAKw09hxwNLu3xSSk9t4yoG1cmoF5VBvLbPdpbvcb9k7Wy0HdqSK4RO8auMhUVdanIft1u4ara7dJBQyDKM9ZcYUWJsyHbXQfwwhRBR21baiRgehp1OcBKMXsEeS4xfFYz3llEFvPdJ0UbtTOcWBbiS6CvZ94FwLQZ0K79MSer0QZYxXnSMn4btsx3JM484cCZ7ITik3SZ6es7423MV2OUGA8cv0\n");
+
+        HttpEntity<PanicDTO> requestBody = new HttpEntity<>(panic, getHeader(JWT_PASSENGER_03));
+        ResponseEntity<String> response = restTemplate.exchange(
+                RIDE_URL + "/6/panic", HttpMethod.PUT, requestBody, new ParameterizedTypeReference<>() {
+                }
+        );
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    public void testPanicRideNoReason(){
+        PanicDTO panic = new PanicDTO(null);
+
+        HttpEntity<PanicDTO> requestBody = new HttpEntity<>(panic, getHeader(JWT_PASSENGER_03));
+        ResponseEntity<String> response = restTemplate.exchange(
+                RIDE_URL + "/6/panic", HttpMethod.PUT, requestBody, new ParameterizedTypeReference<>() {
+                }
+        );
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    public void testPanic(){
+        PanicDTO panic = new PanicDTO("Kola smrde");
+
+        HttpEntity<PanicDTO> requestBody = new HttpEntity<>(panic, getHeader(JWT_PASSENGER_03));
+        ResponseEntity<String> response = restTemplate.exchange(
+                RIDE_URL + "/6/panic", HttpMethod.PUT, requestBody, new ParameterizedTypeReference<>() {
+                }
+        );
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    //Start Ride
+
+    @Test
+    public void startRideNotAccepted(){
+        HttpEntity<Object> requestBody = new HttpEntity<>(null, getHeader(JWT_DRIVER_01));
+        ResponseEntity<String> response = restTemplate.exchange(
+                RIDE_URL + "/5/start", HttpMethod.PUT, requestBody, new ParameterizedTypeReference<>() {
+                }
+        );
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    public void startRideNotExist(){
+        HttpEntity<Object> requestBody = new HttpEntity<>(null, getHeader(JWT_DRIVER_02));
+        ResponseEntity<String> response = restTemplate.exchange(
+                RIDE_URL + "/30/start", HttpMethod.PUT, requestBody, new ParameterizedTypeReference<>() {
+                }
+        );
+        Assertions.assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    public void startRide(){
+        HttpEntity<Object> requestBody = new HttpEntity<>(null, getHeader(JWT_DRIVER_02));
+        ResponseEntity<String> response = restTemplate.exchange(
+                RIDE_URL + "/7/start", HttpMethod.PUT, requestBody, new ParameterizedTypeReference<>() {
+                }
+        );
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    //Accept Ride
+
+    @Test
+    public void acceptRideNotPending(){
+        HttpEntity<Object> requestBody = new HttpEntity<>(null, getHeader(JWT_DRIVER_04));
+        ResponseEntity<String> response = restTemplate.exchange(
+                RIDE_URL + "/6/accept", HttpMethod.PUT, requestBody, new ParameterizedTypeReference<>() {
+                }
+        );
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    public void acceptRideNotExist(){
+        HttpEntity<Object> requestBody = new HttpEntity<>(null, getHeader(JWT_DRIVER_01));
+        ResponseEntity<String> response = restTemplate.exchange(
+                RIDE_URL + "/30/accept", HttpMethod.PUT, requestBody, new ParameterizedTypeReference<>() {
+                }
+        );
+        Assertions.assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    public void acceptRide(){
+        HttpEntity<Object> requestBody = new HttpEntity<>(null, getHeader(JWT_DRIVER_05));
+        ResponseEntity<String> response = restTemplate.exchange(
+                RIDE_URL + "/9/accept", HttpMethod.PUT, requestBody, new ParameterizedTypeReference<>() {
+                }
+        );
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    //End Ride
+
+    @Test
+    public void endRideNotStarted(){
+        HttpEntity<Object> requestBody = new HttpEntity<>(null, getHeader(JWT_DRIVER_01));
+        ResponseEntity<String> response = restTemplate.exchange(
+                RIDE_URL + "/5/end", HttpMethod.PUT, requestBody, new ParameterizedTypeReference<>() {
+                }
+        );
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    public void endRideNotExist(){
+        HttpEntity<Object> requestBody = new HttpEntity<>(null, getHeader(JWT_DRIVER_03));
+        ResponseEntity<String> response = restTemplate.exchange(
+                RIDE_URL + "/30/end", HttpMethod.PUT, requestBody, new ParameterizedTypeReference<>() {
+                }
+        );
+        Assertions.assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    public void endRide(){
+        HttpEntity<Object> requestBody = new HttpEntity<>(null, getHeader(JWT_DRIVER_03));
+        ResponseEntity<String> response = restTemplate.exchange(
+                RIDE_URL + "/8/end", HttpMethod.PUT, requestBody, new ParameterizedTypeReference<>() {
+                }
+        );
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    //Cancel the ride with an explanation
+
+    @Test
+    public void cancelRideNotPendingOrAccepted(){
+        RejectionDTO dto = new RejectionDTO("Mrzi me");
+
+        HttpEntity<RejectionDTO> requestBody = new HttpEntity<>(dto, getHeader(JWT_DRIVER_03));
+        ResponseEntity<String> response = restTemplate.exchange(
+                RIDE_URL + "/8/cancel", HttpMethod.PUT, requestBody, new ParameterizedTypeReference<>() {
+                }
+        );
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    public void cancelRideNotExist(){
+        RejectionDTO dto = new RejectionDTO("Mrzi me");
+
+        HttpEntity<RejectionDTO> requestBody = new HttpEntity<>(dto, getHeader(JWT_DRIVER_03));
+        ResponseEntity<String> response = restTemplate.exchange(
+                RIDE_URL + "/30/cancel", HttpMethod.PUT, requestBody, new ParameterizedTypeReference<>() {
+                }
+        );
+        Assertions.assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    public void cancelRide(){
+        RejectionDTO dto = new RejectionDTO("Mrzi me");
+
+        HttpEntity<RejectionDTO> requestBody = new HttpEntity<>(dto, getHeader(JWT_DRIVER_04));
+        ResponseEntity<String> response = restTemplate.exchange(
+                RIDE_URL + "/5/cancel", HttpMethod.PUT, requestBody, new ParameterizedTypeReference<>() {
+                }
+        );
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    //Create favorite locations for quick selection
+
+    @Test
+    public void testCreateFavoriteLocationNoName(){
+        RideLocationDTO route = new RideLocationDTO(new LocationDTO("Ledinacka 2", 45.248667F, 19.816370F), new LocationDTO("Kulturni Centar LAB", 45.24951752043822F, 19.825208148679025F));
+        GetFavoriteLocationsDTO dto = new GetFavoriteLocationsDTO(
+                null,
+                Arrays.asList(route),
+                Arrays.asList(new RidePassengerDTO(8, "marko@gmail.com")),
+                "LUXURY", true, false);
+
+        HttpEntity<GetFavoriteLocationsDTO> requestBody = new HttpEntity<>(dto, getHeader(JWT_PASSENGER_01));
+        ResponseEntity<String> response = restTemplate.exchange(
+                RIDE_URL + "/favorites", HttpMethod.POST, requestBody, new ParameterizedTypeReference<>() {
+                }
+        );
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    public void testCreateFavoriteLocationNoLocation(){
+        RideLocationDTO route = new RideLocationDTO(new LocationDTO("Ledinacka 2", 45.248667F, 19.816370F), new LocationDTO("Kulturni Centar LAB", 45.24951752043822F, 19.825208148679025F));
+        GetFavoriteLocationsDTO dto = new GetFavoriteLocationsDTO(
+                "Ime moje omiljeno",
+                null,
+                Arrays.asList(new RidePassengerDTO(8, "marko@gmail.com")),
+                "LUXURY", true, false);
+
+        HttpEntity<GetFavoriteLocationsDTO> requestBody = new HttpEntity<>(dto, getHeader(JWT_PASSENGER_01));
+        ResponseEntity<String> response = restTemplate.exchange(
+                RIDE_URL + "/favorites", HttpMethod.POST, requestBody, new ParameterizedTypeReference<>() {
+                }
+        );
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    public void testCreateFavoriteLocationNoPassengers(){
+        RideLocationDTO route = new RideLocationDTO(new LocationDTO("Ledinacka 2", 45.248667F, 19.816370F), new LocationDTO("Kulturni Centar LAB", 45.24951752043822F, 19.825208148679025F));
+        GetFavoriteLocationsDTO dto = new GetFavoriteLocationsDTO(
+                "Ime moje omiljeno",
+                Arrays.asList(route),
+                null,
+                "LUXURY", true, false);
+
+        HttpEntity<GetFavoriteLocationsDTO> requestBody = new HttpEntity<>(dto, getHeader(JWT_PASSENGER_01));
+        ResponseEntity<String> response = restTemplate.exchange(
+                RIDE_URL + "/favorites", HttpMethod.POST, requestBody, new ParameterizedTypeReference<>() {
+                }
+        );
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    public void testCreateFavoriteLocationNoVehicleType(){
+        RideLocationDTO route = new RideLocationDTO(new LocationDTO("Ledinacka 2", 45.248667F, 19.816370F), new LocationDTO("Kulturni Centar LAB", 45.24951752043822F, 19.825208148679025F));
+        GetFavoriteLocationsDTO dto = new GetFavoriteLocationsDTO(
+                "Ime moje omiljeno",
+                Arrays.asList(route),
+                Arrays.asList(new RidePassengerDTO(8, "marko@gmail.com")),
+                null, true, false);
+
+        HttpEntity<GetFavoriteLocationsDTO> requestBody = new HttpEntity<>(dto, getHeader(JWT_PASSENGER_01));
+        ResponseEntity<String> response = restTemplate.exchange(
+                RIDE_URL + "/favorites", HttpMethod.POST, requestBody, new ParameterizedTypeReference<>() {
+                }
+        );
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    public void testCreateFavoriteLocationNoBaby(){
+        RideLocationDTO route = new RideLocationDTO(new LocationDTO("Ledinacka 2", 45.248667F, 19.816370F), new LocationDTO("Kulturni Centar LAB", 45.24951752043822F, 19.825208148679025F));
+        GetFavoriteLocationsDTO dto = new GetFavoriteLocationsDTO(
+                "Ime moje omiljeno",
+                Arrays.asList(route),
+                Arrays.asList(new RidePassengerDTO(8, "marko@gmail.com")),
+                "LUXURY", null, false);
+
+        HttpEntity<GetFavoriteLocationsDTO> requestBody = new HttpEntity<>(dto, getHeader(JWT_PASSENGER_01));
+        ResponseEntity<String> response = restTemplate.exchange(
+                RIDE_URL + "/favorites", HttpMethod.POST, requestBody, new ParameterizedTypeReference<>() {
+                }
+        );
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    public void testCreateFavoriteLocationNoPet(){
+        RideLocationDTO route = new RideLocationDTO(new LocationDTO("Ledinacka 2", 45.248667F, 19.816370F), new LocationDTO("Kulturni Centar LAB", 45.24951752043822F, 19.825208148679025F));
+        GetFavoriteLocationsDTO dto = new GetFavoriteLocationsDTO(
+                "Ime moje omiljeno",
+                Arrays.asList(route),
+                Arrays.asList(new RidePassengerDTO(8, "marko@gmail.com")),
+                "LUXURY", false, null);
+
+        HttpEntity<GetFavoriteLocationsDTO> requestBody = new HttpEntity<>(dto, getHeader(JWT_PASSENGER_01));
+        ResponseEntity<String> response = restTemplate.exchange(
+                RIDE_URL + "/favorites", HttpMethod.POST, requestBody, new ParameterizedTypeReference<>() {
+                }
+        );
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    public void testCreateFavoriteLocation(){
+        RideLocationDTO route = new RideLocationDTO(new LocationDTO("Ledinacka 2", 45.248667F, 19.816370F), new LocationDTO("Kulturni Centar LAB", 45.24951752043822F, 19.825208148679025F));
+        GetFavoriteLocationsDTO dto = new GetFavoriteLocationsDTO(
+                "Ime moje omiljeno",
+                Arrays.asList(route),
+                Arrays.asList(new RidePassengerDTO(8, "marko@gmail.com")),
+                "LUXURY", true, false);
+
+        HttpEntity<GetFavoriteLocationsDTO> requestBody = new HttpEntity<>(dto, getHeader(JWT_PASSENGER_01));
+        ResponseEntity<String> response = restTemplate.exchange(
+                RIDE_URL + "/favorites", HttpMethod.POST, requestBody, new ParameterizedTypeReference<>() {
+                }
+        );
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    //Get favorite locations
+
+    @Test
+    public void testGetFavoriteLocations(){
+        HttpEntity<Object> requestBody = new HttpEntity<>(null, getHeader(JWT_PASSENGER_01));
+        ResponseEntity<String> response = restTemplate.exchange(
+                RIDE_URL + "/favorites", HttpMethod.GET, requestBody, new ParameterizedTypeReference<>() {
+                }
+        );
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    //Delete existing favorite ride
+
+    @Test
+    public void testDeleteFavoriteLocationNotExist(){
+        HttpEntity<Object> requestBody = new HttpEntity<>(null, getHeader(JWT_PASSENGER_01));
+        ResponseEntity<String> response = restTemplate.exchange(
+                RIDE_URL + "/favorites/500", HttpMethod.DELETE, requestBody, new ParameterizedTypeReference<>() {
+                }
+        );
+        Assertions.assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    public void testDeleteFavoriteLocation(){
+        HttpEntity<Object> requestBody = new HttpEntity<>(null, getHeader(JWT_PASSENGER_01));
+        ResponseEntity<String> response = restTemplate.exchange(
+                RIDE_URL + "/favorites/1", HttpMethod.DELETE, requestBody, new ParameterizedTypeReference<>() {
+                }
+        );
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
 }
