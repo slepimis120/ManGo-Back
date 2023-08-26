@@ -26,7 +26,7 @@ import com.mango.service.UserService;
 import java.util.HashMap;
 import java.util.Map;
 
-@CrossOrigin(origins = {"http://localhost:4200", "http://localhost:8080"}, allowedHeaders = "*")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -131,7 +131,7 @@ public class UserController {
 
 	@PreAuthorize("permitAll()")
 	@PostMapping(value="/login")
-	public ResponseEntity logIn(@RequestBody @Valid UserLoginDTO request) {
+	public ResponseEntity logIn(@RequestBody UserLoginDTO request) {
 		UsernamePasswordAuthenticationToken authReq = new UsernamePasswordAuthenticationToken(request.getEmail(),
 				request.getPassword());
 		try{

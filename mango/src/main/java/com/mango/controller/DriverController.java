@@ -22,7 +22,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("/driver")
 public class DriverController {
@@ -51,7 +51,7 @@ public class DriverController {
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
-	@PreAuthorize("hasAuthority(\"ROLE_ADMIN\")")
+	@PreAuthorize("hasAuthority(\"ROLE_DRIVER\")")
 	@GetMapping("/{id}")
 	public ResponseEntity find(@PathVariable Integer id) {
 		UserDTO response =  service.find(id);
@@ -61,9 +61,9 @@ public class DriverController {
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
-	@PreAuthorize("hasAuthority(\"ROLE_ADMIN\")")
+	@PreAuthorize("hasAuthority(\"ROLE_DRIVER\")")
 	@RequestMapping(value="/{id}",method = RequestMethod.PUT)
-	public ResponseEntity update(@PathVariable Integer id, @RequestBody @Valid ExpandedUserDTO update) {
+	public ResponseEntity update(@PathVariable Integer id, @RequestBody ExpandedUserDTO update) {
 		UserDTO response = service.update(id, update);
 		if(response == null){
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Driver does not exist!");

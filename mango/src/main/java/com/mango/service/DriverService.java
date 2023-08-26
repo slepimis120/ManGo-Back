@@ -91,7 +91,6 @@ public class DriverService implements IUserService {
 				driver.setTelephoneNumber(update.getTelephoneNumber());
 			driver = driverRepository.save(driver);
 			return new UserDTO(driver);
-			
 		}
 		return null;
 	}
