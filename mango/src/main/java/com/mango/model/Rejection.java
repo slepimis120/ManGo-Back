@@ -28,4 +28,7 @@ public class Rejection {
         this.timeOfRejection = timeOfRejection;
     }
 
+    public Rejection(){
+    }
+
 }
