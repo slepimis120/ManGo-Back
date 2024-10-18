@@ -44,12 +44,15 @@ ManGo is an application similar to Uber for ride ordering. This repository conta
 2. **Set Up Environment Variables**:
    Ensure that the JAVA_HOME environment variable is set to your JDK installation directory.  
 
-4. **Build the Project**:  
-  ```sh
-  mvn clean install
-  Run the Application:  
-  mvn spring-boot:run
-```
+3. **Build the Project**:  
+   ```sh
+    mvn clean install
+   ```
+
+4. **Run the Application**:
+   ```sh
+   mvn spring-boot:run
+   ```
 
 4. **Access the Application**:
   The backend server will be running at http://localhost:8080. You can interact with the API using tools like Postman or through the frontend application.
